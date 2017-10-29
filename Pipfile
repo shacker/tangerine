@@ -10,6 +10,8 @@ name = "pypi"
 django = "*"
 django-extensions = "*"
 "psycopg2" = "*"
+factory-boy = "*"
+ipdb = "*"
 
 
 [dev-packages]
