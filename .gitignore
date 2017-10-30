@@ -1,0 +1,44 @@
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Basics
+*.py[cod]
+__pycache__
+
+# Logs
+logs
+*.log
+pip-log.txt
+npm-debug.log*
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+htmlcov
+coverage_html_report
+
+# Translations
+*.mo
+*.pot
+
+# npm
+node_modules/
+
+# Compass
+.sass-cache
+
+# mypy
+.mypy_cache
+
+# virtual environments
+.env
+
+# User-uploaded media
+media/
+
+staticfiles/
+local.py
+.cache/
