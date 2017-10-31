@@ -12,6 +12,9 @@ django-extensions = "*"
 "psycopg2" = "*"
 factory-boy = "*"
 ipdb = "*"
+requests = "*"
+pytz = "*"
+titlecase = "*"
 
 
 [dev-packages]

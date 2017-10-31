@@ -9,3 +9,6 @@ pytz.all_timezones
 # After creating some categories manually, use this to create 500 faked posts for testing purposes
 from blog.factories import PostFactory
 PostFactory.create_batch(500)
+
+run mp fake_posts to create initial categories and posts. You might want to rename/delete fake categories after initial creation.
+
