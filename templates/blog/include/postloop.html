@@ -1,4 +1,5 @@
 <h2>{{ post.title }}</h2>
+<p>{{ post.created|date:"DATE_FORMAT"}} by {{ post.author.get_full_name }}</p>
 {% if post.summary %}
     {{ post.summary|safe }}
 {% else %}
