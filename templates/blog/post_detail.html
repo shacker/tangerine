@@ -6,6 +6,8 @@
 
     <p>{{ post.created|date:"DATE_FORMAT"}} by {{ post.author.get_full_name }}</p>
 
-        {{ post.content|linebreaks }}
+    {{ post.content|linebreaks }}
+    
+    {% include "blog/include/edit_link.html" %}
 
 {% endblock content %}
