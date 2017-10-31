@@ -24,5 +24,6 @@ class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ('categories',)
 
+
 admin.site.register(Category)
 admin.site.register(Post, PostAdmin)
