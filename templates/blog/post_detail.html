@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2>{{ post.title }}</h2>
+
+    <p>{{ post.created|date:"DATE_FORMAT"}} by {{ post.author.get_full_name }}</p>
+
+        {{ post.content|linebreaks }}
+
+{% endblock content %}

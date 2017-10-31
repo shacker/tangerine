@@ -1,5 +1,7 @@
-<h2>{{ post.title }}</h2>
+<h2><a href="{% url 'blog:post_detail' post.created.year post.created.month post.slug %}">{{ post.title }}</a></h2>
+
 <p>{{ post.created|date:"DATE_FORMAT"}} by {{ post.author.get_full_name }}</p>
+
 {% if post.summary %}
     {{ post.summary|safe }}
 {% else %}
