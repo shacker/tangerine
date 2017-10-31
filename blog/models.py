@@ -16,6 +16,11 @@ class Category(models.Model):
         return self.title
 
 
+class PostManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(published=True)
+
+
 class Post(TimeStampedModel):
 
     title = models.CharField(max_length=140)
@@ -34,10 +39,13 @@ class Post(TimeStampedModel):
         Category,
         blank=True,)
     pub_date = models.DateTimeField(
-        blank = True,
+        blank=True,
         null=True,
-        help_text = "If present, overrides automatic 'created' datetime and will not be published until.",
+        help_text="If present, overrides automatic 'created' datetime and will not be published until.",
     )
+
+    objects = PostManager()  # The Dahl-specific manager.
+    allposts = models.Manager()  # The default manager, unfiltered by manager (admin use only)
 
     def __str__(self):
         return "{d} - {s}".format(d=self.created, s=self.title)
