@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for post in posts %}
+
+        {% include "blog/include/postloop.html" %}
+
+    {% endfor %}
+{% endblock content %}
