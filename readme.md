@@ -1,4 +1,8 @@
-
+Supports tags and categories. Configurable via admin:
+    - Site title
+    - Chosen theme
+    - Favico
+    
 Be sure to set your timezone in settings:
 TIME_ZONE = 'America/Los_Angeles'
 You can list all the available timezones with pytz.all_timezones:
