@@ -5,7 +5,7 @@ from blog.models import Post
 
 
 def home(request):
-    posts = Post.objects.all().order_by('-created')
+    posts = Post.pub.order_by('-created')
     return render(request, "blog/home.html", {'posts': posts})
 
 

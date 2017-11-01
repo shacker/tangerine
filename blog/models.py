@@ -44,8 +44,8 @@ class Post(TimeStampedModel):
         help_text="If present, overrides automatic 'created' datetime and will not be published until.",
     )
 
-    objects = PostManager()  # The Dahl-specific manager.
-    allposts = models.Manager()  # The default manager, unfiltered by manager (admin use only)
+    objects = models.Manager()  # The default manager, unfiltered by manager (admin use only)
+    pub = PostManager()  # Post.pub () gets just published posts
 
     def __str__(self):
         return "{d} - {s}".format(d=self.created, s=self.title)
