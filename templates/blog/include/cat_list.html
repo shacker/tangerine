@@ -1,0 +1,7 @@
+{% if post.categories.all %}
+    <p>Categories: 
+        {% for cat in post.categories.all %}
+            {{ cat }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </p>
+{% endif %}

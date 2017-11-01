@@ -6,6 +6,9 @@
 
     <p>{{ post.created|date:"DATE_FORMAT"}} by {{ post.author.get_full_name }}</p>
 
+    {# List categories for this post #}
+    {% include "blog/include/cat_list.html" %}
+
     {{ post.content|linebreaks }}
     
     {% include "blog/include/edit_link.html" %}
