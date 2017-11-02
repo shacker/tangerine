@@ -29,6 +29,7 @@
 **Assumes:**
 - Python 3.5+
 - Pipenv
+- Django 2.0+
 
 ### Installation
 

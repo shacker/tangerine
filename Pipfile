@@ -7,7 +7,7 @@ name = "pypi"
 
 [packages]
 
-django = "*"
+django = {git = "https://github.com/django/django.git", editable = true}
 django-extensions = "*"
 "psycopg2" = "*"
 factory-boy = "*"
