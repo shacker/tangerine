@@ -40,7 +40,7 @@
 - Create local.py
 - `./manage.py migrate`
 - `npm install`
-- Create a user for yourself: `./manage.py createsuperuser [you]`
+- Create fake posts, categories, and a user for yourself: `./manage.py fake_posts`
 - In admin, select a Theme (or use Default)
 
 Be sure to set your timezone in settings:
