@@ -40,6 +40,7 @@
 - Create local.py
 - `./manage.py migrate`
 - `npm install`
+- Create a user for yourself: `./manage.py createsuperuser [you]`
 - In admin, select a Theme (or use Default)
 
 Be sure to set your timezone in settings:
