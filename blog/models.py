@@ -18,7 +18,7 @@ class Category(models.Model):
 
 class PostManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(published=True)
+        return super().get_queryset().filter(published=True, trashed=False)
 
 
 class Post(TimeStampedModel):
@@ -35,6 +35,9 @@ class Post(TimeStampedModel):
     content = models.TextField(
         blank=True,)
     published = models.BooleanField(default=True)
+    trashed = models.BooleanField(
+        default=False,
+        help_text="Trashed posts are removed from views but not deleted. For safety, Trash rather than Delete.")
     categories = models.ManyToManyField(
         Category,
         blank=True,)

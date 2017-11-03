@@ -20,7 +20,9 @@ class PostAdmin(admin.ModelAdmin):
         'categories',
         'published',
         'pub_date',
+        'trashed',
     )
+    list_filter = ['published', 'trashed', ]
     search_fields = ['title', 'content', 'summary', ]
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ('categories',)

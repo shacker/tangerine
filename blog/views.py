@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404
 
-
 from blog.models import Category, Post
 
 
@@ -10,7 +9,7 @@ def home(request):
 
 
 def post_detail(request, year, month, slug):
-    post = get_object_or_404(Post, created__year=year, created__month=month, slug=slug)
+    post = get_object_or_404(Post, published=True, trashed=False, created__year=year, created__month=month, slug=slug)
     return render(request, "blog/post_detail.html", {'post': post})
 
 
