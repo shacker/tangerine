@@ -15,10 +15,13 @@ ipdb = "*"
 requests = "*"
 pytz = "*"
 titlecase = "*"
+adminsortable = {git = "git@github.com:shacker/django-admin-sortable.git", editable = true}
 
 
 [dev-packages]
 
+pytest = "*"
+pytest-django = "*"
 
 
 [requires]

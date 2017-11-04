@@ -1,6 +1,8 @@
 from django.contrib import admin
 
-from blog.models import Category, Post
+from adminsortable.admin import NonSortableParentAdmin, SortableStackedInline
+
+from blog.models import Category, Post, RelatedLinkGroup, RelatedLink
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -28,5 +30,15 @@ class PostAdmin(admin.ModelAdmin):
     filter_horizontal = ('categories',)
 
 
+class RelatedLinkInline(SortableStackedInline):
+    model = RelatedLink
+    extra = 1
+
+
+class RelatedLinkGroupAdmin(NonSortableParentAdmin):
+    inlines = [RelatedLinkInline]
+
+
 admin.site.register(Category)
 admin.site.register(Post, PostAdmin)
+admin.site.register(RelatedLinkGroup, RelatedLinkGroupAdmin)

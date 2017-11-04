@@ -5,7 +5,7 @@ from titlecase import titlecase
 
 from django.utils.text import slugify
 
-from .models import Category, Post
+from .models import Category, Post, RelatedLinkGroup, RelatedLink
 from users.models import User
 
 
@@ -48,3 +48,28 @@ class PostFactory(factory.django.DjangoModelFactory):
     def set_created(self, build, extracted, **kwargs):
         fake = Faker()
         self.created = fake.date_time_this_decade(tzinfo=pytz.UTC)
+
+
+# Useful in tests
+
+class RelatedLinkFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = RelatedLink
+
+    # Must pass in a RelatedLinkGroup as group= when instantiating
+    # i.e. Most useful when instantiating a RelatedLinkGroupFactory
+    site_title = factory.Faker('company')
+    site_url = factory.Faker('url')
+
+
+class RelatedLinkGroupFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = RelatedLinkGroup
+        django_get_or_create = ('slug', )
+
+    slug = factory.Faker('words', nb=1)
+
+    @factory.post_generation
+    # Create related links
+    def related_links(self, build, extracted, **kwargs):
+        RelatedLinkFactory.create_batch(5, group=self)
