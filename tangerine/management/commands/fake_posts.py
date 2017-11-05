@@ -3,8 +3,8 @@ import os
 
 from django.core.management.base import BaseCommand
 
-from blog.factories import CategoryFactory, PostFactory
-from blog.models import Category
+from tangerine.factories import CategoryFactory, PostFactory
+from tangerine.models import Category
 
 from users.factories import UserFactory
 from users.models import User

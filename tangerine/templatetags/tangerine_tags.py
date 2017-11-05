@@ -1,6 +1,6 @@
 from django import template
 
-from blog.models import RelatedLinkGroup
+from tangerine.models import RelatedLinkGroup
 
 register = template.Library()
 

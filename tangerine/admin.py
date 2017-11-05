@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from adminsortable.admin import NonSortableParentAdmin, SortableStackedInline
 
-from blog.models import Category, Post, RelatedLinkGroup, RelatedLink
+from tangerine.models import Category, Post, RelatedLinkGroup, RelatedLink
 
 
 class PostAdmin(admin.ModelAdmin):

@@ -1,0 +1,4 @@
+include LICENSE
+include readme.md
+recursive-include tangerine/templates *
+recursive-include docs *

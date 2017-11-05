@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 
-from blog.models import Category, Post
+from tangerine.models import Category, Post
 
 
 def home(request):
