@@ -1,9 +1,9 @@
-<h2><a href="{% url 'blog:post_detail' post.created.year post.created.month post.slug %}">{{ post.title }}</a></h2>
+<h2><a href="{% url 'tangerine:post_detail' post.created.year post.created.month post.slug %}">{{ post.title }}</a></h2>
 
 <p>{{ post.created|date:"DATE_FORMAT"}} by {{ post.author.get_full_name }}</p>
 
 {# List categories for this post #}
-{% include "blog/include/cat_list.html" %}
+{% include "tangerine/include/cat_list.html" %}
 
 {% if post.summary %}
     {{ post.summary|safe }}
@@ -11,5 +11,5 @@
     {{ post.content|truncatewords:20 }}
 {% endif %}
 
-{% include "blog/include/edit_link.html" %}
+{% include "tangerine/include/edit_link.html" %}
 

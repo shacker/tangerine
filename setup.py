@@ -30,4 +30,11 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
+    install_requires=[
+      'factory_boy',
+      'titlecase',
+    ],
+
+    dependency_links=['http://github.com/shacker/django-admin-sortable/tarball/master#egg=admin_sortable']
+
 )

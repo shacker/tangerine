@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h3>Category: {{ category }}</h3>
+
+    {% for post in posts %}
+        {% include "tangerine/include/post_loop.html" %}
+    {% endfor %}
+{% endblock content %}

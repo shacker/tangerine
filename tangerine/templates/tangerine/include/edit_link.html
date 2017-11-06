@@ -1,0 +1,3 @@
+{% if user.is_superuser %}
+    <p><a href="{% url 'admin:tangerine_post_change' post.id %}">Edit</a></p>
+{% endif %}

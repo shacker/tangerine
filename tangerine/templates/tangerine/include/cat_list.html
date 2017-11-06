@@ -1,7 +1,7 @@
 {% if post.categories.all %}
     <p>Categories: 
         {% for cat in post.categories.all %}
-            <a href="{% url 'blog:category' cat.slug %}">{{ cat }}</a>{% if not forloop.last %},{% endif %}
+            <a href="{% url 'tangerine:category' cat.slug %}">{{ cat }}</a>{% if not forloop.last %},{% endif %}
         {% endfor %}
     </p>
 {% endif %}
