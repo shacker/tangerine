@@ -19,6 +19,6 @@ def page_detail(request, slug):
 
 
 def category(request, cat_slug):
-    cat = Category.objects.get(slug=cat_slug)
+    cat = get_object_or_404(Category, slug=cat_slug)
     posts = Post.pub.filter(categories__in=[cat, ])
     return render(request, "tangerine/category.html", {'category':  cat, 'posts': posts})
