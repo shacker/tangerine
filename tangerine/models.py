@@ -8,6 +8,12 @@ from django_extensions.db.models import TimeStampedModel
 from users.models import User
 
 
+POST_TYPE_CHOICES = (
+    ('post', 'Post'),
+    ('page', 'Page'),
+)
+
+
 class Category(models.Model):
     """ Gather Posts in a similar broad topic into Category views. """
 
@@ -25,7 +31,7 @@ class PostManager(models.Manager):
     """ Filter out all unpublished and trashed posts by calling Post.pub.all() from anywhere. """
 
     def get_queryset(self):
-        return super().get_queryset().filter(published=True, trashed=False).order_by('-created')
+        return super().get_queryset().filter(published=True, ptype='post', trashed=False).order_by('-created')
 
 
 class Post(TimeStampedModel):
@@ -52,8 +58,13 @@ class Post(TimeStampedModel):
     pub_date = models.DateTimeField(
         blank=True,
         null=True,
-        help_text="If present, overrides automatic 'created' datetime and will not be published until.",
-    )
+        help_text="If present, overrides automatic 'created' datetime and will not be published until.",)
+    ptype = models.CharField(
+        verbose_name='Post or Page',
+        choices=POST_TYPE_CHOICES,
+        default='post',
+        max_length=6,
+        help_text="Select Page for semi-static pages. See docs for info.")
 
     objects = models.Manager()  # The default manager, unfiltered by manager (admin use only)
     pub = PostManager()  # Post.pub.all() gets just published, non-trashed posts

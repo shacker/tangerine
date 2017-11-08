@@ -7,6 +7,7 @@
 **Supports:**
 
 - Post lists/detail/permalink views
+- Page detail for semi-static pages
 - Tags and categories with views
 - Spam-filtered commenting
 - Author profiles
@@ -70,6 +71,14 @@ favicon.ico [how-to]
 
 We intentionally don't provide a Theme system for Tangerine - you can style your site with any HTML/CSS templates you find in the wild, or create your own. Use the provided `templates` directory as a starting point [how-to here]. We assume your base template is called `base.html` and we extend that. Replace this in Tangerine templates if you use some other filename.
 
+### Posts vs Pages
+
+Similar to WordPress: New entries default to ptype "Post", but can be toggled to "Page." Posts are timestamped and shown in a list, sorted by date. Post detail views include the date in the URL. 
+
+In contrast, Pages are excluded from list views and are accessible at `/foo` where `foo` = the slug of the entry. Pages are intended for placement in menus and would include things like "About" or "Contact" pages.
+
+The Django Admin includes a list filter to let you quickly sort Posts vs. Pages.
+
 Quick start
 -----------
 
@@ -77,12 +86,12 @@ Quick start
 
     INSTALLED_APPS = [
         ...
-        'polls',
+        'django-tangerine',
     ]
 
 2. Include the polls URLconf in your project urls.py like this::
 
-    url(r'^polls/', include('polls.urls')),
+    url(r'^blog/', include('tangerine.urls')),
 
 3. Run `python manage.py migrate` to create the polls models.
 
@@ -90,3 +99,23 @@ Quick start
    to create a poll (you'll need the Admin app enabled).
 
 5. Visit http://127.0.0.1:8000/polls/ to participate in the poll.
+
+---------
+
+
+------
+
+TEMPLATES
+
+Base template must include:
+{% block content %}{% endblock content %}
+
+If you want Related Links with a certain slug for the RelatedLinkGroup, use:
+{% block blogroll %}{% endblock blogroll %}
+
+Templates are meant to represent "reasonable defaults" and to show most possible templatetag usages. By all means, rearrange and season to taste. (copy templates dir into your project and tweak).
+
+To link to a Page (rather than a post, do this in a template:
+    
+    <a href="{% url 'post_detail' 'about' %}">About</a>
+

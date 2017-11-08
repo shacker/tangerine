@@ -13,6 +13,11 @@ def post_detail(request, year, month, slug):
     return render(request, "tangerine/post_detail.html", {'post': post})
 
 
+def page_detail(request, slug):
+    post = get_object_or_404(Post, published=True, trashed=False, slug=slug)
+    return render(request, "tangerine/post_detail.html", {'post': post})
+
+
 def category(request, cat_slug):
     cat = Category.objects.get(slug=cat_slug)
     posts = Post.pub.filter(categories__in=[cat, ])
