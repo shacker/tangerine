@@ -42,3 +42,6 @@ media/
 staticfiles/
 local.py
 .cache/
+
+*.egg*
+
