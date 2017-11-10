@@ -44,4 +44,5 @@ local.py
 .cache/
 
 *.egg*
+Pipfile*
 
