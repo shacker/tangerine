@@ -1,7 +1,7 @@
 import pytest
 
-from blog.templatetags.tangerine_tags import get_related_links
-from blog.factories import RelatedLinkGroupFactory
+from tangerine.templatetags.tangerine_tags import get_related_links
+from tangerine.factories import RelatedLinkGroupFactory
 
 
 @pytest.mark.django_db

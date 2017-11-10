@@ -89,16 +89,16 @@ Quick start
         'django-tangerine',
     ]
 
-2. Include the polls URLconf in your project urls.py like this::
+2. Include the tangerine URLconf in your project urls.py like this::
 
     url(r'^blog/', include('tangerine.urls')),
 
-3. Run `python manage.py migrate` to create the polls models.
+3. Run `python manage.py migrate` to create the tangerine models.
 
 4. Start the development server and visit http://127.0.0.1:8000/admin/
-   to create a poll (you'll need the Admin app enabled).
+   to create a post (you'll need the Admin app enabled).
 
-5. Visit http://127.0.0.1:8000/polls/ to participate in the poll.
+5. Visit http://127.0.0.1:8000/blog/ to participate in the poll.
 
 ---------
 
