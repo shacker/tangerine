@@ -4,10 +4,12 @@
 
 *Just the bits you need, nothing more.*
 
+Tangerine is a pluggable blogging system for Django, meant to be dropped into an *existing Django project*. Of course, nothing prevents you from running Tangerine as a standalone blog - you'll just need to create a basic/starter Django project first (if you need a starter site, check out the companion [Tangelo](https://github.com/shacker/tangelo) project, which supports the author's own Tangerine blog).
+
 **Supports:**
 
 - Post lists/detail/permalink views
-- Page detail for semi-static pages
+- Page views for semi-static pages ("About", etc.)
 - Tags and categories with views
 - Spam-filtered commenting
 - Author profiles
@@ -15,16 +17,15 @@
 - "Trash" system
 - List view pagination
 - WordPress importer
-- Blogroll
+- Blogroll (related link sets)
 - OEmbed support
-- Navigation system
 - Search
 - Rich text editor
 - Configurable via admin:
     - Site title
     - Num posts per list view
 
-NOT intended to be "just like WordPress," but rather "an ideal blog engine for Django devs."
+NOT intended to be "just like WordPress," but rather "an ideal blog engine for Django devs with some lessons learned from WordPress."
 
 **Assumes:**
 
@@ -35,7 +36,7 @@ NOT intended to be "just like WordPress," but rather "an ideal blog engine for D
 
 ### Installation
 
-1. Create a running container site with working logins
+1. Create a running "container" site with working logins
 1. Add `'tangerine',` to your `INSTALLED_APPS`
 1. Set your timezone in settings, e.g. `TIME_ZONE = 'America/Los_Angeles'`
 1. `./manage.py migrate`
@@ -43,8 +44,6 @@ NOT intended to be "just like WordPress," but rather "an ideal blog engine for D
 `./manage.py tangerine_start`
 
 ### Requirements and Recommendations for Container Site
-
-Tangerine is a *pluggable* blog engine, intended to be dropped into an existing Django project. If you don't already have a running Django project, use the setup instructions above.
 
 For full/best functionality, we recommend adding these tags to the base template in your container site:
 
