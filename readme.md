@@ -70,27 +70,27 @@ The Django Admin includes a list filter to let you quickly sort Posts vs. Pages.
 Quick start
 -----------
 
-1. Add "polls" to your INSTALLED_APPS setting like this::
+1. Add to your INSTALLED_APPS:
 
 ```
 INSTALLED_APPS = [
     ...
-    'django-tangerine',
+    'tangerine',
 ]
 ```
 
-2. Include the tangerine URLconf in your project urls.py like this::
+2. Include tangerine's URLconf in your project `urls.py`:
 
 `url(r'^blog/', include('tangerine.urls')),`
 
 3. Run `python manage.py migrate` to create the tangerine models.
 
 4. Start the development server and visit http://127.0.0.1:8000/admin/
-   to create a post (you'll need the Admin app enabled).
+   to create a post.
 
-5. Visit http://127.0.0.1:8000/blog/ to participate in the poll.
+5. Visit http://127.0.0.1:8000
 
-If you want to run tests, add pytest to your virtualenv:
+To run Tangerine's tests, add pytest to your virtualenv:
 `pip install pytest` or `pipenv install pytest`
 Then just run `pytest` from the projcect root.
 
@@ -107,10 +107,10 @@ Your `base.html` template must include:
 
 ### RelatedLinkGroups
 
-Tangerine supports multiple `RelatedLinkGroup`s, which are named collections of related links (such as a blogroll). A default `blogroll` set is provided and referenced in the sample templates. You can either edit that one in the Admin (Posts/Related Link Groups) or create new ones and reference them from templates:
+Tangerine supports multiple `RelatedLinkGroup`s, which are named collections of related links (such as a blogroll). A default `blogroll` set is provided in the `tangerine_start` command and referenced in the sample templates. You can either edit that set in the Admin (Posts/Related Link Groups) or create new ones and reference them from templates:
 
 ```
-    {% get_related_links 'blogroll' as link_group %}
+    {% get_related_links 'some_related_links_name' as link_group %}
     ...
     {% for link in link_group.links %}
         <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
