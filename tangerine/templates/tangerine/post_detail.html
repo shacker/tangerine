@@ -1,5 +1,7 @@
 {% extends "tangerine/base.html" %}
 
+{% block title %}{{ post.title }}{% endblock title %}
+
 {% block content %}
 
     <h2>{{ post.title }}</h2>
@@ -7,12 +9,12 @@
     {% if post.ptype == 'post' %}
         <p>{{ post.created|date:"DATE_FORMAT"}} by {{ post.author.get_full_name }}</p>
     {% endif %}
-    
+
     {# List categories for this post #}
     {% include "tangerine/include/cat_list.html" %}
 
     {{ post.content|linebreaks }}
-    
+
     {% include "tangerine/include/edit_link.html" %}
 
 {% endblock content %}

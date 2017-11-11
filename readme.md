@@ -96,21 +96,42 @@ If you want to run tests, add pytest to your virtualenv:
 Then just run `pytest` from the projcect root.
 
 
+## Templates
 
-------
+The provided template examples are meant to represent "reasonable defaults" and to show most possible templatetag usages. By all means, rearrange and season to taste (copy templates dir into your project's templates dir and tweak).
 
-TEMPLATES
+### Required in container site templates
 
-Base template must include:
-{% block content %}{% endblock content %}
+Your `base.html` template must include:
 
-If you want Related Links with a certain slug for the RelatedLinkGroup, use:
-{% block blogroll %}{% endblock blogroll %}
+`{% block content %}{% endblock content %}``
 
-Templates are meant to represent "reasonable defaults" and to show most possible templatetag usages. By all means, rearrange and season to taste. (copy templates dir into your project and tweak).
+### RelatedLinkGroups
 
-To link to a Page (rather than a post, do this in a template:
+Tangerine supports multiple `RelatedLinkGroup`s, which are named collections of related links (such as a blogroll). A default `blogroll` set is provided and referenced in the sample templates. You can either edit that one in the Admin (Posts/Related Link Groups) or create new ones and reference them from templates:
 
-    <a href="{% url 'post_detail' 'about' %}">About</a>
+```
+    {% get_related_links 'blogroll' as link_group %}
+    ...
+    {% for link in link_group.links %}
+        <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
+    {% endfor %}
+```
 
-(a starter About page should already exist in your initial data load)
+### Internal links
+
+To link to any internal Post or Page, do this in a template:
+
+    `<a href="{% url 'post_detail' 'about' %}">About</a>`
+
+where `'about'` is replaced with the slug of the page or post .
+
+n.b. A starter About page should already exist in your initial data load.
+
+### Title tags
+
+Tangerine supplies content for the HTML `title` tag in:
+
+`{% block title %}...{% endblock title %}`
+
+If you have a `block title` in your base.html, it should be populated automatically. If you use another block name, you'll need to change what's being sent from the tangerine templates.
