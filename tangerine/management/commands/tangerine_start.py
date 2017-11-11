@@ -46,6 +46,8 @@ class Command(BaseCommand):
         PostFactory.create_batch(self.num_posts, author=author)
         print("{} fake posts created.".format(self.num_posts))
 
-        # Set up starter RelatedLinks to work with default template
-        call_command('related_links')
+        # Set up starter About page and RelatedLinks to work with default template
+        call_command('loaddata', 'about')
+        call_command('loaddata', 'related_links')
+
         print("Starter set of RelatedLinks \"blogroll\" created.")

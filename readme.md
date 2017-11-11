@@ -112,3 +112,5 @@ Templates are meant to represent "reasonable defaults" and to show most possible
 To link to a Page (rather than a post, do this in a template:
 
     <a href="{% url 'post_detail' 'about' %}">About</a>
+
+(a starter About page should already exist in your initial data load)
