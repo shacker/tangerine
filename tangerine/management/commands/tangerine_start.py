@@ -2,6 +2,7 @@ import pwd
 import os
 
 from django.core.management.base import BaseCommand
+from django.core.management import call_command
 
 from tangerine.factories import CategoryFactory, PostFactory
 from tangerine.models import Category
@@ -44,3 +45,7 @@ class Command(BaseCommand):
         author = User.objects.order_by('?').first()
         PostFactory.create_batch(self.num_posts, author=author)
         print("{} fake posts created.".format(self.num_posts))
+
+        # Set up starter RelatedLinks to work with default template
+        call_command('related_links')
+        print("Starter set of RelatedLinks \"blogroll\" created.")

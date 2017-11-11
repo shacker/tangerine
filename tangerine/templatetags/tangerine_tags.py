@@ -24,8 +24,15 @@ def get_related_links(slug):
     {% endfor %}
     '''
 
-    group = RelatedLinkGroup.objects.get(slug=slug)
-
-    return {
-        'links': group.relatedlink_set.all(),
-    }
+    try:
+        group = RelatedLinkGroup.objects.get(slug=slug)
+        return {
+            'links': group.relatedlink_set.all(),
+        }
+    except RelatedLinkGroup.DoesNotExist:
+        return {
+            'links': [
+                {'site_title': 'Template tag asked for RelatedLinkGroup "{}" which does not exist in admin.'.format(
+                    slug)}
+                ],
+        }

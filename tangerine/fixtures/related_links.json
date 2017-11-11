@@ -1,0 +1,39 @@
+[
+{
+  "model": "tangerine.relatedlinkgroup",
+  "pk": 1,
+  "fields": {
+    "slug": "blogroll"
+  }
+},
+{
+  "model": "tangerine.relatedlink",
+  "pk": 1,
+  "fields": {
+    "group": 1,
+    "site_title": "Example",
+    "site_url": "http://example.com",
+    "link_order": 1
+  }
+},
+{
+  "model": "tangerine.relatedlink",
+  "pk": 2,
+  "fields": {
+    "group": 1,
+    "site_title": "CNN",
+    "site_url": "http://cnn.com",
+    "link_order": 3
+  }
+},
+{
+  "model": "tangerine.relatedlink",
+  "pk": 3,
+  "fields": {
+    "group": 1,
+    "site_title": "Birdhouse",
+    "site_url": "http://blog.birdhouse.org",
+    "link_order": 2
+  }
+}
+]

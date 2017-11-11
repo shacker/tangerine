@@ -35,23 +35,12 @@ NOT intended to be "just like WordPress," but rather "an ideal blog engine for D
 
 ### Installation
 
-- Create a running container site with working logins
-- Add `'tangerine',` to your `INSTALLED_APPS`
-- `./manage.py migrate`
-- Create fake posts, categories, and a user for yourself: `./manage.py fake_posts` (see Initial Data, below)
-
-Be sure to set your timezone in settings:
-
-`TIME_ZONE = 'America/Los_Angeles'`
-
-### Initial data
-
-During development, you may want a bunch of Categories and Posts to work with so you know what things will look like.
-
-After creating some categories manually, use this to create 500 faked posts for testing purposes:
-
-`./manage.py fake_posts`
-
+1. Create a running container site with working logins
+1. Add `'tangerine',` to your `INSTALLED_APPS`
+1. Set your timezone in settings, e.g. `TIME_ZONE = 'America/Los_Angeles'`
+1. `./manage.py migrate`
+1. Create starter posts, categories, blogroll, and a user for yourself (don't skip this!):
+`./manage.py tangerine_start`
 
 ### Requirements and Recommendations for Container Site
 
@@ -73,7 +62,7 @@ We intentionally don't provide a Theme system for Tangerine - you can style your
 
 ### Posts vs Pages
 
-Similar to WordPress: New entries default to ptype "Post", but can be toggled to "Page." Posts are timestamped and shown in a list, sorted by date. Post detail views include the date in the URL. 
+Similar to WordPress: New entries default to ptype "Post", but can be toggled to "Page." Posts are timestamped and shown in a list, sorted by date. Post detail views include the date in the URL.
 
 In contrast, Pages are excluded from list views and are accessible at `/foo` where `foo` = the slug of the entry. Pages are intended for placement in menus and would include things like "About" or "Contact" pages.
 
@@ -121,6 +110,5 @@ If you want Related Links with a certain slug for the RelatedLinkGroup, use:
 Templates are meant to represent "reasonable defaults" and to show most possible templatetag usages. By all means, rearrange and season to taste. (copy templates dir into your project and tweak).
 
 To link to a Page (rather than a post, do this in a template:
-    
-    <a href="{% url 'post_detail' 'about' %}">About</a>
 
+    <a href="{% url 'post_detail' 'about' %}">About</a>
