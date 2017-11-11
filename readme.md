@@ -84,14 +84,16 @@ Quick start
 
 1. Add "polls" to your INSTALLED_APPS setting like this::
 
-    INSTALLED_APPS = [
-        ...
-        'django-tangerine',
-    ]
+```
+INSTALLED_APPS = [
+    ...
+    'django-tangerine',
+]
+```
 
 2. Include the tangerine URLconf in your project urls.py like this::
 
-    url(r'^blog/', include('tangerine.urls')),
+`url(r'^blog/', include('tangerine.urls')),`
 
 3. Run `python manage.py migrate` to create the tangerine models.
 
@@ -100,7 +102,10 @@ Quick start
 
 5. Visit http://127.0.0.1:8000/blog/ to participate in the poll.
 
----------
+If you want to run tests, add pytest to your virtualenv:
+`pip install pytest` or `pipenv install pytest`
+Then just run `pytest` from the projcect root.
+
 
 
 ------
