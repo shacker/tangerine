@@ -134,3 +134,8 @@ Tangerine supplies content for the HTML `title` tag in:
 `{% block title %}...{% endblock title %}`
 
 If you have a `block title` in your base.html, it should be populated automatically. If you use another block name, you'll need to change what's being sent from the tangerine templates.
+
+## Running tests
+# export DJANGO_SETTINGS_MODULE=config.test
+ln -s /Users/shacker/dev/tangerine .  # Do it with a symlink, not a pip install!
+pipenv run pytest 
