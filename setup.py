@@ -35,6 +35,4 @@ setup(
       'titlecase',
     ],
 
-    dependency_links=['http://github.com/shacker/django-admin-sortable/tarball/master#egg=admin_sortable']
-
 )
