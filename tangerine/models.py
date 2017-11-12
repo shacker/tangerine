@@ -1,8 +1,5 @@
 from django.db import models
 
-from adminsortable.fields import SortableForeignKey
-from adminsortable.models import SortableMixin
-
 from django_extensions.db.models import TimeStampedModel
 
 from users.models import User
@@ -84,13 +81,13 @@ class RelatedLinkGroup(models.Model):
         return self.slug
 
 
-class RelatedLink(SortableMixin):
+class RelatedLink(models.Model):
     """ Orderable entry in a RelatedLinkGroup. """
 
     class Meta:
         ordering = ['link_order']
 
-    group = SortableForeignKey(RelatedLinkGroup, on_delete=models.CASCADE)
+    group = models.ForeignKey(RelatedLinkGroup, on_delete=models.CASCADE)
     site_title = models.CharField(max_length=80, blank=True)
     site_url = models.URLField(null=True)
 

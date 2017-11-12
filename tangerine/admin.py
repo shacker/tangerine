@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from adminsortable.admin import NonSortableParentAdmin, SortableStackedInline
 
 from tangerine.models import Category, Post, RelatedLinkGroup, RelatedLink
 
@@ -32,13 +31,13 @@ class PostAdmin(admin.ModelAdmin):
     filter_horizontal = ('categories',)
 
 
-class RelatedLinkInline(SortableStackedInline):
+class RelatedLinkInline(admin.TabularInline):
     model = RelatedLink
     extra = 1
 
 
-class RelatedLinkGroupAdmin(NonSortableParentAdmin):
-    inlines = [RelatedLinkInline]
+class RelatedLinkGroupAdmin(admin.ModelAdmin):
+    inlines = [RelatedLinkInline, ]
 
 
 admin.site.register(Category)
