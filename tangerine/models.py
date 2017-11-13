@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+from django.utils import timezone
 
 from django_extensions.db.models import TimeStampedModel
 
@@ -65,6 +67,11 @@ class Post(TimeStampedModel):
 
     objects = models.Manager()  # The default manager, unfiltered by manager (admin use only)
     pub = PostManager()  # Post.pub.all() gets just published, non-trashed posts
+
+    def get_absolute_url(self):
+        # Important to use get_absolute_url in templates rather than `url` tag b/c to avoid 404s due to TZ conversion.
+        local_date = timezone.localtime(self.created)
+        return reverse('tangerine:post_detail', args=[local_date.year, local_date.month, local_date.day, self.slug])
 
     def __str__(self):
         return "{d} - {s}".format(d=self.created, s=self.title)

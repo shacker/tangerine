@@ -1,5 +1,5 @@
 <h2>
-    <a href="{% url 'tangerine:post_detail' post.created.year post.created.month post.created.day post.slug %}">
+    <a href="{{ post.get_absolute_url }}">
         {{ post.title }}
     </a>
 </h2>
