@@ -7,7 +7,7 @@
 <p>{{ post.created|date:"DATE_FORMAT"}} by {{ post.author.get_full_name }}</p>
 
 {# List categories for this post #}
-{% include "tangerine/include/cat_list.html" %}
+{% include "tangerine/include/post_detail_categories.html" %}
 
 {% if post.summary %}
     {{ post.summary|safe }}

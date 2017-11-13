@@ -105,16 +105,51 @@ Your `base.html` template must include:
 
 `{% block content %}{% endblock content %}``
 
+### Categories
+
+Define them in Admin, make sure your base template includes a block:
+
+`{% block categories %}{% endblock categories %}`
+
+and display them with e.g.:
+
+```
+{% load tangerine_tags %}
+...
+{% block categories %}
+    {% get_categories as cats %}
+    {% if cats %}
+        <h3>Categories</h3>
+        <ul>
+            {% for cat in cats.categories %}
+                <li><a href="{% url 'tangerine:category' cat.slug %}">{{ cat.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock categories %}
+```
+
+(included in default templates).
+
+
 ### RelatedLinkGroups
 
 Tangerine supports multiple `RelatedLinkGroup`s, which are named collections of related links (such as a blogroll). A default `blogroll` set is provided in the `tangerine_start` command and referenced in the sample templates. You can either edit that set in the Admin (Posts/Related Link Groups) or create new ones and reference them from templates:
 
 ```
-    {% get_related_links 'some_related_links_name' as link_group %}
-    ...
-    {% for link in link_group.links %}
-        <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
-    {% endfor %}
+{% load tangerine_tags %}
+...
+{% block blogroll %}
+    {% get_related_links 'blogroll' as link_group %}
+    {% if link_group %}
+        <h3>Blogroll</h3>
+        <ul>
+        {% for link in link_group.links %}
+            <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock blogroll %}
 ```
 
 ### Internal links

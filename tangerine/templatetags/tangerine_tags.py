@@ -1,6 +1,6 @@
 from django import template
 
-from tangerine.models import RelatedLinkGroup
+from tangerine.models import Category, RelatedLinkGroup
 
 register = template.Library()
 
@@ -36,3 +36,26 @@ def get_related_links(slug):
                     slug)}
                 ],
         }
+
+
+@register.simple_tag
+def get_categories():
+    '''Returns the set of all categories as an ordered list of Category objects.
+
+    This template tag returns the set of *ordered* links in the named group as a list:
+
+    {'categories': categories}
+
+    To use in a template:
+
+    {% load tangerine_tags %}
+    ...
+    {% get_categories as cats %}
+    {% for cat in cats.categories %}
+        <li><a href="{% url 'category' cat.slug %}">{{ cat.name }}</a></li>
+    {% endfor %}
+    '''
+
+    return {
+        'categories': Category.objects.all(),
+    }

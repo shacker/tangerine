@@ -14,10 +14,24 @@
 
 {% block blogroll %}
     {% get_related_links 'blogroll' as link_group %}
-    <h3>Blogroll</h3>
-    <ul>
-    {% for link in link_group.links %}
-        <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
-    {% endfor %}
-    </ul>
+    {% if link_group %}
+        <h3>Blogroll</h3>
+        <ul>
+        {% for link in link_group.links %}
+            <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock blogroll %}
+
+{% block categories %}
+    {% get_categories as cats %}
+    {% if cats %}
+        <h3>Categories</h3>
+        <ul>
+            {% for cat in cats.categories %}
+                <li><a href="{% url 'tangerine:category' cat.slug %}">{{ cat.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock categories %}
