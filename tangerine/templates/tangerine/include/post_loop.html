@@ -1,4 +1,8 @@
-<h2><a href="{% url 'tangerine:post_detail' post.created.year post.created.month post.slug %}">{{ post.title }}</a></h2>
+<h2>
+    <a href="{% url 'tangerine:post_detail' post.created.year post.created.month post.created.day post.slug %}">
+        {{ post.title }}
+    </a>
+</h2>
 
 <p>{{ post.created|date:"DATE_FORMAT"}} by {{ post.author.get_full_name }}</p>
 

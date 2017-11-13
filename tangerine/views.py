@@ -8,8 +8,9 @@ def home(request):
     return render(request, "tangerine/home.html", {'posts': posts})
 
 
-def post_detail(request, year, month, slug):
-    post = get_object_or_404(Post, published=True, trashed=False, created__year=year, created__month=month, slug=slug)
+def post_detail(request, year, month, day, slug):
+    post = get_object_or_404(
+        Post, published=True, trashed=False, created__year=year, created__month=month, created__day=day, slug=slug)
     return render(request, "tangerine/post_detail.html", {'post': post})
 
 
