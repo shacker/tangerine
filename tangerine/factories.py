@@ -50,8 +50,6 @@ class PostFactory(factory.django.DjangoModelFactory):
         self.created = fake.date_time_this_decade(tzinfo=pytz.UTC)
 
 
-# Useful in tests
-
 class RelatedLinkFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = RelatedLink
