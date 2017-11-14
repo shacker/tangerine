@@ -1,12 +1,13 @@
 import pytest
 
 from tangerine.factories import CategoryFactory, PostFactory
-from tangerine.models import Post
 
 
 @pytest.mark.django_db
-def test_post_factory():
-    CategoryFactory.create_batch(5)
+def test_post_in_multiple_cats():
+    cat1 = CategoryFactory(title="Foo")
+    cat2 = CategoryFactory(title="Bar")
     post = PostFactory()
-    assert isinstance(post, Post)
-    assert len(post.content) > 5
+    post.categories.add(cat1)
+    post.categories.add(cat2)
+    assert post.categories.all().count() == 2

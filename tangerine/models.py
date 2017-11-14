@@ -14,7 +14,7 @@ POST_TYPE_CHOICES = (
 
 
 class Category(models.Model):
-    """ Gather Posts in a similar broad topic into Category views. """
+    """Gather Posts in a similar broad topic into Category views."""
 
     title = models.CharField(max_length=140)
     slug = models.SlugField(unique=True)
