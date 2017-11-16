@@ -11,7 +11,9 @@
     {% endif %}
 
     {# List categories for this post #}
-    {% include "tangerine/include/post_detail_categories.html" %}
+    {% if post.categories.all %}
+        {% include "tangerine/include/post_detail_categories.html" %}
+    {% endif %}
 
     {{ post.content|linebreaks }}
 
