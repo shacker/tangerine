@@ -5,7 +5,7 @@ from titlecase import titlecase
 
 from django.utils.text import slugify
 
-from .models import Category, Post, RelatedLinkGroup, RelatedLink
+from .models import Category, Post, RelatedLinkGroup, RelatedLink, Config
 from users.models import User
 
 
@@ -66,3 +66,11 @@ class RelatedLinkGroupFactory(factory.django.DjangoModelFactory):
     # Create related links
     def related_links(self, build, extracted, **kwargs):
         RelatedLinkFactory.create_batch(5, group=self)
+
+
+class ConfigFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Config
+
+    site_title = factory.Faker('catch_phrase')
+    tagline = factory.Faker('words', nb=5)

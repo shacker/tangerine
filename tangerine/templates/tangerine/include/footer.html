@@ -1,0 +1,18 @@
+{% load tangerine_tags %}
+
+{% block footer %}
+    {% get_settings as tangerine %}
+
+    {% if tangerine.google_analytics_id %}
+        <!-- Global Site Tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ tangerine.google_analytics_id }}"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)};
+          gtag('js', new Date());
+
+          gtag('config', '{{ tangerine.google_analytics_id }}');
+        </script>
+    {% endif %}
+
+{% endblock footer %}

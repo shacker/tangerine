@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -11,6 +12,44 @@ POST_TYPE_CHOICES = (
     ('post', 'Post'),
     ('page', 'Page'),
 )
+
+
+class Config(models.Model):
+    """Blog-wide meta/config for a Tangerine installation. Only one instance of this model is allowed."""
+
+    site_title = models.CharField(
+        max_length=140,
+        default="Arbitrary Site Title",
+        help_text="To be displayed in page header and as part of HTML title tag")
+
+    tagline = models.CharField(
+        max_length=140,
+        blank=True,
+        default='',
+        help_text="Optional pithy descriptive phrase")
+
+    num_posts_per_list_view = models.SmallIntegerField(
+        verbose_name="Number of Posts Per List View",
+        default=10,
+        help_text="Used on default homepage, categories, date archives, etc.)")
+
+    google_analytics_id = models.CharField(
+        blank=True,
+        help_text="Enter just the GA tracking ID provided by Google, not the entire codeblock, e.g UA-123456-2.",
+        max_length=16
+        )
+
+    class Meta:
+        verbose_name_plural = "Config"
+
+    def save(self, *args, **kwargs):
+        # Allow only one instance of the Config model
+        if Config.objects.exists() and not self.pk:
+            raise ValidationError('There can be only one Config instance')
+        return super(Config, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.site_title
 
 
 class Category(models.Model):

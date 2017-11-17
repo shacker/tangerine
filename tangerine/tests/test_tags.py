@@ -1,8 +1,19 @@
 import pytest
 
-from tangerine.templatetags.tangerine_tags import get_related_links, get_categories
-from tangerine.factories import RelatedLinkGroupFactory, CategoryFactory
+from tangerine.templatetags.tangerine_tags import get_related_links, get_categories, get_settings
+from tangerine.factories import RelatedLinkGroupFactory, CategoryFactory, ConfigFactory
 from tangerine.models import Category
+
+
+@pytest.mark.skip(reason="")
+@pytest.mark.django_db
+def test_get_settings():
+    ConfigFactory()
+    config = get_settings()
+    assert len(config['site_title']) > 5
+    assert len(config['tagline']) > 5
+    assert len(config['num_posts_per_list_view']) > 1
+    assert config['google_analytics_id'] != ''
 
 
 @pytest.mark.django_db

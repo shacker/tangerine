@@ -12,12 +12,13 @@ Tangerine is a pluggable blogging system for Django, meant to be dropped into an
 - Page views for semi-static pages ("About", etc.)
 - Tags and categories with views
 - Spam-filtered commenting
-- Author profiles
+- Author profiles (no)
 - Syntax highlighting for code samples
 - "Trash" system
 - List view pagination
 - WordPress importer
 - Blogroll (related link sets)
+- Google Analytics integration
 - OEmbed support
 - Search
 - Rich text editor
@@ -85,8 +86,13 @@ INSTALLED_APPS = [
 
 3. Run `python manage.py migrate` to create the tangerine models.
 
+4. Run `python manage.py tangerine_start` to perform installation tasks and set up dummy data and config
+
 4. Start the development server and visit http://127.0.0.1:8000/admin/
-   to create a post.
+   to create a post. 
+   
+4. While you're in the admin, go to Tangerine/Config to set your site title, optional Google Analytics ID,
+    and other configuration options.
 
 5. Visit http://127.0.0.1:8000
 
@@ -103,7 +109,21 @@ The provided template examples are meant to represent "reasonable defaults" and 
 
 Your `base.html` template must include:
 
-`{% block content %}{% endblock content %}``
+`{% block content %}{% endblock content %}`
+
+Global tangerine settings set in the admin via Tangerine/Config (site title, tagline, posts per page, google analytics, etc.) can be accessed in templates like this:
+
+```
+{# Near top of file: #}
+{% load tangerine_tags %}
+
+{# Inside the block that needs it: #}
+{% block content %}
+    {% get_settings as tangerine %}
+    <h1 class="site_title">{{ tangerine.site_title }}</h1>
+    ...
+{% endblock content %}
+```
 
 ### Categories
 
@@ -174,3 +194,5 @@ If you have a `block title` in your base.html, it should be populated automatica
 # export DJANGO_SETTINGS_MODULE=config.test
 ln -s /Users/shacker/dev/tangerine .  # Do it with a symlink, not a pip install!
 pipenv run pytest 
+
+

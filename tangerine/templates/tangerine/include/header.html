@@ -1,0 +1,13 @@
+{% load tangerine_tags %}
+
+{% block header %}
+    {% get_settings as tangerine %}
+
+    {% if tangerine.site_title %}
+        <h1 class="site_tite">{{ tangerine.site_title }}</h1>
+    {% endif %}
+
+    {% if tangerine.tagline %}
+        <h2 class="tagline">{{ tangerine.tagline }}</h2>
+    {% endif %}
+{% endblock header %}

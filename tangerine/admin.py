@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 
-from tangerine.models import Category, Post, RelatedLinkGroup, RelatedLink
+from tangerine.models import Category, Post, RelatedLinkGroup, RelatedLink, Config
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -40,6 +40,7 @@ class RelatedLinkGroupAdmin(admin.ModelAdmin):
     inlines = [RelatedLinkInline, ]
 
 
+admin.site.register(Config)
 admin.site.register(Category)
 admin.site.register(Post, PostAdmin)
 admin.site.register(RelatedLinkGroup, RelatedLinkGroupAdmin)

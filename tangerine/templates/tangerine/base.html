@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load tangerine_tags %}
 
 {% block title %}{% endblock title %}
 
@@ -7,6 +6,14 @@
 {% block tangerine_extra_css %}{% endblock tangerine_extra_css %}
 {% block tangerine_extra_js %}{% endblock tangerine_extra_js %}
 
+{% block header %}
+    {% include "tangerine/include/header.html" %}
+{% endblock header %}
+
 {% block content %}{% endblock content %}
 {% block blogroll %}{% endblock blogroll %}
 {% block categories %}{% endblock categories %}
+
+{% block footer %}
+    {% include "tangerine/include/footer.html" %}
+{% endblock footer %}

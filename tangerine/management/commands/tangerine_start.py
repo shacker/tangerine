@@ -1,11 +1,13 @@
 import pwd
 import os
 
+from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.contrib.auth import get_user_model
 
-from tangerine.factories import CategoryFactory, PostFactory
+
+from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory
 from tangerine.models import Category
 
 
@@ -50,3 +52,8 @@ class Command(BaseCommand):
         call_command('loaddata', 'related_links')
 
         print("Starter set of RelatedLinks \"blogroll\" created.")
+
+        try:
+            ConfigFactory()
+        except ValidationError:
+            print("Site config already exists, not creating another.")

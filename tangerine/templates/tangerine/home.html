@@ -4,10 +4,10 @@
 {% block title %}foobar blog{% endblock title %}
 
 {% block content %}
+    {% get_settings as tangerine %}
+
     {% for post in posts %}
-
         {% include "tangerine/include/post_loop.html" %}
-
     {% endfor %}
 {% endblock content %}
 
@@ -17,9 +17,9 @@
     {% if link_group %}
         <h3>Blogroll</h3>
         <ul>
-        {% for link in link_group.links %}
-            <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
-        {% endfor %}
+            {% for link in link_group.links %}
+                <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
+            {% endfor %}
         </ul>
     {% endif %}
 {% endblock blogroll %}

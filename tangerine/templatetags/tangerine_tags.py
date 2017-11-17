@@ -1,8 +1,39 @@
 from django import template
 
-from tangerine.models import Category, RelatedLinkGroup
+from tangerine.models import Category, RelatedLinkGroup, Config
 
 register = template.Library()
+
+
+@register.simple_tag
+def get_settings():
+    '''
+    There is one and only one Config record in the Admin, which contains the Site Title, Tagline,
+    Google Analytics ID and number of posts per page. Get this once in the base template to provide
+    settings options in a dictionary to all tangerine pages.
+
+    To use in a template (really should just be tangerine/base.html but could be anywhere):
+
+    {% load tangerine_tags %}
+    {% get_settings as tangerine %}
+    ...
+    {# then any of these *inside* the block tag that needs them: #}
+    {{ tangerine.site_title }}
+    {{ tangerine.tagline }}
+    {{ tangerine.num_posts_per_list_view }}
+    {{ tangerine.google_analytics_id }}
+    '''
+
+    try:
+        config = Config.objects.all().first()
+        return {
+            'site_title': config.site_title,
+            'tagline': config.tagline,
+            'num_posts_per_list_view': config.num_posts_per_list_view,
+            'google_analytics_id': config.google_analytics_id,
+        }
+    except Config.DoesNotExist:
+        return {}
 
 
 @register.simple_tag

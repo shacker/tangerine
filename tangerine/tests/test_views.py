@@ -2,12 +2,14 @@ from django.urls import reverse
 
 from test_plus.test import TestCase
 
-from tangerine.factories import CategoryFactory, PostFactory
+from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory
 
 
 class BaseUserTestCase(TestCase):
 
     def setUp(self):
+        ConfigFactory()
+
         self.user1 = self.make_user("user1")
 
         self.post1 = PostFactory(slug="somepost")
