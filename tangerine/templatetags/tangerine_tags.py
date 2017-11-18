@@ -32,8 +32,8 @@ def get_settings():
             'num_posts_per_list_view': config.num_posts_per_list_view,
             'google_analytics_id': config.google_analytics_id,
         }
-    except Config.DoesNotExist:
-        return {}
+    except AttributeError:
+        raise AttributeError("Site not yet configured. Visit Tangerine/Config in the Admin and create a Config record.")
 
 
 @register.simple_tag
