@@ -1,26 +1,17 @@
-<h2>
-    <a href="{{ post.get_absolute_url }}">
-        {{ post.title }}
-    </a>
-</h2>
+<div class="news-item">
+    <h2>
+        <a href="{{ post.get_absolute_url }}">
+            {{ post.title }}
+        </a>
+    </h2>
 
-<p>
-    {{ post.created|date:"DATE_FORMAT"}}
-    {% if post.author %}
-        by {{ post.author.get_full_name }}
+    {% include "tangerine/include/byline.html" %}
+
+    {% if post.summary %}
+        {{ post.summary|safe }}
+    {% else %}
+        {{ post.content|truncatewords:20 }}
     {% endif %}
-</p>
 
-{# List categories for this post #}
-{% if post.categories.count %}
-    {% include "tangerine/include/post_detail_categories.html" %}
-{% endif %}
-
-
-{% if post.summary %}
-    {{ post.summary|safe }}
-{% else %}
-    {{ post.content|truncatewords:20 }}
-{% endif %}
-
-{% include "tangerine/include/edit_link.html" %}
+    {% include "tangerine/include/edit_link.html" %}
+</div>

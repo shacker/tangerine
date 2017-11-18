@@ -32,13 +32,3 @@ class TestPosts(BaseUserTestCase):
         url = reverse('tangerine:post_detail', kwargs={'year': 2002, 'month': 7, 'day': 23, 'slug': "whatever"})
         response = self.get(url)
         self.response_404(response)
-
-    def test_post_in_cat_uses_categories_subtemplate(self):
-        url = self.post1.get_absolute_url()
-        response = self.get(url)
-        assert 'tangerine/include/post_detail_categories.html' in [t.name for t in response.templates]
-
-    def test_post_without_categories_does_not_use_categories_subtemplate(self):
-        url = self.post2.get_absolute_url()
-        response = self.get(url)
-        assert 'tangerine/include/post_detail_categories.html' not in [t.name for t in response.templates]

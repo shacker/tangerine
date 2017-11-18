@@ -52,6 +52,7 @@ For full/best functionality, we recommend adding these tags to the base template
 {% block tangerine_extra_head %}{% endblock tangerine_extra_head %} {# In HTML head #}
 {% block tangerine_extra_css %}{% endblock tangerine_extra_css %}  {# In HTML head #}
 {% block tangerine_extra_js %}{% endblock tangerine_extra_js %}  {# Before end of html body #}
+{% block footer %}{% endblock footer %}  {# Before end of html body #}
 ```
 
 Include meta-description and author tags, syntax highlighter CSS, JS ^

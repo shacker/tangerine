@@ -1,0 +1,13 @@
+<p>
+    {{ post.created|date:"DATE_FORMAT"}}
+    {% if post.author %}
+        by {{ post.author.get_full_name }}
+    {% endif %}
+
+    {% if post.categories.count %}
+        in
+        {% for cat in post.categories.all %}
+            <a href="{% url 'tangerine:category' cat.slug %}">{{ cat }}</a>{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    {% endif %}
+</p>

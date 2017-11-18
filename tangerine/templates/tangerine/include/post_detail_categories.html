@@ -1,5 +1,0 @@
-  <p>Categories:
-      {% for cat in post.categories.all %}
-          <a href="{% url 'tangerine:category' cat.slug %}">{{ cat }}</a>{% if not forloop.last %},{% endif %}
-      {% endfor %}
-  </p>
