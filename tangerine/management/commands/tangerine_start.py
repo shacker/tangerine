@@ -1,5 +1,6 @@
 import pwd
 import os
+import sys
 
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
@@ -36,23 +37,6 @@ class Command(BaseCommand):
         if not get_user_model().objects.all():
             gen_su()  # Create a superuser and make them author of all posts
 
-        author = get_user_model().objects.order_by('?').first()
-
-        cats = ['Family', 'Coding', 'Environment', 'Culture', 'Politics', 'Bike', 'Photography', ]
-        if not Category.objects.all().count():
-            for cat_title in cats:
-                cat = CategoryFactory.create(title=cat_title)
-                for _ in range(5):
-                    p = PostFactory(author=author)
-                    p.categories.add(cat)
-                print("Five fake posts in category {} created.".format(cat_title))
-
-        # Set up starter About page and RelatedLinks to work with default template
-        call_command('loaddata', 'about')
-        call_command('loaddata', 'related_links')
-
-        print("Starter set of RelatedLinks \"blogroll\" created.")
-
         try:
             config = ConfigFactory()
             site_title = input("Site title (e.g. My Blog): ")
@@ -62,3 +46,25 @@ class Command(BaseCommand):
             config.save()
         except ValidationError:
             print("Site config already exists, not creating another.")
+
+        confirm = input("Required config complete. Create fake starter content? (Recommended) [y/n]")
+        if confirm.lower() == "y":
+
+            author = get_user_model().objects.order_by('?').first()
+            cats = ['Family', 'Coding', 'Environment', 'Culture', 'Politics', 'Bike', 'Photography', ]
+            if not Category.objects.all().count():
+                for cat_title in cats:
+                    cat = CategoryFactory.create(title=cat_title)
+                    for _ in range(5):
+                        p = PostFactory(author=author)
+                        p.categories.add(cat)
+                    print("Five fake posts in category {} created.".format(cat_title))
+
+            # Set up starter About page and RelatedLinks to work with default template
+            call_command('loaddata', 'about')
+            call_command('loaddata', 'related_links')
+
+            print("Starter set of RelatedLinks created as \"blogroll\".")
+
+        else:
+            sys.exit()
