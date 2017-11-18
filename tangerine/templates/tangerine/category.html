@@ -7,7 +7,6 @@
 
     <h3>Category: {{ category }}</h3>
 
-    {% for post in posts %}
-        {% include "tangerine/include/post_loop.html" %}
-    {% endfor %}
+    {% include "tangerine/include/post_loop.html" %}
+
 {% endblock content %}

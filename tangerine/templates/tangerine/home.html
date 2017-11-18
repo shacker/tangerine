@@ -5,10 +5,7 @@
 
 {% block content %}
     {% get_settings as tangerine %}
-
-    {% for post in posts %}
-        {% include "tangerine/include/post_loop.html" %}
-    {% endfor %}
+    {% include "tangerine/include/post_loop.html" %}
 {% endblock content %}
 
 

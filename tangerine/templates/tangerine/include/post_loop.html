@@ -1,17 +1,26 @@
-<div class="news-item">
-    <h2>
-        <a href="{{ post.get_absolute_url }}">
-            {{ post.title }}
-        </a>
-    </h2>
 
-    {% include "tangerine/include/byline.html" %}
+{% if posts %}
 
-    {% if post.summary %}
-        {{ post.summary|safe }}
-    {% else %}
-        {{ post.content|truncatewords:20 }}
-    {% endif %}
+    {% for post in posts %}
+        <div class="news-item">
+            <h2>
+                <a href="{{ post.get_absolute_url }}">
+                    {{ post.title }}
+                </a>
+            </h2>
 
-    {% include "tangerine/include/edit_link.html" %}
-</div>
+            {% include "tangerine/include/byline.html" %}
+
+            {% if post.summary %}
+                {{ post.summary|safe }}
+            {% else %}
+                {{ post.content|truncatewords:20 }}
+            {% endif %}
+
+            {% include "tangerine/include/edit_link.html" %}
+        </div>
+    {% endfor %}
+
+{% else %}
+    <p>There is no content to show in this view, sorry. Create some!</p>
+{% endif %}
