@@ -54,6 +54,11 @@ class Command(BaseCommand):
         print("Starter set of RelatedLinks \"blogroll\" created.")
 
         try:
-            ConfigFactory()
+            config = ConfigFactory()
+            site_title = input("Site title (e.g. My Blog): ")
+            tagline = input("Tagline (e.g. Tilting at Windmills...): ")
+            config.site_title = site_title
+            config.tagline = tagline
+            config.save()
         except ValidationError:
             print("Site config already exists, not creating another.")
