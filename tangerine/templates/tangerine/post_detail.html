@@ -11,7 +11,7 @@
         {% include "tangerine/include/byline.html" %}
     {% endif %}
 
-    {{ post.content|linebreaks }}
+    {{ post.content|safe }}
 
     {% include "tangerine/include/edit_link.html" %}
 

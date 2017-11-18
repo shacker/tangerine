@@ -15,6 +15,16 @@ def gen_headline():
     return titlecase(fake.text(max_nb_chars=48).rstrip('.'))
 
 
+def gen_html_content():
+    # faker doesn't provide raw html text, so convert the output of fake.paragraphs()
+    fake = Faker()
+    grafs = fake.paragraphs()
+    htmlstr = ''
+    for g in grafs:
+        htmlstr += "<p>{}</p>\n\n".format(g)
+    return htmlstr
+
+
 class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Category
@@ -31,7 +41,8 @@ class PostFactory(factory.django.DjangoModelFactory):
 
     title = factory.LazyAttribute(lambda o: gen_headline())
     slug = factory.LazyAttribute(lambda o: slugify(o.title)[:48])
-    content = factory.Faker('text', max_nb_chars=1400)
+    content = factory.LazyAttribute(lambda o: gen_html_content())
+
     summary = factory.Faker('text')
 
     @factory.post_generation
