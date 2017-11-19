@@ -1,9 +1,10 @@
-{# Some sites may want to remove the comment.website link in order not to encourage self-promotion by commenters #}
+{% load tangerine_tags %}
 
 {# For comment permalinks #}
 <a id="comment-{{ comment.id }}"></a>
 
 <p>
+    {# Some sites may want to remove the comment.website link in order not to encourage self-promotion by commenters #}
     {% if comment.website %}
         <a href="{{ comment.website }}">{{ comment.name }}</a>
     {% else %}
@@ -17,6 +18,9 @@
         [<a href="{% url 'admin:tangerine_comment_change' comment.id %}">e</a>]
     {% endif %}
 </p>
+
+{# Get commenter's avatar from Gravatar service by email. Replace number with preferred dimensions. #}
+<img src="{{ comment.email|gravatar:60 }}" alt="" />
 
 {{ comment.body|safe }}
 

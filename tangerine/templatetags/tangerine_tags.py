@@ -1,3 +1,5 @@
+from libgravatar import Gravatar
+
 from django import template
 
 from tangerine.models import Category, RelatedLinkGroup, Config
@@ -95,3 +97,9 @@ def get_categories():
     return {
         'categories': cats,
     }
+
+
+@register.filter
+def gravatar(email, size=40):
+    g = Gravatar(email)
+    return g.get_image(size, "mm")

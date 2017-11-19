@@ -1,6 +1,6 @@
 import pytest
 
-from tangerine.templatetags.tangerine_tags import get_related_links, get_categories, get_settings
+from tangerine.templatetags.tangerine_tags import get_related_links, get_categories, get_settings, gravatar
 from tangerine.factories import RelatedLinkGroupFactory, CategoryFactory, ConfigFactory, PostFactory
 from tangerine.models import Category
 
@@ -75,3 +75,12 @@ def test_get_non_empty_categories():
     assert has_only_trashed_cat not in goodcats
     assert has_only_unpub_cat not in goodcats
     assert empty_cat not in goodcats
+
+
+def test_gravatar_tag():
+    img_url = gravatar('you@example.com')
+    assert img_url.startswith('http://www.gravatar.com/avatar/')
+    assert 'size=40' in img_url
+
+    img_url = gravatar('you@example.com', size=60)
+    assert 'size=60' in img_url

@@ -204,3 +204,10 @@ ln -s /Users/shacker/dev/tangerine .  # Do it with a symlink, not a pip install!
 pipenv run pytest 
 
 
+###
+
+Gravatar support in comment templates is present by default, and avatars are derived from the commenter's email, if they have a gravatar account:
+
+`<img src="{{ comment.email|gravatar:60 }}" alt="" />`
+
+The fallback icon is the class "Mystery Man" ("mm"). This can be changed to one of the [other defaults](https://en.gravatar.com/site/implement/images/) by changing the template tag itself (room for improvement there).
