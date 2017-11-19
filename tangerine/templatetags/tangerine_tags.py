@@ -101,5 +101,6 @@ def get_categories():
 
 @register.filter
 def gravatar(email, size=40):
+    '''Get commenter's avatar from Gravatar service via API (depends on libgravatar)'''
     g = Gravatar(email)
     return g.get_image(size, "mm")
