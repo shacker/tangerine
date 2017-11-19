@@ -17,8 +17,11 @@
                 {{ post.content|truncatewords:20 }}
             {% endif %}
 
+            <p class="num_comments_per_post">{{ post.comment_set.all.count }} comments</p>
+
             {% include "tangerine/include/edit_link.html" %}
         </div>
+
     {% endfor %}
 
 {% else %}

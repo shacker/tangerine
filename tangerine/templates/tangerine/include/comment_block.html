@@ -1,0 +1,8 @@
+<p>{{comment.id}} | {{ comment.name }} on {{ comment.modified }}</p>
+
+{{ comment.body|safe }}
+
+{# You may want to comment this out in order not to encourage self-promotion by commenters #}
+<p><a href="{{ comment.website }}">{{ comment.website }}</a></p>
+
+<hr />

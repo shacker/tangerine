@@ -143,6 +143,15 @@ class Post(TimeStampedModel):
         local_date = timezone.localtime(self.created)
         return reverse('tangerine:post_detail', args=[local_date.year, local_date.month, local_date.day, self.slug])
 
+    def top_level_comments(self):
+        # To support threaded commenting, get only top-level comments initially.
+        # Get their children in a comment method.
+        return self.comment_set.filter(parent__isnull=True).order_by('modified')
+
+    def get_all_comments_num(self):
+        # Return number of all comments for this Post, regardless whether top or child.
+        return self.comment_set.filter(approved=True).count()
+
     def __str__(self):
         return self.title
 
@@ -193,6 +202,10 @@ class Comment(TimeStampedModel):
 
     objects = models.Manager()  # The default manager, unfiltered by manager (admin use only)
     pub = CommentManager()  # Comment.pub.all() gets just approved comments
+
+    def child_comments(self):
+        # To support comment threading, return comments that are children of this one.
+        return Comment.objects.filter(parent=self)
 
     def __str__(self):
         return "{}...".format(self.body[:10])

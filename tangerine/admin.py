@@ -54,6 +54,7 @@ class CommentAdmin(admin.ModelAdmin):
         comment_body_intro,
         'post',
         'author',
+        'name',
         'email',
         'created',
         'approved',
