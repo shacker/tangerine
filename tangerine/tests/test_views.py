@@ -1,3 +1,5 @@
+import pytest
+
 from django.urls import reverse
 
 from test_plus.test import TestCase
@@ -32,3 +34,14 @@ class TestPosts(BaseUserTestCase):
         url = reverse('tangerine:post_detail', kwargs={'year': 2002, 'month': 7, 'day': 23, 'slug': "whatever"})
         response = self.get(url)
         self.response_404(response)
+
+
+class TestNoConfig(TestCase):
+    # Accessing any page without having set up a Config object should throw an exception.
+    # Note we inherit from TestCase here to *avoid* setting up the Config object.
+
+    def test_no_config(self):
+        with pytest.raises(AttributeError) as excinfo:
+            url = reverse('tangerine:home')
+            self.get(url)
+        assert 'AttributeError' in str(excinfo)
