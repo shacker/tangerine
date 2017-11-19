@@ -185,7 +185,8 @@ class Comment(TimeStampedModel):
         get_user_model(),
         blank=True,
         null=True,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,
+        help_text="ForeignKey to User object; used for authenticated commenters only.")
 
     name = models.CharField(
         blank=True,
