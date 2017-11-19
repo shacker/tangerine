@@ -1,8 +1,23 @@
-<p>{{comment.id}} | {{ comment.name }} on {{ comment.modified }}</p>
+{# Some sites may want to remove the comment.website link in order not to encourage self-promotion by commenters #}
+
+{# For comment permalinks #}
+<a id="comment-{{ comment.id }}"></a>
+
+<p>
+    {% if comment.website %}
+        <a href="{{ comment.website }}">{{ comment.name }}</a>
+    {% else %}
+        {{ comment.name }}
+    {% endif %}
+    on {{ comment.modified }}
+
+    <a href="#comment-{{ comment.id }}">&para;</a>
+
+    {% if user.is_superuser %}
+        [<a href="{% url 'admin:tangerine_comment_change' comment.id %}">e</a>]
+    {% endif %}
+</p>
 
 {{ comment.body|safe }}
-
-{# You may want to comment this out in order not to encourage self-promotion by commenters #}
-<p><a href="{{ comment.website }}">{{ comment.website }}</a></p>
 
 <hr />
