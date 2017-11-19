@@ -1,7 +1,7 @@
 import pytest
 
-from tangerine.factories import CategoryFactory, PostFactory, RelatedLinkGroupFactory
-from tangerine.models import RelatedLinkGroup, Post
+from tangerine.factories import CategoryFactory, PostFactory, RelatedLinkGroupFactory, CommentFactory
+from tangerine.models import RelatedLinkGroup, Post, Comment
 
 
 @pytest.fixture()
@@ -39,3 +39,13 @@ def test_trashed_post_not_in_qs(cats_and_posts):
     somepost = PostFactory(trashed=True)
     qs = Post.pub.all()
     assert somepost not in qs
+
+
+@pytest.mark.django_db
+def test_unapproved_comments_not_in_qs(cats_and_posts):
+    # Tests CommentManager
+    post = PostFactory()
+    CommentFactory.create_batch(5, post=post)
+    CommentFactory.create_batch(3, post=post, approved=False)
+    assert Comment.objects.all().count() == 8
+    assert Comment.pub.all().count() == 5

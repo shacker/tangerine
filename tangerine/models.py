@@ -147,6 +147,13 @@ class Post(TimeStampedModel):
         return self.title
 
 
+class CommentManager(models.Manager):
+    """ Filter out unapproved comments by calling Comment.pub.all() from anywhere. """
+
+    def get_queryset(self):
+        return super().get_queryset().filter(approved=True).order_by('-created')
+
+
 class Comment(TimeStampedModel):
     """ Core definition for a comment. Each comment has a required FK to a Post and an optional FK to
     another comment (threaded commenting support). Only approved comments are shown on-page.
@@ -183,6 +190,9 @@ class Comment(TimeStampedModel):
     body = models.TextField()
 
     approved = models.BooleanField(default=False)
+
+    objects = models.Manager()  # The default manager, unfiltered by manager (admin use only)
+    pub = CommentManager()  # Comment.pub.all() gets just approved comments
 
     def __str__(self):
         return "{}...".format(self.body[:10])
