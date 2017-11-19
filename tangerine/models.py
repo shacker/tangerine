@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -11,6 +12,11 @@ from users.models import User
 POST_TYPE_CHOICES = (
     ('post', 'Post'),
     ('page', 'Page'),
+)
+
+# FIXME Also support Disqus, Facebook, other commenting systems?
+COMMENT_TYPE_CHOICES = (
+    ('native', 'Native'),
 )
 
 
@@ -38,6 +44,17 @@ class Config(models.Model):
         help_text="Enter just the GA tracking ID provided by Google, not the entire codeblock, e.g UA-123456-2.",
         max_length=16
         )
+
+    enable_comments_global = models.BooleanField(
+        default=True,
+        help_text="Disable to turn off comments site-wide.\
+            With global comments enabled, you can still disable comments per-post.)")
+
+    comment_system = models.CharField(
+        choices=COMMENT_TYPE_CHOICES,
+        default='native',
+        max_length=12,
+        help_text="Select the commenting system to be used. Tangerine's is \"Native\".")
 
     class Meta:
         verbose_name_plural = "Config"
@@ -76,33 +93,47 @@ class Post(TimeStampedModel):
     """ Core definition for a Blog Post"""
 
     title = models.CharField(max_length=140)
+
     slug = models.SlugField(unique=True)
+
     author = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         null=True,
         blank=True)
+
     summary = models.TextField(
         blank=True,)
+
     content = models.TextField(
         blank=True,)
+
     published = models.BooleanField(default=True)
+
     trashed = models.BooleanField(
         default=False,
         help_text="Trashed posts are removed from views but not deleted. For safety, Trash rather than Delete.")
+
     categories = models.ManyToManyField(
         Category,
         blank=True,)
+
     pub_date = models.DateTimeField(
         blank=True,
         null=True,
         help_text="If present, overrides automatic 'created' datetime and will not be published until.",)
+
     ptype = models.CharField(
         verbose_name='Post or Page',
         choices=POST_TYPE_CHOICES,
         default='post',
         max_length=6,
         help_text="Select Page for semi-static pages. See docs for info.")
+
+    enable_comments = models.BooleanField(
+        default=True,
+        help_text="Disable to turn off comments for this Post/Page only.\
+            Overriden if Global Comment Enable is off in Config.")
 
     objects = models.Manager()  # The default manager, unfiltered by manager (admin use only)
     pub = PostManager()  # Post.pub.all() gets just published, non-trashed posts
@@ -113,7 +144,48 @@ class Post(TimeStampedModel):
         return reverse('tangerine:post_detail', args=[local_date.year, local_date.month, local_date.day, self.slug])
 
     def __str__(self):
-        return "{d} - {s}".format(d=self.created, s=self.title)
+        return self.title
+
+
+class Comment(TimeStampedModel):
+    """ Core definition for a comment. Each comment has a required FK to a Post and an optional FK to
+    another comment (threaded commenting support). Only approved comments are shown on-page.
+    Moderator can permanently approve email addresses. See `post_detail` and moderation module
+    for approval logic.
+    """
+
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE)
+
+    parent = models.ForeignKey(
+        'self',
+        verbose_name="Parent comment",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE)
+
+    author = models.ForeignKey(
+        get_user_model(),
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE)
+
+    name = models.CharField(
+        blank=True,
+        max_length=100)
+    website = models.URLField(
+        blank=True)
+    email = models.EmailField(
+        blank=True,
+    )
+
+    body = models.TextField()
+
+    approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "{}...".format(self.body[:10])
 
 
 class RelatedLinkGroup(models.Model):

@@ -22,6 +22,8 @@ def get_settings():
     {{ tangerine.tagline }}
     {{ tangerine.num_posts_per_list_view }}
     {{ tangerine.google_analytics_id }}
+    {{ tangerine.enable_comments_global }}
+    {{ tangerine.comment_system }}
     '''
 
     try:
@@ -30,7 +32,8 @@ def get_settings():
             'site_title': config.site_title,
             'tagline': config.tagline,
             'num_posts_per_list_view': config.num_posts_per_list_view,
-            'google_analytics_id': config.google_analytics_id,
+            'enable_comments_global': config.enable_comments_global,
+            'comment_system': config.comment_system,
         }
     except AttributeError:
         raise AttributeError("Site not yet configured. Visit Tangerine/Config in the Admin and create a Config record.")

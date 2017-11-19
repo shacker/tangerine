@@ -11,12 +11,13 @@ Tangerine is a pluggable blogging system for Django, meant to be dropped into an
 - Post lists/detail/permalink views
 - Page views for semi-static pages ("About", etc.)
 - Tags and categories with views
-- Spam-filtered commenting
 - Author profiles (no)
 - Syntax highlighting for code samples
 - "Trash" system
 - List view pagination
 - WordPress importer
+- Native *threaded* commenting system with spam control
+- Support for Disqus and Facebook comments coming soon
 - Blogroll (related link sets)
 - Google Analytics integration
 - OEmbed support
@@ -104,6 +105,8 @@ Then just run `pytest` from the projcect root.
 Note: Config object is *required* -- tangerine will not run without one. Config is created for you in the start script.
 If you skip the script, create a single Config row in the Admin after migration.
 
+## Commenting
+Native vs. Disqus, Google, etc.
 
 ## Templates
 

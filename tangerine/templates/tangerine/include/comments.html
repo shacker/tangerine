@@ -1,0 +1,7 @@
+
+<h3>Comments Here</h3>
+
+{% for comment in post.comment_set.all %}
+    {{ comment.body|safe }}
+    <hr />
+{% endfor %}

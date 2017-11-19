@@ -5,7 +5,7 @@ from titlecase import titlecase
 
 from django.utils.text import slugify
 
-from .models import Category, Post, RelatedLinkGroup, RelatedLink, Config
+from .models import Category, Post, RelatedLinkGroup, RelatedLink, Config, Comment
 from users.models import User
 
 
@@ -42,7 +42,6 @@ class PostFactory(factory.django.DjangoModelFactory):
     title = factory.LazyAttribute(lambda o: gen_headline())
     slug = factory.LazyAttribute(lambda o: slugify(o.title)[:48])
     content = factory.LazyAttribute(lambda o: gen_html_content())
-
     summary = factory.Faker('text')
 
     @factory.post_generation
@@ -54,6 +53,18 @@ class PostFactory(factory.django.DjangoModelFactory):
     def set_created(self, build, extracted, **kwargs):
         fake = Faker()
         self.created = fake.date_time_this_decade(tzinfo=pytz.UTC)
+
+
+class CommentFactory(factory.django.DjangoModelFactory):
+    # MUST be called with a Post object
+    class Meta:
+        model = Comment
+
+    approved = factory.LazyAttribute(lambda o: True)
+    body = factory.LazyAttribute(lambda o: gen_html_content())
+    email = factory.Faker('safe_email')
+    name = factory.Faker('name')
+    website = factory.Faker('url')
 
 
 class RelatedLinkFactory(factory.django.DjangoModelFactory):
