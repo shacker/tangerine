@@ -33,6 +33,7 @@ setup(
     install_requires=[
       'factory_boy',
       'titlecase',
+      'libgravatar',
     ],
 
 )
