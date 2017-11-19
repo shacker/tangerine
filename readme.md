@@ -101,6 +101,9 @@ To run Tangerine's tests, add pytest to your virtualenv:
 `pip install pytest` or `pipenv install pytest`
 Then just run `pytest` from the projcect root.
 
+Note: Config object is *required* -- tangerine will not run without one. Config is created for you in the start script.
+If you skip the script, create a single Config row in the Admin after migration.
+
 
 ## Templates
 
