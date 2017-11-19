@@ -12,7 +12,7 @@ def get_settings():
     Google Analytics ID and number of posts per page. Get this once in the base template to provide
     settings options in a dictionary to all tangerine pages.
 
-    To use in a template (really should just be tangerine/base.html but could be anywhere):
+    To use in a template block:
 
     {% load tangerine_tags %}
     {% get_settings as tangerine %}

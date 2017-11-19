@@ -1,8 +1,10 @@
 import pytest
 from datetime import datetime
 
-from tangerine.factories import CategoryFactory, PostFactory, RelatedLinkGroupFactory, RelatedLinkFactory
-from tangerine.models import Post, Category, RelatedLinkGroup, RelatedLink
+from tangerine.factories import (
+    CategoryFactory, PostFactory, RelatedLinkGroupFactory,
+    RelatedLinkFactory, CommentFactory)
+from tangerine.models import Post, Category, RelatedLinkGroup, RelatedLink, Comment
 
 
 @pytest.fixture()
@@ -41,3 +43,13 @@ def test_related_link_factory():
     assert isinstance(link, RelatedLink)
     assert len(link.site_title) > 3
     assert link.site_url.startswith('http')
+
+
+@pytest.mark.django_db
+def test_comment_factory():
+    p = PostFactory()
+    comment = CommentFactory.create(post=p)
+    assert isinstance(comment, Comment)
+    assert len(comment.name) > 3
+    assert comment.website.startswith('http')
+    assert '@' in comment.email
