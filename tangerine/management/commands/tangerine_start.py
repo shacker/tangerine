@@ -1,5 +1,6 @@
 import pwd
 import os
+import random
 import sys
 
 from django.core.exceptions import ValidationError
@@ -8,7 +9,7 @@ from django.core.management import call_command
 from django.contrib.auth import get_user_model
 
 
-from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory
+from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory, CommentFactory
 from tangerine.models import Category
 
 
@@ -58,6 +59,7 @@ class Command(BaseCommand):
                     for _ in range(5):
                         p = PostFactory(author=author)
                         p.categories.add(cat)
+                        CommentFactory.create_batch(random.randint(0, 10), post=p)
                     print("Five fake posts in category {} created.".format(cat_title))
 
             # Set up starter About page and RelatedLinks to work with default template
