@@ -24,11 +24,7 @@
 
 {{ comment.body|safe }}
 
-<form action="." method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="hidden" name="parent_id" value="{{ comment.parent.id }}" />
-    <input type="submit" value="Submit" />
-</form>
+{#  Populate Reply link with current comment ID #}
+<p><a class="new_comment_link" data-parent-id="{% if comment.parent %}{{ comment.parent.id }}{% else %}{{ comment.id }}{% endif %}" href="#new_comment">Reply</a></p>
 
 <hr />

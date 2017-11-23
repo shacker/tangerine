@@ -206,7 +206,7 @@ class Comment(TimeStampedModel):
 
     def child_comments(self):
         # To support comment threading, return comments that are children of this one.
-        return Comment.objects.filter(parent=self)
+        return Comment.objects.filter(parent=self).order_by('modified')
 
     def __str__(self):
         return "{}...".format(self.body[:10])

@@ -16,6 +16,8 @@
 
     {% include "tangerine/include/edit_link.html" %}
 
+    <p><a class="new_comment_link" href="#new_comment">Reply</a></p>
+
     {#  Enable comments for this view? #}
     {% if tangerine.enable_comments_global and post.enable_comments %}
         {% if tangerine.comment_system == 'native' %}
@@ -25,3 +27,15 @@
     {% endif %}
 
 {% endblock content %}
+
+{% block extra_js %}
+    {#  For comment threading: If comment is a reply to a comment, insert the parent comment ID into hidden field. #}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".new_comment_link").click(function() {
+                var parent_id = $(this).data('parentId');
+                $('input[id="parent_id"]').val(parent_id);
+            });
+        });
+    </script>
+{% endblock extra_js %}

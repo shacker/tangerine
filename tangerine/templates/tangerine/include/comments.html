@@ -16,3 +16,13 @@
     {% endif %}
 
 {% endfor %}
+
+{#  Anchor to new comment form #}
+<a name="new_comment"></a>
+<h3>Add a Comment</h3>
+<form action="." method="post" id="new_comment_form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="parent_id" id="parent_id" value="" />
+    <input type="submit" value="Submit" />
+</form>

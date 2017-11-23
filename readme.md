@@ -222,3 +222,7 @@ To override, add to your project settings e.g.:
 
 `BLEACH_ALLOWED_TAGS = ['hr', 'b', 'i']`
 
+
+### Extra JS
+        {% block extra_js %}{% endblock extra_js %}
+

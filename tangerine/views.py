@@ -1,6 +1,3 @@
-import bleach
-
-from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
