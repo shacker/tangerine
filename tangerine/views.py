@@ -1,6 +1,8 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
-from tangerine.models import Category, Post
+from tangerine.forms import CommentForm
+from tangerine.models import Category, Post, Comment
 
 
 def home(request):
@@ -11,7 +13,38 @@ def home(request):
 def post_detail(request, year, month, day, slug):
     post = get_object_or_404(
         Post, published=True, trashed=False, created__year=year, created__month=month, created__day=day, slug=slug)
-    return render(request, "tangerine/post_detail.html", {'post': post})
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+
+            comment = form.save(commit=False)
+
+            if request.user.is_authenticated:
+                comment.author = request.user
+                comment.name = request.user.get_full_name()
+                comment.email = request.user.email
+
+            # Is this a threaded comment?
+            if request.POST.get('parent_id'):
+                comment.parent = Comment.objects.get(id=request.POST.get('parent_id'))
+
+            # If commenter is logged in, override name and email with stored values from User object
+            if request.user.is_authenticated:
+                comment.name = request.user.get_full_name()
+                comment.email = request.user.email
+
+            comment.post = post
+            comment.body = form.cleaned_data['body']
+
+            comment.save()
+
+            return HttpResponseRedirect(post.get_absolute_url())
+
+    else:
+        form = CommentForm()
+
+    return render(request, "tangerine/post_detail.html", {'post': post, 'form': form})
 
 
 def page_detail(request, slug):

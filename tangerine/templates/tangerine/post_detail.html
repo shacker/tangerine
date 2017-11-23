@@ -18,7 +18,10 @@
 
     {#  Enable comments for this view? #}
     {% if tangerine.enable_comments_global and post.enable_comments %}
-        {% include "tangerine/include/comments.html" %}
+        {% if tangerine.comment_system == 'native' %}
+            {% include "tangerine/include/comments.html" %}
+        {% endif %}
+        {#  Inject other comment systems here #}
     {% endif %}
 
 {% endblock content %}

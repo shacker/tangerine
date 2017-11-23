@@ -1,6 +1,6 @@
 {% load tangerine_tags %}
 
-{# For comment permalinks #}
+{# Page anchor for comment permalinks #}
 <a id="comment-{{ comment.id }}"></a>
 
 <p>
@@ -19,9 +19,16 @@
     {% endif %}
 </p>
 
-{# Get commenter's avatar from Gravatar service by email. Replace number with preferred dimensions. #}
+{# Get commenter's avatar from Gravatar service by email addr. Replace number with preferred dimensions. #}
 <img src="{{ comment.email|gravatar:60 }}" alt="" />
 
 {{ comment.body|safe }}
+
+<form action="." method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="parent_id" value="{{ comment.parent.id }}" />
+    <input type="submit" value="Submit" />
+</form>
 
 <hr />

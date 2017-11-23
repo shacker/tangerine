@@ -35,3 +35,5 @@ def test_threaded_comments():
 
     # Now check again - count of top-level should still be 5, even though we've added more comments to the Post.
     assert p.top_level_comments().count() == 5
+
+    # Tests for posting of child comments is in test_views, since comment threaded is initiated/handled in templates.
