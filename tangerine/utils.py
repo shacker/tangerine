@@ -1,6 +1,8 @@
 import bleach
 from django.conf import settings
 
+from tangerine.models import ApprovedCommentor, Config
+
 
 def sanitize_comment(comment):
     """Sanitize malicious tags from posted comments.
@@ -17,3 +19,20 @@ def sanitize_comment(comment):
         allowed_tags = bleach.sanitizer.ALLOWED_TAGS
 
     return bleach.clean(comment, tags=allowed_tags, strip=True)
+
+
+def get_comment_approval(email, authenticated):
+    """Comment approval workflow.
+    `auto_approve` doesn't mean blanket approval, but "IF email is in ApprovedCommentor table".
+    Authenticated commenters are always allowed to comment without moderation."""
+
+    config = Config.objects.first()
+    auto_approve = config.auto_approve_previous_commentors
+
+    if (
+        authenticated or
+            (auto_approve and ApprovedCommentor.objects.filter(email=email).exists())
+    ):
+        return True
+    else:
+        return False

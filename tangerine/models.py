@@ -15,7 +15,7 @@ POST_TYPE_CHOICES = (
 )
 
 # FIXME Also support Disqus, Facebook, other commenting systems?
-COMMENT_TYPE_CHOICES = (
+COMMENT_SYSTEM_CHOICES = (
     ('native', 'Native'),
 )
 
@@ -50,8 +50,13 @@ class Config(models.Model):
         help_text="Disable to turn off comments site-wide.\
             With global comments enabled, you can still disable comments per-post.)")
 
+    auto_approve_previous_commentors = models.BooleanField(
+        default=True,
+        help_text="Comments with emails that have been approved before and that pass spam checks\
+            will be posted immediately.")
+
     comment_system = models.CharField(
-        choices=COMMENT_TYPE_CHOICES,
+        choices=COMMENT_SYSTEM_CHOICES,
         default='native',
         max_length=12,
         help_text="Select the commenting system to be used. Tangerine's is \"Native\".")
@@ -139,17 +144,17 @@ class Post(TimeStampedModel):
     pub = PostManager()  # Post.pub.all() gets just published, non-trashed posts
 
     def get_absolute_url(self):
-        # Important to use get_absolute_url in templates rather than `url` tag b/c to avoid 404s due to TZ conversion.
+        # Important to use get_absolute_url in templates rather than `url` tag to avoid 404s due to TZ conversion.
         local_date = timezone.localtime(self.created)
         return reverse('tangerine:post_detail', args=[local_date.year, local_date.month, local_date.day, self.slug])
 
     def top_level_comments(self):
         # To support threaded commenting, get only top-level comments initially.
         # Get their children in a comment method.
-        return self.comment_set.filter(parent__isnull=True).order_by('modified')
+        return self.comment_set.filter(parent__isnull=True, approved=True).order_by('modified')
 
     def get_all_comments_num(self):
-        # Return number of all comments for this Post, regardless whether top or child.
+        # Return number of all comments for this Post, regardless whether top-level or threaded.
         return self.comment_set.filter(approved=True).count()
 
     def __str__(self):
@@ -206,10 +211,22 @@ class Comment(TimeStampedModel):
 
     def child_comments(self):
         # To support comment threading, return comments that are children of this one.
-        return Comment.objects.filter(parent=self).order_by('modified')
+        return Comment.pub.filter(parent=self).order_by('modified')
 
     def __str__(self):
         return "{}...".format(self.body[:10])
+
+
+class ApprovedCommentor(TimeStampedModel):
+    """Store emails of approved commentors. If option is enabled, future comments by these
+    email addrs will be auto-approved."""
+
+    email = models.EmailField(
+        blank=False,
+    )
+
+    def __str__(self):
+        return self.email
 
 
 class RelatedLinkGroup(models.Model):

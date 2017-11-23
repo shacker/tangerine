@@ -1,8 +1,8 @@
 import pytest
 
-from tangerine.factories import PostFactory, CommentFactory
-from tangerine.models import Comment
-from tangerine.utils import sanitize_comment
+from tangerine.factories import PostFactory, CommentFactory, ConfigFactory
+from tangerine.models import Comment, ApprovedCommentor
+from tangerine.utils import sanitize_comment, get_comment_approval
 
 
 @pytest.fixture()
@@ -18,6 +18,28 @@ def test_unapproved_comments_not_in_qs():
     CommentFactory.create_batch(3, post=post, approved=False)
     assert Comment.objects.all().count() == 8
     assert Comment.pub.all().count() == 5
+
+
+@pytest.mark.django_db
+def test_comment_approval():
+    # Second arg to get_comment_approval() is a bool: whether they're authenticated or not.
+    config = ConfigFactory()
+
+    # Comments from authenticated users should always be approved.
+    assert get_comment_approval('joe@example.com', True) is True
+
+    # Comments from unauthenticated users should be approved IF they are in the ApprovedCommentor table
+    # and auto_approve_previous_commentors is True in settings.
+    assert get_comment_approval('joe@example.com', False) is False
+
+    ApprovedCommentor.objects.create(email='joe@example.com')
+    assert get_comment_approval('joe@example.com', False) is True
+
+    # Now change the config preference and try an email that IS stored in the table. Should now NOT be approved.
+    config.auto_approve_previous_commentors = False
+    config.save()
+    assert get_comment_approval('joe@example.com', False) is False
+
 
 
 @pytest.mark.django_db

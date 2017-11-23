@@ -1,9 +1,10 @@
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
 from tangerine.forms import CommentForm
 from tangerine.models import Category, Post, Comment
-from tangerine.utils import sanitize_comment
+from tangerine.utils import sanitize_comment, get_comment_approval
 
 
 def home(request):
@@ -39,6 +40,13 @@ def post_detail(request, year, month, day, slug):
 
             # Strip disallowed HTML tags. See tangerine docs to customize.
             comment.body = sanitize_comment(form.cleaned_data['body'])
+
+            # Call comment approval workflow
+            comment.approved = get_comment_approval(comment.email, request.user.is_authenticated)
+            if comment.approved:
+                messages.add_message(request, messages.SUCCESS, 'Your comment has been posted.')
+            else:
+                messages.add_message(request, messages.INFO, 'Your comment has been held for moderation.')
 
             comment.save()
 

@@ -228,3 +228,7 @@ To override, add to your project settings e.g.:
 
 We assume you have jquery installed!
 
+### Comment Moderation
+View is at ...
+
+By default, the emails of approved comments are added to an ApprovedCommentors table, and future comments from those email addresses will be auto-approved. To disable this setting, turn it off in the Admin config.
