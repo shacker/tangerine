@@ -226,3 +226,5 @@ To override, add to your project settings e.g.:
 ### Extra JS
         {% block extra_js %}{% endblock extra_js %}
 
+We assume you have jquery installed!
+

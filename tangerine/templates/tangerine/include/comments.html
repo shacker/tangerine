@@ -22,7 +22,33 @@
 <h3>Add a Comment</h3>
 <form action="." method="post" id="new_comment_form">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    {{ form.non_field_errors }}
+    {# Don't prompt auth users for name, email etc. #}
+    {% if not user.is_authenticated %}
+        <div class="fieldWrapper">
+            {{ form.name.errors }}
+            <label for="{{ form.name.id_for_label }}">Name:</label>
+            {{ form.name }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.email.errors }}
+            <label for="{{ form.email.id_for_label }}">Email:</label>
+            {{ form.email }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.website.errors }}
+            <label for="{{ form.website.id_for_label }}">Website:</label>
+            {{ form.website }}
+        </div>
+    {% endif %}
+
+    <div class="fieldWrapper">
+        {{ form.body.errors }}
+        <label for="{{ form.body.id_for_label }}">Body</label>
+        {{ form.body }}
+    </div>
+
     <input type="hidden" name="parent_id" id="parent_id" value="" />
     <input type="submit" value="Submit" />
 </form>
