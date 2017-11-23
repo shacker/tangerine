@@ -34,6 +34,7 @@ setup(
       'factory_boy',
       'titlecase',
       'libgravatar',
+      'bleach',
     ],
 
 )

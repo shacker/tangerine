@@ -1,8 +1,12 @@
+import bleach
+
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
 from tangerine.forms import CommentForm
 from tangerine.models import Category, Post, Comment
+from tangerine.utils import sanitize_comment
 
 
 def home(request):
@@ -35,7 +39,9 @@ def post_detail(request, year, month, day, slug):
                 comment.email = request.user.email
 
             comment.post = post
-            comment.body = form.cleaned_data['body']
+
+            # Strip disallowed HTML tags. See tangerine docs to customize.
+            comment.body = sanitize_comment(form.cleaned_data['body'])
 
             comment.save()
 

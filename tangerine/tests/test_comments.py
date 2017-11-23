@@ -2,6 +2,7 @@ import pytest
 
 from tangerine.factories import PostFactory, CommentFactory
 from tangerine.models import Comment
+from tangerine.utils import sanitize_comment
 
 
 @pytest.fixture()
@@ -37,3 +38,20 @@ def test_threaded_comments():
     assert p.top_level_comments().count() == 5
 
     # Tests for posting of child comments is in test_views, since comment threaded is initiated/handled in templates.
+
+
+def test_comment_sanitizer():
+    # Not much to test here - bleach dependency is already heavily tested.
+    # Just ensure that our util function is alive and kicking.
+
+    # No HTML
+    comment = 'This is a test'
+    assert sanitize_comment(comment) == comment
+
+    # Allowed HTML
+    comment = 'This <b>is</b> a test'
+    assert sanitize_comment(comment) == comment
+
+    # Disallowed HTML
+    comment = 'This <script>is</script> a test'
+    assert sanitize_comment(comment) == 'This is a test'

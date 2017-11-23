@@ -211,3 +211,14 @@ Gravatar support in comment templates is present by default, and avatars are der
 `<img src="{{ comment.email|gravatar:60 }}" alt="" />`
 
 The fallback icon is the class "Mystery Man" ("mm"). This can be changed to one of the [other defaults](https://en.gravatar.com/site/implement/images/) by changing the template tag itself (room for improvement there).
+
+### Sanitizing Comments
+
+Malicious HTML will be stripped from posted comments via `bleach`. The default set of allowed tags is:
+
+`['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul']`
+
+To override, add to your project settings e.g.:
+
+`BLEACH_ALLOWED_TAGS = ['hr', 'b', 'i']`
+
