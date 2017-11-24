@@ -9,54 +9,57 @@
 
     <p><a href="{% url 'admin:tangerine_comment_changelist' %}?approved__exact=0">Batch-delete unapproved comments in Django admin</a></p>
 
-    <div class="row">
-        <div class="">
-            <table class="table">
-              <thead class="thead-inverse">
-                <tr>
-                    <th class="col-2">Name/Email/Web</th>
-                    <th class="col-8">Post/Comment</th>
-                    <th class="col-1">Approve</th>
-                    <th class="col-1">Edit</th>
-                </tr>
-              </thead>
-              <tbody>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table">
+                  <thead class="thead-inverse">
+                    <tr class="row">
+                        <th class="col-sm-3">Name/Email/Web</th>
+                        <th class="col-sm-5">Post/Comment</th>
+                        <th class="col-sm-2">Approve</th>
+                        <th class="col-sm-1">Edit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
 
-                  {% for comment in comments %}
-                      <tr>
-                          <td>
-                              {{ comment.name }}<br />
-                              {{ comment.email }}<br />
-                              <small>{{ comment.created|date:"N d, Y" }}, {{ comment.created|date:"P"}}</small><br />
-                              {% if comment.website %}
-                                  <a href="{{ comment.website }}" target="_blank"><small>{{ comment.website }}</small></a>
-                              {% endif %}
-                          </td>
-                          <td>
-                              {{ comment.body|truncatewords:10}}<br />
-
+                      {% for comment in comments %}
+                          <tr class="row">
+                              <td class="col-sm-3">
                                   <small>
-                                      <a href="#" class="modalViewLink" data-toggle="modal" data-comment-body="{{ comment.body }}"
-                                          data-target="#commentModal">Preview</a> |
-                                      <a href="{{ comment.post.get_absolute_url }}">OP</a>
-                                  </small>
+                                  {{ comment.name }}<br />
+                                  {{ comment.email }}<br />
+                                  {{ comment.created|date:"N d, Y" }}, {{ comment.created|date:"P"}}<br />
+                                  {% if comment.website %}
+                                      <a href="{{ comment.website }}" target="_blank"><small>{{ comment.website }}</small></a>
+                                  {% endif %}
+                              </small>
+                              </td>
+                              <td class="col-sm-5">
+                                  {{ comment.body|truncatewords:10}}<br />
+                                      <small>
+                                          <a href="#" class="modalViewLink" data-toggle="modal" data-comment-body="{{ comment.body }}"
+                                              data-target="#commentModal">Preview</a> |
+                                          <a href="{{ comment.post.get_absolute_url }}">OP</a>
+                                      </small>
 
-                          </td>
-                          <td>
-                              <a
-                                href="{% url 'tangerine:toggle_comment_approval' comment.id %}"
-                                class="btn btn-sm btn-outline-{% if comment.approved %}primary{% else %}success{% endif %}">
-                                {% if comment.approved %}Unapprove{% else %}Approve{% endif %}
-                              </a>
-                          </td>
-                          <td>
-                              <a href="{% url 'admin:tangerine_comment_change' comment.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                          </td>
-                      </tr>
-                  {% endfor %}
+                              </td>
+                              <td class="col-sm-2">
+                                  <a
+                                    href="{% url 'tangerine:toggle_comment_approval' comment.id %}"
+                                    class="btn btn-sm btn-outline-{% if comment.approved %}primary{% else %}success{% endif %}">
+                                    {% if comment.approved %}Unapprove{% else %}Approve{% endif %}
+                                  </a>
+                              </td>
+                              <td class="col-sm-2">
+                                  <a href="{% url 'admin:tangerine_comment_change' comment.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                              </td>
+                          </tr>
+                      {% endfor %}
 
-              </tbody>
-            </table>
+                  </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
