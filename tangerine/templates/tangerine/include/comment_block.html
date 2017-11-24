@@ -22,7 +22,7 @@
 {# Get commenter's avatar from Gravatar service by email addr. Replace number with preferred dimensions. #}
 <img src="{{ comment.email|gravatar:60 }}" alt="" />
 
-{{ comment.body|safe }}
+{{ comment.body|safe|linebreaks }}
 
 {#  Populate Reply link with current comment ID #}
 <p><a class="new_comment_link" data-parent-id="{% if comment.parent %}{{ comment.parent.id }}{% else %}{{ comment.id }}{% endif %}" href="#new_comment">Reply</a></p>

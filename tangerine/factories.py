@@ -25,6 +25,13 @@ def gen_html_content():
     return htmlstr
 
 
+def gen_comment_body():
+    # faker only provides sentences as a list; we want them with line breaks
+    fake = Faker()
+    sentences = fake.sentences(3)
+    return "\n\n".join(sentences)
+
+
 class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Category
@@ -61,7 +68,7 @@ class CommentFactory(factory.django.DjangoModelFactory):
         model = Comment
 
     approved = factory.LazyAttribute(lambda o: True)
-    body = factory.LazyAttribute(lambda o: gen_html_content())
+    body = factory.LazyAttribute(lambda o: gen_comment_body())
     email = factory.Faker('safe_email')
     name = factory.Faker('name')
     website = factory.Faker('url')
