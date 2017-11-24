@@ -59,6 +59,8 @@ class CommentAdmin(admin.ModelAdmin):
         'created',
         'approved',
     )
+    list_filter = ['approved', ]
+
 
 
 admin.site.register(Config)

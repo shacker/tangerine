@@ -36,3 +36,27 @@ def get_comment_approval(email, authenticated):
         return True
     else:
         return False
+
+
+def toggle_approval(comment):
+    """Toggle comment approval
+
+    Takes a comment, returns nothing.
+
+    if auto_approve is enabled in config and comment is approved, also add user to ApprovedCommentors,
+    (or remove if unapproving). Regardless of auto_approve setting, toggle state of this comment"""
+
+    config = Config.objects.first()
+    auto_approve = config.auto_approve_previous_commentors
+
+    if auto_approve:
+        if comment.approved:
+            # Toggling state for an approved comment, so we now remove commenter from ApprovedCommentors
+            ApprovedCommentor.objects.filter(email=comment.email).delete()
+        else:
+            # Toggling state for an unapproved comment, so we now add commenter to ApprovedCommentors
+            ApprovedCommentor.objects.create(email=comment.email)
+
+    # Then flip comment approval state to the opposite of whatever it is now.
+    comment.approved = not comment.approved
+    comment.save()

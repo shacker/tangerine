@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from tangerine.forms import CommentForm
 from tangerine.models import Category, Post, Comment
-from tangerine.utils import sanitize_comment, get_comment_approval
+from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval
 
 
 def home(request):
@@ -67,3 +67,21 @@ def category(request, cat_slug):
     cat = get_object_or_404(Category, slug=cat_slug)
     posts = Post.pub.filter(categories__in=[cat, ])
     return render(request, "tangerine/category.html", {'category':  cat, 'posts': posts})
+
+
+# ===============  Management interfaces  ===============
+
+
+def manage_comments(request):
+    comments = Comment.objects.all()
+    return render(request, "tangerine/management/comments.html", {'comments': comments, })
+
+
+def toggle_comment_approval(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    # Work is done in utility function.
+    toggle_approval(comment)
+    messages.add_message(request, messages.SUCCESS, 'Approval status of comment {} changed.'.format(comment.id))
+
+    return redirect('tangerine:manage_comments')

@@ -2,7 +2,7 @@ import pytest
 
 from tangerine.factories import PostFactory, CommentFactory, ConfigFactory
 from tangerine.models import Comment, ApprovedCommentor
-from tangerine.utils import sanitize_comment, get_comment_approval
+from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval
 
 
 @pytest.fixture()
@@ -22,10 +22,11 @@ def test_unapproved_comments_not_in_qs():
 
 @pytest.mark.django_db
 def test_comment_approval():
-    # Second arg to get_comment_approval() is a bool: whether they're authenticated or not.
     config = ConfigFactory()
 
     # Comments from authenticated users should always be approved.
+    # auto_approve_previous_commentors in settings defaults to True.
+    # Second arg to get_comment_approval() is a bool: whether they're authenticated or not.
     assert get_comment_approval('joe@example.com', True) is True
 
     # Comments from unauthenticated users should be approved IF they are in the ApprovedCommentor table
@@ -40,6 +41,29 @@ def test_comment_approval():
     config.save()
     assert get_comment_approval('joe@example.com', False) is False
 
+
+@pytest.mark.django_db
+def test_approval_toggle():
+    config = ConfigFactory()  # auto_approve defaults to True
+    post = PostFactory()
+
+    c1 = CommentFactory(post=post, approved=False)
+    assert not c1.approved
+    assert not ApprovedCommentor.objects.filter(email=c1.email).exists()
+    toggle_approval(c1)
+    assert c1.approved
+    assert ApprovedCommentor.objects.filter(email=c1.email).exists()
+
+    # With auto_approve disabled, state is toggled but commenter is never in ApprovedCommentors
+    config.auto_approve_previous_commentors = False
+    config.save()
+
+    c2 = CommentFactory(post=post, approved=False)
+    assert not c2.approved
+    assert not ApprovedCommentor.objects.filter(email=c2.email).exists()
+    toggle_approval(c2)
+    assert c2.approved
+    assert not ApprovedCommentor.objects.filter(email=c2.email).exists()
 
 
 @pytest.mark.django_db
