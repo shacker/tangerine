@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -74,6 +75,11 @@ def category(request, cat_slug):
 
 def manage_comments(request):
     comments = Comment.objects.all()
+
+    paginator = Paginator(comments, 25)  # Show num contacts per page
+    page = request.GET.get('page')
+    comments = paginator.get_page(page)
+
     return render(request, "tangerine/management/comments.html", {'comments': comments, })
 
 

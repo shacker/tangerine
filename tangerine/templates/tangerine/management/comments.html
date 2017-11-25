@@ -63,6 +63,27 @@
         </div>
     </div>
 
+    <nav aria-label="Comments page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+
+            {% if comments.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">&larr;</a></li>
+            {% endif %}
+
+            {#  show current/active #}
+            <li class="page-item active"><a class="page-link" href="?page={{ comments.number }}">{{ comments.number }}</a></li>
+
+            {% if comments.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">&rarr;</a></li>
+            {% endif %}
+
+            <li class="page-item">
+                <a class="page-link" href="?page={{ comments.paginator.num_pages }}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+
     <div class="modal fade" id="commentModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -81,7 +102,6 @@
         </div>
       </div>
     </div>
-
 {% endblock content %}
 
 {% block extra_js %}
