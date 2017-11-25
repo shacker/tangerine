@@ -26,6 +26,20 @@
         {#  Inject other comment systems here #}
     {% endif %}
 
+    {#  Navigate between previous/next posts #}
+    <div class="row">
+        <div class="col">
+            {% if previous_post %}
+                <div class="float-left page-item"><a href="{{ previous_post.get_absolute_url }}">Previous</a></div>
+            {% endif %}
+        </div>
+
+        <div class="col">
+            {% if next_post %}
+                <div class="float-right page-item"><a href="{{ next_post.get_absolute_url }}">Next</a></div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock content %}
 
 {% block extra_js %}

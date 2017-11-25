@@ -62,7 +62,21 @@ def post_detail(request, year, month, day, slug):
     else:
         form = CommentForm()
 
-    return render(request, "tangerine/post_detail.html", {'post': post, 'form': form})
+    try:
+        next_post = Post.get_next_by_created(post, ptype='post')
+    except Post.DoesNotExist:
+        next_post = None
+    try:
+        previous_post = Post.get_previous_by_created(post, ptype='post')
+    except Post.DoesNotExist:
+        previous_post = None
+
+    return render(request, "tangerine/post_detail.html", {
+        'post': post,
+        'form': form,
+        'next_post': next_post,
+        'previous_post': previous_post
+    })
 
 
 def page_detail(request, slug):
