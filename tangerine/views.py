@@ -1,15 +1,21 @@
 from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
 from tangerine.forms import CommentForm
-from tangerine.models import Category, Post, Comment
+from tangerine.models import Category, Post, Comment, Config
 from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval
 
 
 def home(request):
     posts = Post.pub.all()
+
+    num_posts = Config.objects.first().num_posts_per_list_view
+    paginator = Paginator(posts, num_posts)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+
     return render(request, "tangerine/home.html", {'posts': posts})
 
 

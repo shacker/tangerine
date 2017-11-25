@@ -24,6 +24,21 @@
 
     {% endfor %}
 
+    {#  Navigate between pages of results #}
+    <div class="row">
+        <div class="col">
+            {% if posts.has_previous %}
+                <div class="float-left page-item"><a href="?page={{ posts.previous_page_number }}">Newer posts</a></div>
+            {% endif %}
+        </div>
+
+        <div class="col">
+            {% if posts.has_next %}
+                <div class="float-right page-item"><a href="?page={{ posts.next_page_number }}">Older posts</a></div>
+            {% endif %}
+        </div>
+    </div>
+
 {% else %}
     <p>There is no content to show in this view, sorry. Create some!</p>
 {% endif %}
