@@ -232,3 +232,12 @@ We assume you have jquery installed!
 View is at ...
 
 By default, the emails of approved comments are added to an ApprovedCommentors table, and future comments from those email addresses will be auto-approved. To disable this setting, turn it off in the Admin config.
+
+## Adding Functionality
+
+Tangerine does not (yet?) provide "plugin" capability like WordPress because we feel that most new functionality can be provided as a template tag created in your own app. Please see the template tags provided by Tangerine as examples, then create your customizations in your own app or project and load them into your template customizations. If you think others would benefit from the same functionality, make a pull request!
+
+Functionality that cannot be provided by template tags should be submitted as a pull request to Tangerine. 
+
+
+

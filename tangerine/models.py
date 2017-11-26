@@ -28,6 +28,10 @@ class Config(models.Model):
         default="Arbitrary Site Title",
         help_text="To be displayed in page header and as part of HTML title tag")
 
+    site_url = models.URLField(
+        blank=True,
+        help_text="Only required for Akismet spam checking")
+
     tagline = models.CharField(
         max_length=140,
         blank=True,
@@ -43,6 +47,12 @@ class Config(models.Model):
         blank=True,
         help_text="Enter just the GA tracking ID provided by Google, not the entire codeblock, e.g UA-123456-2.",
         max_length=16
+        )
+
+    akismet_key = models.CharField(
+        blank=True,
+        help_text="For comment spam control (recommended) - get a free/donationware key from https://akismet.com",
+        max_length=14
         )
 
     enable_comments_global = models.BooleanField(
@@ -202,9 +212,22 @@ class Comment(TimeStampedModel):
         blank=True,
     )
 
+    ip_address = models.GenericIPAddressField(
+        verbose_name="IP Address",
+        blank=True,
+        null=True,
+        help_text="IP (v4 or v6) of the comment submitter.",
+        max_length=24
+    )
+    user_agent = models.CharField(
+        blank=True,
+        max_length=160,
+        help_text="Reported user-agent string of the comment submitter.")
+
     body = models.TextField()
 
     approved = models.BooleanField(default=False)
+    spam = models.BooleanField(default=False)  # Check installed spam systems to verify but assume the best
 
     objects = models.Manager()  # The default manager, unfiltered by manager (admin use only)
     pub = CommentManager()  # Comment.pub.all() gets just approved comments

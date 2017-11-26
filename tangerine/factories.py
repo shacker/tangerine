@@ -72,6 +72,8 @@ class CommentFactory(factory.django.DjangoModelFactory):
     email = factory.Faker('safe_email')
     name = factory.Faker('name')
     website = factory.Faker('url')
+    ip_address = factory.Faker('ipv4')
+    user_agent = factory.Faker('user_agent')
 
 
 class RelatedLinkFactory(factory.django.DjangoModelFactory):

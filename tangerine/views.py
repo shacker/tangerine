@@ -1,3 +1,5 @@
+from ipware.ip import get_ip
+
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
@@ -5,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from tangerine.forms import CommentForm
 from tangerine.models import Category, Post, Comment, Config
-from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval
+from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval, spam_checks
 
 
 def home(request):
@@ -25,6 +27,7 @@ def post_detail(request, year, month, day, slug):
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
+
         if form.is_valid():
 
             comment = form.save(commit=False)
@@ -43,7 +46,16 @@ def post_detail(request, year, month, day, slug):
                 comment.name = request.user.get_full_name()
                 comment.email = request.user.email
 
+            # Set required relationship to Post object
             comment.post = post
+
+            # Get commenter's IP and User-Agent string
+            ip = get_ip(request)
+            if ip is not None:
+                comment.ip_address = ip
+            comment.user_agent = request.META.get('HTTP_USER_AGENT', '')
+
+            comment.spam = spam_checks(comment)
 
             # Strip disallowed HTML tags. See tangerine docs to customize.
             comment.body = sanitize_comment(form.cleaned_data['body'])

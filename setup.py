@@ -31,10 +31,12 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     install_requires=[
-      'factory_boy',
-      'titlecase',
-      'libgravatar',
-      'bleach',
+        'factory_boy',
+        'titlecase',
+        'libgravatar',
+        'bleach',
+        'python-aksismet',
+        'django-ipware',
     ],
 
 )
