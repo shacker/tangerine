@@ -67,13 +67,17 @@ def toggle_approval(comment):
 def spam_checks(comment):
     # Pass comment object into configured spam control engines and return True or False
     config = Config.objects.first()
+    spam_status = False
 
     if config.akismet_key:
         akismet = Akismet(config.akismet_key, blog=config.site_url)
-        spam_status = False
         spam_status = akismet.check(
             comment.ip_address, comment.user_agent, comment_author=comment.name,
             comment_author_email=comment.email, comment_author_url=comment.website,
             comment_content=comment.body)
 
         return spam_status
+
+    # Add other spam control engines here.
+
+    return spam_status
