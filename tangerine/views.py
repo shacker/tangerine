@@ -1,6 +1,7 @@
 from ipware.ip import get_ip
 
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
@@ -104,7 +105,7 @@ def category(request, cat_slug):
 
 # ===============  Management interfaces  ===============
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def manage_comments(request):
     comments = Comment.objects.all()
 
@@ -115,6 +116,7 @@ def manage_comments(request):
     return render(request, "tangerine/management/comments.html", {'comments': comments, })
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def toggle_comment_approval(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
 
