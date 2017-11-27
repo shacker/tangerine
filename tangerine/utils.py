@@ -45,8 +45,10 @@ def toggle_approval(comment):
 
     Takes a comment, returns nothing.
 
-    if auto_approve is enabled in config and comment is approved, also add user to ApprovedCommentors,
-    (or remove if unapproving). Regardless of auto_approve setting, toggle state of this comment"""
+    If input comment was unapproved, approve it (and vice versa).
+
+    If auto_approve is enabled in config and comment is approved, also add user to ApprovedCommentors,
+    (or remove if unapproving)."""
 
     config = Config.objects.first()
     auto_approve = config.auto_approve_previous_commentors
