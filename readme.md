@@ -239,5 +239,9 @@ Tangerine does not (yet?) provide "plugin" capability like WordPress because we 
 
 Functionality that cannot be provided by template tags should be submitted as a pull request to Tangerine. 
 
+-----------
+
+Devs who want to run the spam_checks pytest *must* add to their settings:
+AKISMET_KEY = 'abc123' (but with a real, working key). Otherwise we can't run tests that call their API.
 
 

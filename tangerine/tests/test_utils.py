@@ -1,8 +1,10 @@
 import pytest
 
+from django.conf import settings
+
 from tangerine.factories import PostFactory, CommentFactory, ConfigFactory
 from tangerine.models import ApprovedCommentor
-from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval
+from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval, spam_checks
 
 
 @pytest.mark.django_db
@@ -66,3 +68,25 @@ def test_comment_sanitizer():
     # Disallowed HTML
     comment = 'This <script>is</script> a test'
     assert sanitize_comment(comment) == 'This is a test'
+
+
+@pytest.mark.django_db
+def test_spam_checks():
+    """For now we are just testing our route to the Akismet API and whether we store submitted comments
+    as spam or not. Later expand this into multiple tests to support multiple spam checking engines.
+    Devs who want to run this test *must* add to their settings:
+    AKISMET_KEY = 'abc123' (but with a real, working key). Otherwise we can't run tests that call their API.
+    See https://akismet.com/development/api/#detailed-docs for notes on testing Akismet API calls."""
+
+    config = ConfigFactory()
+    post = PostFactory()
+
+    # Good comment:
+    c1 = CommentFactory(post=post)
+    c2 = CommentFactory(post=post, email='akismet-guaranteed-spam@example.com')
+
+    if hasattr(settings, 'AKISMET_KEY'):
+        config.akismet_key = settings.AKISMET_KEY
+
+        assert spam_checks(c1) is True
+        assert spam_checks(c2) is False
