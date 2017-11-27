@@ -125,3 +125,13 @@ def toggle_comment_approval(request, comment_id):
     messages.add_message(request, messages.SUCCESS, 'Approval status of comment {} changed.'.format(comment.id))
 
     return redirect('tangerine:manage_comments')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    comment.delete()
+    messages.add_message(request, messages.SUCCESS, 'Comment deleted.')
+
+    return redirect('tangerine:manage_comments')

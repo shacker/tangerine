@@ -15,4 +15,8 @@ urlpatterns = [
         'manage/comments/toggle_approval/<int:comment_id>/',
         views.toggle_comment_approval,
         name="toggle_comment_approval"),
+    path(
+        'manage/comments/delete_comment/<int:comment_id>/',
+        views.delete_comment,
+        name="delete_comment"),
 ]

@@ -18,7 +18,7 @@
                         <th class="col-sm-3">Name/Email/Web</th>
                         <th class="col-sm-5">Post/Comment</th>
                         <th class="col-sm-2">Approve</th>
-                        <th class="col-sm-1">Edit</th>
+                        <th class="col-sm-1">Delete</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -40,7 +40,8 @@
                                       <small>
                                           <a href="#" class="modalViewLink" data-toggle="modal" data-comment-body="{{ comment.body }}"
                                               data-target="#commentModal">Preview</a> |
-                                          <a href="{{ comment.post.get_absolute_url }}">OP</a>
+                                          <a href="{{ comment.post.get_absolute_url }}">OP</a> |
+                                          <a href="{% url 'admin:tangerine_comment_change' comment.id %}">Edit</a>
                                       </small>
 
                               </td>
@@ -52,7 +53,7 @@
                                   </a>
                               </td>
                               <td class="col-sm-2">
-                                  <a href="{% url 'admin:tangerine_comment_change' comment.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                  <a href="{% url 'tangerine:delete_comment' comment.id %}" class="btn btn-sm btn-outline-secondary">Delete</a>
                               </td>
                           </tr>
                       {% endfor %}
