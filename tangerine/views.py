@@ -107,7 +107,7 @@ def category(request, cat_slug):
 
 @user_passes_test(lambda u: u.is_superuser)
 def manage_comments(request):
-    comments = Comment.objects.all()
+    comments = Comment.objects.all().order_by('-created')
 
     paginator = Paginator(comments, 25)  # Show num contacts per page
     page = request.GET.get('page')
