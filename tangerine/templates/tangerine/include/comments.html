@@ -36,12 +36,13 @@
             <label for="{{ form.email.id_for_label }}">Email:</label>
             {{ form.email }}
         </div>
-        <div class="fieldWrapper">
-            {{ form.website.errors }}
-            <label for="{{ form.website.id_for_label }}">Website:</label>
-            {{ form.website }}
-        </div>
     {% endif %}
+
+    <div class="fieldWrapper">
+        {{ form.website.errors }}
+        <label for="{{ form.website.id_for_label }}">Website:</label>
+        {{ form.website }}
+    </div>
 
     <div class="fieldWrapper">
         {{ form.body.errors }}
