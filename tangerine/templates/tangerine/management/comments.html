@@ -7,7 +7,14 @@
 
     <h3>Comment Moderation</h3>
 
-    <p><a href="{% url 'admin:tangerine_comment_changelist' %}?approved__exact=0">Batch-delete unapproved comments in Django admin</a></p>
+    <form action="" method="get">
+            <label for="{{ form.q.id_for_label }}">Search:</label>
+            {{ form.q }}
+        <input type="submit" value="Go" class="btn btn-sm btn-primary" />
+        {% if q %}
+            <a href="{% url 'tangerine:manage_comments' %}" class="btn btn-sm btn-secondary">Clear</a>
+        {% endif %}
+    </form>
 
     <div class="container-fluid">
         <div class="row">
@@ -60,30 +67,35 @@
 
                   </tbody>
                 </table>
+
+                <p><a href="{% url 'admin:tangerine_comment_changelist' %}?approved__exact=0">Batch-delete unapproved comments in Django admin</a></p>
+
             </div>
         </div>
     </div>
 
-    <nav aria-label="Comments page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+    {% if comments.paginator.num_pages > 1 %}
+        <nav aria-label="Comments page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
 
-            {% if comments.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">&larr;</a></li>
-            {% endif %}
+                {% if comments.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">&larr;</a></li>
+                {% endif %}
 
-            {#  show current/active #}
-            <li class="page-item active"><a class="page-link" href="?page={{ comments.number }}">{{ comments.number }}</a></li>
+                {#  show current/active #}
+                <li class="page-item active"><a class="page-link" href="?page={{ comments.number }}">{{ comments.number }}</a></li>
 
-            {% if comments.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">&rarr;</a></li>
-            {% endif %}
+                {% if comments.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">&rarr;</a></li>
+                {% endif %}
 
-            <li class="page-item">
-                <a class="page-link" href="?page={{ comments.paginator.num_pages }}">&raquo;</a>
-            </li>
-        </ul>
-    </nav>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ comments.paginator.num_pages }}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
 
     <div class="modal fade" id="commentModal">
       <div class="modal-dialog" role="document">

@@ -3,10 +3,12 @@ from ipware.ip import get_ip
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
-from tangerine.forms import CommentForm
+
+from tangerine.forms import CommentForm, CommentSearchForm
 from tangerine.models import Category, Post, Comment, Config
 from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval, spam_checks
 
@@ -107,13 +109,26 @@ def category(request, cat_slug):
 
 @user_passes_test(lambda u: u.is_superuser)
 def manage_comments(request):
-    comments = Comment.objects.all().order_by('-created')
 
-    paginator = Paginator(comments, 25)  # Show num contacts per page
+    if request.GET.get('q'):
+        q = request.GET.get('q')
+        comments = Comment.objects.filter(
+            Q(body__icontains=q) |
+            Q(name__icontains=q) |
+            Q(email__icontains=q)
+        )
+    else:
+        q = None
+        comments = Comment.objects.all()  # In this view, don't filter for approved, spam etc. - show all.
+
+    comments = comments.order_by('-created')
+    form = CommentSearchForm(initial={'q': q})
+
+    paginator = Paginator(comments, 25)  # Show num comments per page
     page = request.GET.get('page')
     comments = paginator.get_page(page)
 
-    return render(request, "tangerine/management/comments.html", {'comments': comments, })
+    return render(request, "tangerine/management/comments.html", {'comments': comments, 'form': form, 'q': q})
 
 
 @user_passes_test(lambda u: u.is_superuser)
