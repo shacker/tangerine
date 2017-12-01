@@ -4,7 +4,7 @@ from django.conf import settings
 
 from tangerine.factories import PostFactory, CommentFactory, ConfigFactory
 from tangerine.models import ApprovedCommentor
-from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval, spam_checks
+from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval, spam_check, akismet_spam_ham
 
 
 @pytest.mark.django_db
@@ -71,22 +71,38 @@ def test_comment_sanitizer():
 
 
 @pytest.mark.django_db
-def test_spam_checks():
+def test_spam_check():
     """For now we are just testing our route to the Akismet API and whether we store submitted comments
     as spam or not. Later expand this into multiple tests to support multiple spam checking engines.
-    Devs who want to run this test *must* add to their settings:
-    AKISMET_KEY = 'abc123' (but with a real, working key). Otherwise we can't run tests that call their API.
+
+    Devs who want to run this test *must* add to their *test* settings:
+    AKISMET_KEY = 'abc123' and SITE_URL = 'https://your.registered.domain'
+    (but with real values). Otherwise we can't run tests that call their API with YOUR credentials.
     See https://akismet.com/development/api/#detailed-docs for notes on testing Akismet API calls."""
 
-    config = ConfigFactory()
-    post = PostFactory()
+    if hasattr(settings, 'AKISMET_KEY'):
 
-    # Good comment:
-    c1 = CommentFactory(post=post)
-    c2 = CommentFactory(post=post, email='akismet-guaranteed-spam@example.com')
+        ConfigFactory(akismet_key=settings.AKISMET_KEY, site_url=settings.SITE_URL)
+        post = PostFactory()
+
+        # Good comment:
+        c1 = CommentFactory(post=post, email='akismet-guaranteed-spam@example.com')
+        c2 = CommentFactory(post=post)
+
+        assert spam_check(c1) is True
+        assert spam_check(c2) is False
+
+
+@pytest.mark.django_db
+def test_submit_aksimet_spam():
+    """Akismet API will believe what we tell it (return True if we say it's spam and vice versa). So simple check."""
 
     if hasattr(settings, 'AKISMET_KEY'):
-        config.akismet_key = settings.AKISMET_KEY
 
-        assert spam_checks(c1) is True
-        assert spam_checks(c2) is False
+        ConfigFactory(akismet_key=settings.AKISMET_KEY, site_url=settings.SITE_URL)
+        post = PostFactory()
+
+        # Good comment:
+        c1 = CommentFactory(post=post, email='akismet-guaranteed-spam@example.com', spam=True)
+
+        assert akismet_spam_ham(c1) is True

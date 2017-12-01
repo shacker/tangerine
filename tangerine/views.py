@@ -10,7 +10,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from tangerine.forms import CommentForm, CommentSearchForm
 from tangerine.models import Category, Post, Comment, Config
-from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval, spam_checks
+from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval, toggle_spam, spam_check
 
 
 def home(request):
@@ -58,7 +58,7 @@ def post_detail(request, year, month, day, slug):
                 comment.ip_address = ip
             comment.user_agent = request.META.get('HTTP_USER_AGENT', '')
 
-            comment.spam = spam_checks(comment)
+            comment.spam = spam_check(comment)
 
             # Strip disallowed HTML tags. See tangerine docs to customize.
             comment.body = sanitize_comment(form.cleaned_data['body'])
@@ -138,6 +138,17 @@ def toggle_comment_approval(request, comment_id):
     # Work is done in utility function.
     toggle_approval(comment)
     messages.add_message(request, messages.SUCCESS, 'Approval status of comment {} changed.'.format(comment.id))
+
+    return redirect('tangerine:manage_comments')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def toggle_comment_spam(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    # Work is done in utility function.
+    toggle_spam(comment)
+    messages.add_message(request, messages.SUCCESS, 'Spam status of comment {} changed.'.format(comment.id))
 
     return redirect('tangerine:manage_comments')
 

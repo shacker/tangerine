@@ -35,7 +35,7 @@ setup(
         'titlecase',
         'libgravatar',
         'bleach',
-        'python-aksismet',
+        'aksismet',
         'django-ipware',
     ],
 

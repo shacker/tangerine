@@ -23,8 +23,9 @@
                   <thead class="thead-inverse">
                     <tr class="row">
                         <th class="col-sm-3">Name/Email/Web</th>
-                        <th class="col-sm-5">Post/Comment</th>
-                        <th class="col-sm-2">Approve</th>
+                        <th class="col-sm-6">Post/Comment</th>
+                        <th class="col-sm-1">Spam/Ham</th>
+                        <th class="col-sm-1">Approve</th>
                         <th class="col-sm-1">Delete</th>
                     </tr>
                   </thead>
@@ -42,7 +43,7 @@
                                   {% endif %}
                               </small>
                               </td>
-                              <td class="col-sm-5">
+                              <td class="col-sm-6">
                                   {{ comment.body|truncatewords:10}}<br />
                                       <small>
                                           <a href="#" class="modalViewLink" data-toggle="modal" data-comment-body="{{ comment.body }}"
@@ -52,14 +53,21 @@
                                       </small>
 
                               </td>
-                              <td class="col-sm-2">
+                              <td class="col-sm-1">
+                                  <a
+                                    href="{% url 'tangerine:toggle_comment_spam' comment.id %}"
+                                    class="btn btn-sm btn-outline-{% if comment.spam %}primary{% else %}success{% endif %}">
+                                    {% if comment.spam %}Ham{% else %}Spam{% endif %}
+                                  </a>
+                              </td>
+                              <td class="col-sm-1">
                                   <a
                                     href="{% url 'tangerine:toggle_comment_approval' comment.id %}"
                                     class="btn btn-sm btn-outline-{% if comment.approved %}primary{% else %}success{% endif %}">
                                     {% if comment.approved %}Unapprove{% else %}Approve{% endif %}
                                   </a>
                               </td>
-                              <td class="col-sm-2">
+                              <td class="col-sm-1">
                                   <a href="{% url 'tangerine:delete_comment' comment.id %}" class="btn btn-sm btn-outline-secondary">Delete</a>
                               </td>
                           </tr>

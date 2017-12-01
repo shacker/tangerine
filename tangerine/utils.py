@@ -1,4 +1,4 @@
-from akismet import Akismet
+import akismet
 import bleach
 
 from django.conf import settings
@@ -66,20 +66,60 @@ def toggle_approval(comment):
     comment.save()
 
 
-def spam_checks(comment):
+def akismet_spam_ham(comment):
+    """Submit comment to Akismet spam/ham API, using current spam status"""
+
+    config = Config.objects.first()
+    if config.akismet_key:
+
+        akismet_api = akismet.Akismet(key=config.akismet_key, blog_url=config.site_url)
+
+        kwargs = {
+            'comment_author': comment.name,
+            'comment_author_email': comment.email,
+            'comment_author_url': comment.website,
+            'comment_content': comment.body
+        }
+
+        if comment.spam is True:
+            submit = akismet_api.submit_spam(comment.ip_address, comment.user_agent, **kwargs)
+        else:
+            submit = akismet_api.submit_ham(comment.ip_address, comment.user_agent, **kwargs)
+
+        return submit
+
+
+def toggle_spam(comment):
+    """Toggle spam status for a comment.
+
+    Takes a comment, returns nothing.
+
+    If input comment was not spam, toggle to ham, and vice versa.
+    Make the assumption that spam should be unapproved, and ham approved, so also call toggle_approval().
+    Also inform Akismet about spam status, if enabled.
+    """
+
+    # Submit to Akismet API, if enabled.
+    akismet_spam_ham(comment)
+
+    # Flip spam status to the opposite of whatever it is now, regardless whether Akismet is enabled.
+    comment.spam = not comment.spam
+    comment.save()
+    toggle_approval(comment)
+
+
+def spam_check(comment):
     # Pass comment object into configured spam control engines and return True or False
     config = Config.objects.first()
     spam_status = False
 
     if config.akismet_key:
-        akismet = Akismet(config.akismet_key, blog=config.site_url)
-        spam_status = akismet.check(
+        akismet_api = akismet.Akismet(key=config.akismet_key, blog_url=config.site_url)
+        spam_status = akismet_api.comment_check(
             comment.ip_address, comment.user_agent, comment_author=comment.name,
             comment_author_email=comment.email, comment_author_url=comment.website,
             comment_content=comment.body)
 
         return spam_status
-
-    # Add other spam control engines here.
 
     return spam_status

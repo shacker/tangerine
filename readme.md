@@ -241,13 +241,15 @@ Functionality that cannot be provided by template tags should be submitted as a 
 
 -----------
 
-Devs who want to run the spam_checks pytest *must* add to their settings:
-AKISMET_KEY = 'abc123' (but with a real, working key). Otherwise we can't run tests that call their API.
+Devs who want to run the spam_checks pytest *must* add to their `test.py` settings:
+AKISMET_KEY = 'abc123' and SITE_URL = 'https://your.registered.domain' (but with real values). Otherwise we can't run tests that call their API with YOUR credentials.
 
 -------
 
 Tangerine divides into two spaces: The "management" interface for writing posts and comment moderation, and the appearance of your site within the project you've added it to. The public interface is controlled by the theme you choose and the customizations you've made to it, while the appearance of the Tangering "management" interface is not intended to be customized (though advanced users are free to override of course).
 
+------
 
+Marking a comment as spam/ham also toggles the Approve/Unapprove status. But toggling the approval status does not affect the spam status. Try it!
 
 
