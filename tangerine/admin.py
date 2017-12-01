@@ -25,8 +25,8 @@ class PostAdmin(admin.ModelAdmin):
         'pub_date',
         'trashed',
         'ptype',
-        'enable_comments',
     )
+
     list_filter = ['published', 'ptype', 'trashed', ]
     search_fields = ['title', 'content', 'summary', ]
     prepopulated_fields = {"slug": ("title",)}
@@ -62,8 +62,24 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['approved', ]
 
 
+class ConfigAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('site_title', 'tagline', 'site_url',)
+        }),
+        ('Posts', {
+            'fields': ('num_posts_per_list_view',),
+        }),
+        ('Comments', {
+            'fields': ('comment_system', 'enable_comments_global', 'auto_approve_previous_commentors'),
+        }),
+        ('External', {
+            'fields': ('google_analytics_id', 'akismet_key',),
+        }),
+    )
 
-admin.site.register(Config)
+
+admin.site.register(Config, ConfigAdmin)
 admin.site.register(Category)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Post, PostAdmin)
