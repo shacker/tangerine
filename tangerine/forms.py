@@ -3,6 +3,15 @@ from tangerine.models import Comment
 
 
 class CommentForm(forms.ModelForm):
+    name = forms.CharField(
+        label="Name",
+        required=True,
+    )
+    email = forms.EmailField(
+        label="Email",
+        required=True,
+    )
+
     class Meta:
         model = Comment
         fields = ['name', 'email', 'website', 'body']

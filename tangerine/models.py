@@ -203,14 +203,16 @@ class Comment(TimeStampedModel):
         on_delete=models.CASCADE,
         help_text="ForeignKey to User object; used for authenticated commenters only.")
 
+    # Name and email are non-required so authenticated users can submit comments without entering them;
+    # for them, those fields are populated after initial comment save.
     name = models.CharField(
         blank=True,
         max_length=100)
-    website = models.URLField(
-        blank=True)
     email = models.EmailField(
         blank=True,
     )
+    website = models.URLField(
+        blank=True)
 
     ip_address = models.GenericIPAddressField(
         verbose_name="IP Address",

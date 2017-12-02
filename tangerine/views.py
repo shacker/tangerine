@@ -73,9 +73,18 @@ def post_detail(request, year, month, day, slug):
             comment.save()
 
             return HttpResponseRedirect(post.get_absolute_url())
+        else:
+            # We should never be here, given browser-side field validation.
+            # Users of very old browsers might have issues if they skip a required field.
+            # print(form.errors)
+            pass
 
     else:
-        form = CommentForm()
+        # For auth users, pre-populate form with known first/last name
+        if request.user.is_authenticated:
+            form = CommentForm(initial={'name': request.user.get_full_name, 'email': request.user.email})
+        else:
+            form = CommentForm()
 
     try:
         next_post = Post.get_next_by_created(post, ptype='post')

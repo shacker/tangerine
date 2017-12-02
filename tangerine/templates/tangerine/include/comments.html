@@ -23,20 +23,17 @@
 <form action="." method="post" id="new_comment_form">
     {% csrf_token %}
 
-    {{ form.non_field_errors }}
-    {# Don't prompt auth users for name, email etc. #}
-    {% if not user.is_authenticated %}
-        <div class="fieldWrapper">
-            {{ form.name.errors }}
-            <label for="{{ form.name.id_for_label }}">Name:</label>
-            {{ form.name }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.email.errors }}
-            <label for="{{ form.email.id_for_label }}">Email:</label>
-            {{ form.email }}
-        </div>
-    {% endif %}
+    {#  For authenticated users, name and email are pre-populated #}
+    <div class="fieldWrapper">
+        {{ form.name.errors }}
+        <label for="{{ form.name.id_for_label }}">Name:</label>
+        {{ form.name }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.email.errors }}
+        <label for="{{ form.email.id_for_label }}">Email:</label>
+        {{ form.email }}
+    </div>
 
     <div class="fieldWrapper">
         {{ form.website.errors }}
