@@ -73,10 +73,12 @@ def category(request, cat_slug):
     return render(request, "tangerine/category.html", {'category':  cat, 'posts': posts})
 
 
-# ===============  Management interfaces  ===============
+# ===============  Private management interfaces  ===============
 
 @user_passes_test(lambda u: u.is_superuser)
 def manage_comments(request):
+
+    config = Config.objects.first()
 
     if request.GET.get('q'):
         q = request.GET.get('q')
@@ -96,14 +98,17 @@ def manage_comments(request):
     page = request.GET.get('page')
     comments = paginator.get_page(page)
 
-    return render(request, "tangerine/management/comments.html", {'comments': comments, 'form': form, 'q': q})
+    context = {'comments': comments, 'form': form, 'q': q, 'config': config}
+    return render(request, "tangerine/management/comments.html", context)
+
+
+# ===============  Non-displaying process functions  ===============
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def toggle_comment_approval(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
 
-    # Work is done in utility function.
+    comment = get_object_or_404(Comment, id=comment_id)
     toggle_approval(comment)
     messages.add_message(request, messages.SUCCESS, 'Approval status of comment {} changed.'.format(comment.id))
 
@@ -112,9 +117,8 @@ def toggle_comment_approval(request, comment_id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def toggle_comment_spam(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
 
-    # Work is done in utility function.
+    comment = get_object_or_404(Comment, id=comment_id)
     toggle_spam(comment)
     messages.add_message(request, messages.SUCCESS, 'Spam status of comment {} changed.'.format(comment.id))
 
@@ -123,8 +127,8 @@ def toggle_comment_spam(request, comment_id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def delete_comment(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
 
+    comment = get_object_or_404(Comment, id=comment_id)
     comment.delete()
     messages.add_message(request, messages.SUCCESS, 'Comment deleted.')
 

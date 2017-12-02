@@ -72,9 +72,8 @@ def process_comment(request, comment, post):
     """Set attributes, spam check, get IP address, sanitize, etc. No return value."""
 
     if request.user.is_authenticated:
+        # We already set auth user's name and email in the form's inital vals.
         comment.author = request.user
-        # comment.name = request.user.get_full_name()
-        # comment.email = request.user.email
 
     # Is this a threaded comment?
     if request.POST.get('parent_id'):
