@@ -1,9 +1,11 @@
+from ipware.ip import get_ip
 import akismet
 import bleach
 
 from django.conf import settings
+from django.contrib import messages
 
-from tangerine.models import ApprovedCommentor, Config
+from tangerine.models import ApprovedCommentor, Config, Comment
 
 
 def sanitize_comment(comment):
@@ -63,6 +65,47 @@ def toggle_approval(comment):
 
     # Then flip comment approval state to the opposite of whatever it is now.
     comment.approved = not comment.approved
+    comment.save()
+
+
+def process_comment(request, comment, post):
+    """Set attributes, spam check, get IP address, sanitize, etc. No return value."""
+
+    if request.user.is_authenticated:
+        comment.author = request.user
+        # comment.name = request.user.get_full_name()
+        # comment.email = request.user.email
+
+    # Is this a threaded comment?
+    if request.POST.get('parent_id'):
+        comment.parent = Comment.objects.get(id=request.POST.get('parent_id'))
+
+    # If commenter is logged in, override name and email with stored values from User object
+    if request.user.is_authenticated:
+        comment.name = request.user.get_full_name()
+        comment.email = request.user.email
+
+    # Set required relationship to Post object
+    comment.post = post
+
+    # Get commenter's IP and User-Agent string
+    ip = get_ip(request)
+    if ip is not None:
+        comment.ip_address = ip
+    comment.user_agent = request.META.get('HTTP_USER_AGENT', '')
+
+    comment.spam = spam_check(comment)
+
+    # Strip disallowed HTML tags. See tangerine docs to customize.
+    comment.body = sanitize_comment(comment.body)
+
+    # Call comment approval workflow
+    comment.approved = get_comment_approval(comment.email, request.user.is_authenticated)
+    if comment.approved:
+        messages.add_message(request, messages.SUCCESS, 'Your comment has been posted.')
+    else:
+        messages.add_message(request, messages.INFO, 'Your comment has been held for moderation.')
+
     comment.save()
 
 

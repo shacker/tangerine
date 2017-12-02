@@ -1,5 +1,3 @@
-from ipware.ip import get_ip
-
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
@@ -7,10 +5,9 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
-
 from tangerine.forms import CommentForm, CommentSearchForm
 from tangerine.models import Category, Post, Comment, Config
-from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval, toggle_spam, spam_check
+from tangerine.utils import toggle_approval, toggle_spam, process_comment
 
 
 def home(request):
@@ -32,46 +29,8 @@ def post_detail(request, year, month, day, slug):
         form = CommentForm(request.POST)
 
         if form.is_valid():
-
             comment = form.save(commit=False)
-
-            if request.user.is_authenticated:
-                comment.author = request.user
-                comment.name = request.user.get_full_name()
-                comment.email = request.user.email
-
-            # Is this a threaded comment?
-            if request.POST.get('parent_id'):
-                comment.parent = Comment.objects.get(id=request.POST.get('parent_id'))
-
-            # If commenter is logged in, override name and email with stored values from User object
-            if request.user.is_authenticated:
-                comment.name = request.user.get_full_name()
-                comment.email = request.user.email
-
-            # Set required relationship to Post object
-            comment.post = post
-
-            # Get commenter's IP and User-Agent string
-            ip = get_ip(request)
-            if ip is not None:
-                comment.ip_address = ip
-            comment.user_agent = request.META.get('HTTP_USER_AGENT', '')
-
-            comment.spam = spam_check(comment)
-
-            # Strip disallowed HTML tags. See tangerine docs to customize.
-            comment.body = sanitize_comment(form.cleaned_data['body'])
-
-            # Call comment approval workflow
-            comment.approved = get_comment_approval(comment.email, request.user.is_authenticated)
-            if comment.approved:
-                messages.add_message(request, messages.SUCCESS, 'Your comment has been posted.')
-            else:
-                messages.add_message(request, messages.INFO, 'Your comment has been held for moderation.')
-
-            comment.save()
-
+            process_comment(request, comment, post)  # Bulk of comment processing happens here
             return HttpResponseRedirect(post.get_absolute_url())
         else:
             # We should never be here, given browser-side field validation.
@@ -80,7 +39,7 @@ def post_detail(request, year, month, day, slug):
             pass
 
     else:
-        # For auth users, pre-populate form with known first/last name
+        # For auth users, pre-populate form with known first/last name, email
         if request.user.is_authenticated:
             form = CommentForm(initial={'name': request.user.get_full_name, 'email': request.user.email})
         else:
