@@ -252,4 +252,17 @@ Tangerine divides into two spaces: The "management" interface for writing posts 
 
 Marking a comment as spam/ham also toggles the Approve/Unapprove status. But toggling the approval status does not affect the spam status. Try it!
 
+-------
+
+### Static files
+
+Tangerine includes some CSS and Javascript for use in the management interface. To have Tangerine's static dir included in your project, add it to your project's `STATICFILES_DIRS `:
+
+```
+STATICFILES_DIRS = [
+	...
+    'tangerine/static'
+]
+```
+
 

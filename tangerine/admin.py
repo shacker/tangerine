@@ -65,7 +65,7 @@ class CommentAdmin(admin.ModelAdmin):
 class ConfigAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': ('site_title', 'tagline', 'site_url',)
+            'fields': ('site_title', 'tagline', 'site_url', 'from_email')
         }),
         ('Posts', {
             'fields': ('num_posts_per_list_view',),

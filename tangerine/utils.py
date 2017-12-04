@@ -4,6 +4,9 @@ import bleach
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
 
 from tangerine.models import ApprovedCommentor, Config, Comment
 
@@ -68,6 +71,30 @@ def toggle_approval(comment):
     comment.save()
 
 
+def send_comment_moderation_email(comment):
+    """Alert post author that comment needs moderation, or has been automatically published.
+    Comments need moderation if they are marked as spam or not set to auto-approve.
+
+    Takes a comment object, returns nothing"""
+
+    config = Config.objects.first()
+
+    if comment.spam or not comment.approved:
+        # send moderation email
+        subject = "A new comment on {} requires moderation".format(config.site_title)
+    else:
+        # send announcement email
+        subject = "A new comment on {} has been automatically published".format(config.site_title)
+
+    send_mail(
+        subject,
+        render_to_string('tangerine/email/comment_moderation.txt', {'comment': comment}),
+        config.from_email,
+        [comment.post.author.email, ],
+        fail_silently=True
+    )
+
+
 def process_comment(request, comment, post):
     """Set attributes, spam check, get IP address, sanitize, etc. No return value."""
 
@@ -93,6 +120,7 @@ def process_comment(request, comment, post):
         comment.ip_address = ip
     comment.user_agent = request.META.get('HTTP_USER_AGENT', '')
 
+    # Run spam check
     comment.spam = spam_check(comment)
 
     # Strip disallowed HTML tags. See tangerine docs to customize.
@@ -106,6 +134,9 @@ def process_comment(request, comment, post):
         messages.add_message(request, messages.INFO, 'Your comment has been held for moderation.')
 
     comment.save()
+
+    # Alert post author that comment needs moderation, or that it exists (if it doesn't)
+    send_comment_moderation_email(comment)
 
 
 def akismet_spam_ham(comment):
