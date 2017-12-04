@@ -71,6 +71,13 @@ class Config(models.Model):
         max_length=12,
         help_text="Select the commenting system to be used. Tangerine's is \"Native\".")
 
+    from_email = models.CharField(
+        default="June Carter-Cash <june@example.com>",
+        max_length=100,
+        help_text="Emails sent FROM tangerine, such as comment moderation messages, will originate from this address.\
+            Should be a real, reachable email."
+    )
+
     class Meta:
         verbose_name_plural = "Config"
 
