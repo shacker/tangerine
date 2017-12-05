@@ -78,6 +78,13 @@ class Config(models.Model):
             Should be a real, reachable email."
     )
 
+    moderation_email = models.CharField(
+        default="Johnny Cash <johnny@example.com>",
+        max_length=100,
+        help_text="Comment moderation emails will be sent TO this address.\
+            Should be a real, reachable email."
+    )
+
     class Meta:
         verbose_name_plural = "Config"
 

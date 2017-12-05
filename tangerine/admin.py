@@ -71,7 +71,9 @@ class ConfigAdmin(admin.ModelAdmin):
             'fields': ('num_posts_per_list_view',),
         }),
         ('Comments', {
-            'fields': ('comment_system', 'enable_comments_global', 'auto_approve_previous_commentors'),
+            'fields': (
+                'comment_system', 'enable_comments_global', 'auto_approve_previous_commentors', 'moderation_email'
+                ),
         }),
         ('External', {
             'fields': ('google_analytics_id', 'akismet_key',),
