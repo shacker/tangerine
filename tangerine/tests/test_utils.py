@@ -1,10 +1,21 @@
 import pytest
 
 from django.conf import settings
+from django.core import mail
+from django.shortcuts import reverse
 
 from tangerine.factories import PostFactory, CommentFactory, ConfigFactory
 from tangerine.models import ApprovedCommentor
-from tangerine.utils import sanitize_comment, get_comment_approval, toggle_approval, spam_check, akismet_spam_ham
+from tangerine.utils import (
+    sanitize_comment, get_comment_approval, toggle_approval,
+    spam_check, akismet_spam_ham, send_comment_moderation_email
+    )
+
+
+@pytest.fixture(autouse=True)
+# Set up an in-memory mail server to receive test emails
+def email_backend_setup(settings):
+    settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 
 @pytest.mark.django_db
@@ -102,7 +113,39 @@ def test_submit_aksimet_spam():
         ConfigFactory(akismet_key=settings.AKISMET_KEY, site_url=settings.SITE_URL)
         post = PostFactory()
 
-        # Good comment:
         c1 = CommentFactory(post=post, email='akismet-guaranteed-spam@example.com', spam=True)
 
         assert akismet_spam_ham(c1) is True
+
+
+@pytest.mark.django_db
+def test_send_comment_moderation_email(email_backend_setup, admin_user):
+    """Email should be sent with a different subject and body depending on whether it needs moderation."""
+
+    site_title = "foobar blog"
+    site_url = "http://example.com"
+    comment_body = "hello world"
+    from_email = "you@example.com"
+    moderation_email = "another@example.com"
+
+    ConfigFactory(site_url=site_url, site_title=site_title, from_email=from_email, moderation_email=moderation_email)
+    post = PostFactory(author=admin_user)
+
+    # Test spam first
+    comment = CommentFactory(body=comment_body, post=post, spam=True, approved=False)
+    send_comment_moderation_email(comment)
+    sent_msg = mail.outbox[0]
+    path = reverse('tangerine:manage_comment', kwargs={'comment_id': comment.id})
+
+    assert len(mail.outbox) == 1
+    assert sent_msg.subject == "A new comment on {} requires moderation".format(site_title)
+    assert comment_body in sent_msg.body  # Content is wrapped in email template, so not identical
+    assert "{}{}".format(site_url, path) in sent_msg.body  # Email includes comment moderation link
+    assert sent_msg.from_email == from_email
+    assert moderation_email in sent_msg.recipients()
+
+    # Then ham
+    comment = CommentFactory(body=comment_body, post=post, spam=False, approved=True)
+    send_comment_moderation_email(comment)
+    sent_msg = mail.outbox[1]
+    assert sent_msg.subject == "A new comment on {} has been automatically published".format(site_title)

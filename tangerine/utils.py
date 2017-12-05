@@ -88,9 +88,9 @@ def send_comment_moderation_email(comment):
 
     send_mail(
         subject,
-        render_to_string('tangerine/email/comment_moderation.txt', {'comment': comment}),
+        render_to_string('tangerine/email/comment_moderation.txt', {'config': config, 'comment': comment}),
         config.from_email,
-        [comment.post.author.email, ],
+        [config.moderation_email, ],
         fail_silently=True
     )
 
@@ -135,7 +135,7 @@ def process_comment(request, comment, post):
 
     comment.save()
 
-    # Alert post author that comment needs moderation, or that it exists (if it doesn't)
+    # Alert post author that comment needs moderation, or that it's been auto-published:
     send_comment_moderation_email(comment)
 
 

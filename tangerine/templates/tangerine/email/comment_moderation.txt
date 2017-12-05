@@ -1,17 +1,14 @@
-Hello {{ comment.post.author }} --
-
+Hello {{ comment.post.author }} -
 {% if comment.spam or not comment.approved %}
-A new comment requires moderation.
+A new comment requires moderation:
 {% else %}
-A new comment has been posted and automatically published.
+A new comment has been posted and automatically published:
 {% endif %}
 
 Body: {{ comment.body }}
 
-Comment ID: {{ comment.id }}
-
-Moderate: {% url 'tangerine:manage_comments' %}
-Original post: {{ comment.post.get_absolute_url }}
+Moderate: {{ config.site_url }}{% url 'tangerine:manage_comment' comment.id %}
+Original post: {{ config.site_url }}{{ comment.post.get_absolute_url }}
 
 {% if comment.spam %}
 At least one of your spam-control services suspects this comment of being spam.
