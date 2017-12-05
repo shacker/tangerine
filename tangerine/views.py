@@ -76,8 +76,8 @@ def category(request, cat_slug):
 # ===============  Private management interfaces  ===============
 
 @user_passes_test(lambda u: u.is_superuser)
-def manage_comments(request):
-
+def manage_comments(request, comment_id=None):
+    """Comment management interface. Same view is used for single comment moderation (if comment_id exists), or list."""
     config = Config.objects.first()
 
     if request.GET.get('q'):
@@ -90,6 +90,9 @@ def manage_comments(request):
     else:
         q = None
         comments = Comment.objects.all()  # In this view, don't filter for approved, spam etc. - show all.
+
+    if comment_id:
+        comments = comments.filter(id=comment_id)
 
     comments = comments.order_by('-created')
     form = CommentSearchForm(initial={'q': q})

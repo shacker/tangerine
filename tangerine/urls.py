@@ -10,7 +10,15 @@ urlpatterns = [
     path('<str:slug>/', views.page_detail, name="page_detail"),
 
     # Management interface
-    path('manage/comments', views.manage_comments, name="manage_comments"),
+    path(
+        # Same view handles single comment moderation or list view
+        'manage/comments/<int:comment_id>',
+        views.manage_comments,
+        name="manage_comment"),
+    path(
+        'manage/comments',
+        views.manage_comments,
+        name="manage_comments"),
     path(
         'manage/comments/toggle_approval/<int:comment_id>/',
         views.toggle_comment_approval,
