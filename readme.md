@@ -14,15 +14,18 @@ Tangerine is a pluggable blogging system for Django, meant to be dropped into an
 - Author profiles (no)
 - Syntax highlighting for code samples
 - "Trash" system
-- List view pagination
+- Pagination
 - WordPress importer
 - Native *threaded* commenting system with spam control
 - Support for Disqus and Facebook comments coming soon
 - Gravatar support in comments
 - Blogroll (related link sets)
 - Google Analytics integration
+- Comment moderation (list and detail), with email notifications
+- Integrated Akismet spam control
+- Mark comments spam/ham, or approved/unapproved
 - OEmbed support
-- Search
+- Search (posts and comments)
 - Rich text editor
 - Configurable via admin:
     - Site title
@@ -241,6 +244,14 @@ Functionality that cannot be provided by template tags should be submitted as a 
 
 -----------
 
+### Akismet Spam Checking
+
+Because WordPress runs 20% of the internet, and Akismet is bundled with every WordPress installation, millions of users are constantly submitting spam and ham feedback to the Akismet service. Akismet is *incredibly* effective at spam control. Fortunatley, Akismet isn't tied to WordPress - it's available to anyone, and excellent Python libs exist for communicating with its API.
+
+Tangerine includes native Akismet support. [Get a key](https://akismet.com/) (free or paid), add it to your Tangerine config, and enjoy virtually automatic spam control. In Tangerine's Comment Moderation interface, use the Spam/Ham buttons to help train Aksimet for the benefit of others.
+
+n.b.: Marking a comment as spam/ham also toggles its Approved/Unapproved status. But toggling the approval status does *not* affect the spam status of the comment (because you might have good reasons to unapprove a comment on your site other than it being spam, or you might want to approve a comment that Akismet thinks is spam for some reason).
+
 Devs who want to run the spam_checks pytest *must* add to their `test.py` settings:
 AKISMET_KEY = 'abc123' and SITE_URL = 'https://your.registered.domain' (but with real values). Otherwise we can't run tests that call their API with YOUR credentials.
 
@@ -250,7 +261,6 @@ Tangerine divides into two spaces: The "management" interface for writing posts 
 
 ------
 
-Marking a comment as spam/ham also toggles the Approve/Unapprove status. But toggling the approval status does not affect the spam status. Try it!
 
 -------
 
