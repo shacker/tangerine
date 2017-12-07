@@ -2,7 +2,7 @@ from libgravatar import Gravatar
 
 from django import template
 
-from tangerine.models import Category, RelatedLinkGroup, Config
+from tangerine.models import Category, RelatedLinkGroup, Config, Comment
 
 register = template.Library()
 
@@ -96,6 +96,34 @@ def get_categories():
 
     return {
         'categories': cats,
+    }
+
+
+@register.simple_tag
+def get_recent_comments(num_comments=10):
+    '''Returns n most-recent published comments as a list.
+
+    To use in a template:
+
+    {% load tangerine_tags %}
+    ...
+    {# Replace 10 with desired number of comments #}
+    {% get_recent_comments 10 as recent_comments %}
+    {% if recent_comments %}
+        <h3>Recent Comments</h3>
+        <ul class="recent_comments">
+            {% for comment in recent_comments.comments %}
+                <li><a href="{{ comment.post.get_absolute_url }}#comment-{{ comment.id }}">{{ comment.name}}</a>,
+                    {{ comment.created|date:"SHORT_DATE_FORMAT" }}<br />
+                    {{ comment.body|striptags|truncatechars:25}}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    '''
+
+    # Return approved comments only
+    return {
+        'comments': Comment.pub.order_by('-created')[:num_comments],
     }
 
 

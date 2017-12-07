@@ -1,8 +1,10 @@
 import pytest
 
-from tangerine.templatetags.tangerine_tags import get_related_links, get_categories, get_settings, gravatar
-from tangerine.factories import RelatedLinkGroupFactory, CategoryFactory, ConfigFactory, PostFactory
-from tangerine.models import Category
+from tangerine.templatetags.tangerine_tags import (
+    get_related_links, get_categories, get_settings, gravatar, get_recent_comments)
+from tangerine.factories import (
+    RelatedLinkGroupFactory, CategoryFactory, ConfigFactory, PostFactory, CommentFactory)
+from tangerine.models import Category, Post, Comment
 
 
 @pytest.mark.django_db
@@ -75,6 +77,22 @@ def test_get_non_empty_categories():
     assert has_only_trashed_cat not in goodcats
     assert has_only_unpub_cat not in goodcats
     assert empty_cat not in goodcats
+
+
+@pytest.mark.django_db
+def test_get_recent_comments():
+    PostFactory.create_batch(10, published=True)
+    for post in Post.objects.all():
+        CommentFactory.create_batch(3, post=post)
+
+    # Generate 30 comments in system, but request back only n through the template tag.
+    recent = get_recent_comments(10)
+    assert len(recent['comments']) == 10
+    recent = get_recent_comments(7)
+    assert len(recent['comments']) == 7
+
+    # Check object type of first element in return list
+    assert isinstance(recent['comments'][0], Comment)
 
 
 def test_gravatar_tag():

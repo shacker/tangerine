@@ -261,6 +261,26 @@ Tangerine divides into two spaces: The "management" interface for writing posts 
 
 ------
 
+## Recent Comments
+
+Add to your base.html:
+
+```
+{% block recent_comments %}{% endblock recent_comments %}
+
+```
+
+Then call the `recent_comments` template tag from the template where you want recent comments to appear, with the number of comments you want to display:
+
+```
+{% get_recent_comments 10 as recent_comments %}
+{# Now loop through recent_comments.comments #}
+
+```
+
+See `home.html` in the default theme for a usage example.
+
+
 
 -------
 
