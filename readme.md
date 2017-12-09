@@ -36,33 +36,74 @@ NOT intended to be "just like WordPress," but rather "an ideal blog engine for D
 **Assumes:**
 
 - Python 3.5+
-- Django 2.0+ *
+- Django 2.0+
 
-* Tangerine uses the new `path`-style routes in Django 2, not the older `url`-style routes.
+Tangerine uses the new `path`-style routes in Django 2, not the older `url`-style routes, so Django 2+ really is a requirement.
 
-### Installation
 
-1. Create a running "container" site with working logins
-1. Add `'tangerine',` to your `INSTALLED_APPS`
+
+## Quick start
+
+1. Create a running "container" site with working logins.
+
+1. Add `'tangerine',` to your `INSTALLED_APPS`:
+
+	```
+	INSTALLED_APPS = [
+	    ...
+	    'tangerine',
+	]
+	```
+
 1. Set your timezone in settings, e.g. `TIME_ZONE = 'America/Los_Angeles'`
-1. `./manage.py migrate`
-1. Create starter posts, categories, blogroll, and a user for yourself (don't skip this!):
-`./manage.py tangerine_start`
 
-### Requirements and Recommendations for Container Site
+1. Include tangerine's URLconf in your project `urls.py`:
 
-For full/best functionality, we recommend adding these tags to the base template in your container site:
+	`url(r'^blog/', include('tangerine.urls')),`
+
+1. Run `python manage.py migrate` to create the tangerine models.
+
+1. Create starter content and a superuser for yourself (don't skip this!): Run `python manage.py tangerine_start` to perform installation tasks and set up dummy data and config.
+
+
+1. Start the development server and visit http://localhost:8000/admin/
+   to create a post. 
+   
+1. While you're in the admin, go to Tangerine/Config to set your site title, optional Google Analytics ID, and other configuration options.
+
+1. Delete the starter content via Admin or from Django shell.
+
+1. Optionally import existing content from WordPress export file (see below)
+
+
+
+## Configuration
+
+Tangerine configuration settings are made in the Django Admin, not in your project settings. If you ran the `tangerine_start` script, default settings will have been created for you, but you'll still want to visit Admin|Tangerine|Config to tweak them. All of the Config settings should be fairly self-explanatory (see the help_text on each field).
+
+Tangerine will crash if you have not created a Config record!
+
+
+## Requirements for Container Site
+
+Tangerine is a *pluggable* app, not a full web application. We assume you already have a working Django site into which you are installing Tangerine. 
+
+For full/best functionality, add these tags to the base template in your container site:
 
 ```
-{% block tangerine_extra_head %}{% endblock tangerine_extra_head %} {# In HTML head #}
-{% block tangerine_extra_css %}{% endblock tangerine_extra_css %}  {# In HTML head #}
-{% block tangerine_extra_js %}{% endblock tangerine_extra_js %}  {# Before end of html body #}
-{% block footer %}{% endblock footer %}  {# Before end of html body #}
+{% block tangerine_extra_head %}{% endblock tangerine_extra_head %}  # In HTML head
+{% block tangerine_extra_css %}{% endblock tangerine_extra_css %}   # In HTML head
+{% block footer %}{% endblock footer %}  # Before end of html body
+{% block tangerine_extra_js %}{% endblock tangerine_extra_js %}  # Before end of html body
 ```
+
+
 
 Include meta-description and author tags, syntax highlighter CSS, JS ^
 
-favicon.ico [how-to]
+
+
+
 
 We intentionally don't provide a Theme system for Tangerine - you can style your site with any HTML/CSS templates you find in the wild, or create your own. Use the provided `templates` directory as a starting point [how-to here]. We assume your base template is called `base.html` and we extend that. Replace this in Tangerine templates if you use some other filename.
 
@@ -74,40 +115,7 @@ In contrast, Pages are excluded from list views and are accessible at `/foo` whe
 
 The Django Admin includes a list filter to let you quickly sort Posts vs. Pages.
 
-Quick start
------------
 
-1. Add to your INSTALLED_APPS:
-
-```
-INSTALLED_APPS = [
-    ...
-    'tangerine',
-]
-```
-
-2. Include tangerine's URLconf in your project `urls.py`:
-
-`url(r'^blog/', include('tangerine.urls')),`
-
-3. Run `python manage.py migrate` to create the tangerine models.
-
-4. Run `python manage.py tangerine_start` to perform installation tasks and set up dummy data and config
-
-4. Start the development server and visit http://127.0.0.1:8000/admin/
-   to create a post. 
-   
-4. While you're in the admin, go to Tangerine/Config to set your site title, optional Google Analytics ID,
-    and other configuration options.
-
-5. Visit http://127.0.0.1:8000
-
-To run Tangerine's tests, add pytest to your virtualenv:
-`pip install pytest` or `pipenv install pytest`
-Then just run `pytest` from the projcect root.
-
-Note: Config object is *required* -- tangerine will not run without one. Config is created for you in the start script.
-If you skip the script, create a single Config row in the Admin after migration.
 
 ## Commenting
 Native vs. Disqus, Google, etc.
@@ -185,9 +193,11 @@ Tangerine supports multiple `RelatedLinkGroup`s, which are named collections of 
 
 ### Internal links
 
+[Check this]
+
 To link to any internal Post or Page, do this in a template:
 
-    `<a href="{% url 'post_detail' 'about' %}">About</a>`
+`<a href="{% url 'post_detail' 'about' %}">About</a>`
 
 where `'about'` is replaced with the slug of the page or post .
 
@@ -202,12 +212,16 @@ Tangerine supplies content for the HTML `title` tag in:
 If you have a `block title` in your base.html, it should be populated automatically. If you use another block name, you'll need to change what's being sent from the tangerine templates.
 
 ## Running tests
-# export DJANGO_SETTINGS_MODULE=config.test
+
+Tangerine includes a very complete test suite, which will always pass before new versions are released. There is little reason for end users to run Tangerine tests, but if you want to, do:
+
+```
+export DJANGO_SETTINGS_MODULE=config.test
 ln -s /Users/shacker/dev/tangerine .  # Do it with a symlink, not a pip install!
 pipenv run pytest 
+```
 
-
-###
+### Gravatar
 
 Gravatar support in comment templates is present by default, and avatars are derived from the commenter's email, if they have a gravatar account:
 
@@ -227,11 +241,13 @@ To override, add to your project settings e.g.:
 
 
 ### Extra JS
-        {% block extra_js %}{% endblock extra_js %}
+
+`{% block extra_js %}{% endblock extra_js %}`
 
 We assume you have jquery installed!
 
 ### Comment Moderation
+
 View is at ...
 
 By default, the emails of approved comments are added to an ApprovedCommentors table, and future comments from those email addresses will be auto-approved. To disable this setting, turn it off in the Admin config.
@@ -296,3 +312,8 @@ STATICFILES_DIRS = [
 ```
 
 
+### Running Tests
+
+To run Tangerine's tests, add pytest to your virtualenv:
+`pip install pytest` or `pipenv install pytest`
+Then just run `pytest` from the projcect root.
