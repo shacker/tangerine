@@ -1,7 +1,7 @@
 {% extends "tangerine/base.html" %}
 {% load tangerine_tags %}
 
-{% block title %}foobar blog{% endblock title %}
+{% block title %}{{ block.super }}Home{% endblock title %}
 
 {% block content %}
     {% get_settings as tangerine %}

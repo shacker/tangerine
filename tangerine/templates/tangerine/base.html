@@ -1,7 +1,13 @@
 {% extends "base.html" %}
-{# Above assumes your site's main template is base.html - season to taste. #}
+{% load tangerine_tags %}
+{# Above assumes your site's main template is base.html - change as needed. #}
 
-{% block title %}{% endblock title %}
+{% get_settings as tangerine %}
+
+{% block title %}
+    {% get_settings as tangerine %}
+    {{ tangerine.site_title }} -
+{% endblock title %}
 
 {% block tangerine_extra_head %}{% endblock tangerine_extra_head %}
 {% block tangerine_extra_css %}{% endblock tangerine_extra_css %}
