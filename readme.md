@@ -95,6 +95,9 @@ For full/best functionality, add these tags to the base template in your contain
 {% block tangerine_extra_css %}{% endblock tangerine_extra_css %}   # In HTML head
 {% block footer %}{% endblock footer %}  # Before end of html body
 {% block tangerine_extra_js %}{% endblock tangerine_extra_js %}  # Before end of html body
+
+{% block sidebar %}{% endblock sidebar %}
+
 ```
 
 
