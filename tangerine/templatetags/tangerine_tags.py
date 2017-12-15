@@ -36,6 +36,7 @@ def get_settings():
             'num_posts_per_list_view': config.num_posts_per_list_view,
             'enable_comments_global': config.enable_comments_global,
             'comment_system': config.comment_system,
+            'google_analytics_id': config.google_analytics_id,
         }
     except AttributeError:
         raise AttributeError("Site not yet configured. Visit Tangerine/Config in the Admin and create a Config record.")
