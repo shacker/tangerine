@@ -1,44 +1,47 @@
-
 {% if posts %}
 
-    {% for post in posts %}
-        <div class="news-item">
-            <h2>
-                <a href="{{ post.get_absolute_url }}">
-                    {{ post.title }}
-                </a>
-            </h2>
+  {% for post in posts %}
+    <div class="news-item">
+      <h2>
+        <a href="{{ post.get_absolute_url }}">
+          {{ post.title }}
+        </a>
+      </h2>
 
-            {% include "tangerine/include/byline.html" %}
+      {% include "tangerine/include/byline.html" %}
 
-            {% if post.summary %}
-                {{ post.summary|safe }}
-            {% else %}
-                {{ post.content|truncatewords:20 }}
-            {% endif %}
+      {% if post.summary %}
+        {{ post.summary|safe }}
+      {% else %}
+        {{ post.content|truncatewords:20 }}
+      {% endif %}
 
-            <p class="num_comments_per_post">{{ post.comment_set.all.count }} comments</p>
+      <p class="num_comments_per_post">{{ post.comment_set.all.count }} comments</p>
 
-            {% include "tangerine/include/edit_link.html" %}
-        </div>
-
-    {% endfor %}
-
-    {#  Navigate between pages of results #}
-    <div class="row">
-        <div class="col">
-            {% if posts.has_previous %}
-                <div class="float-left page-item"><a href="?page={{ posts.previous_page_number }}">Newer posts</a></div>
-            {% endif %}
-        </div>
-
-        <div class="col">
-            {% if posts.has_next %}
-                <div class="float-right page-item"><a href="?page={{ posts.next_page_number }}">Older posts</a></div>
-            {% endif %}
-        </div>
+      {% include "tangerine/include/edit_link.html" %}
     </div>
 
+  {% endfor %}
+
+  {#  Navigate between pages of results #}
+  <div class="row">
+    <div class="col">
+      {% if posts.has_previous %}
+        <div class="float-left page-item">
+          <a href="?page={{ posts.previous_page_number }}">Newer posts</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="col">
+      {% if posts.has_next %}
+        <div class="float-right page-item">
+          <a href="?page={{ posts.next_page_number }}">Older posts</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
 {% else %}
-    <p>There is no content to show in this view, sorry. Create some!</p>
+  <p>There is no content to show in this view, sorry. Create some!</p>
 {% endif %}

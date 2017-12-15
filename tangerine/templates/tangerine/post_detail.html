@@ -1,55 +1,62 @@
 {% extends "tangerine/base.html" %}
 {% load tangerine_tags %}
 
-{% block title %}{{ block.super }}{{ post.title }}{% endblock title %}
+{% block title %}{{ block.super }}{{ post.title }}
+{% endblock title %}
 
 {% block content %}
-    {% get_settings as tangerine %}
+  {% get_settings as tangerine %}
 
-    <h2>{{ post.title }}</h2>
+  <h2>{{ post.title }}</h2>
 
-    {% if post.ptype == 'post' %}
-        {% include "tangerine/include/byline.html" %}
+  {% if post.ptype == 'post' %}
+    {% include "tangerine/include/byline.html" %}
+  {% endif %}
+
+  {{ post.content|safe }}
+
+  {% include "tangerine/include/edit_link.html" %}
+
+  <p>
+    <a class="new_comment_link" href="#new_comment">Reply</a>
+  </p>
+
+  {#  Enable comments for this view? #}
+  {% if tangerine.enable_comments_global and post.enable_comments %}
+    {% if tangerine.comment_system == 'native' %}
+      {% include "tangerine/include/comments.html" %}
     {% endif %}
+    {#  Inject other comment systems here #}
+  {% endif %}
 
-    {{ post.content|safe }}
-
-    {% include "tangerine/include/edit_link.html" %}
-
-    <p><a class="new_comment_link" href="#new_comment">Reply</a></p>
-
-    {#  Enable comments for this view? #}
-    {% if tangerine.enable_comments_global and post.enable_comments %}
-        {% if tangerine.comment_system == 'native' %}
-            {% include "tangerine/include/comments.html" %}
-        {% endif %}
-        {#  Inject other comment systems here #}
-    {% endif %}
-
-    {#  Navigate between previous/next posts #}
-    <div class="row">
-        <div class="col">
-            {% if previous_post %}
-                <div class="float-left page-item"><a href="{{ previous_post.get_absolute_url }}">Previous</a></div>
-            {% endif %}
+  {#  Navigate between previous/next posts #}
+  <div class="row">
+    <div class="col">
+      {% if previous_post %}
+        <div class="float-left page-item">
+          <a href="{{ previous_post.get_absolute_url }}">Previous</a>
         </div>
-
-        <div class="col">
-            {% if next_post %}
-                <div class="float-right page-item"><a href="{{ next_post.get_absolute_url }}">Next</a></div>
-            {% endif %}
-        </div>
+      {% endif %}
     </div>
+
+    <div class="col">
+      {% if next_post %}
+        <div class="float-right page-item">
+          <a href="{{ next_post.get_absolute_url }}">Next</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 {% endblock content %}
 
 {% block extra_js %}
-    {#  For comment threading: If comment is a reply to a comment, insert the parent comment ID into hidden field. #}
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $(".new_comment_link").click(function() {
-                var parent_id = $(this).data('parentId');
-                $('input[id="parent_id"]').val(parent_id);
-            });
-        });
-    </script>
+  {#  For comment threading: If comment is a reply to a comment, insert the parent comment ID into hidden field. #}
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".new_comment_link").click(function () {
+        var parent_id = $(this).data('parentId');
+        $('input[id="parent_id"]').val(parent_id);
+      });
+    });
+  </script>
 {% endblock extra_js %}

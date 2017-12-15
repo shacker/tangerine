@@ -5,140 +5,150 @@
 
 {% block content %}
 
-    <h3>Comment Moderation</h3>
+  <h3>Comment Moderation</h3>
 
-    {% if config.comment_system == 'native' %}
-        <form action="" method="get">
-                <label for="{{ form.q.id_for_label }}">Search:</label>
-                {{ form.q }}
-            <input type="submit" value="Go" class="btn btn-sm btn-primary" />
-            {% if q %}
-                <a href="{% url 'tangerine:manage_comments' %}" class="btn btn-sm btn-secondary">Clear</a>
-            {% endif %}
-        </form>
+  {% if config.comment_system == 'native' %}
+    <form action="" method="get">
+      <label for="{{ form.q.id_for_label }}">Search:</label>
+      {{ form.q }}
+      <input type="submit" value="Go" class="btn btn-sm btn-primary"/>
+      {% if q %}
+        <a href="{% url 'tangerine:manage_comments' %}" class="btn btn-sm btn-secondary">Clear</a>
+      {% endif %}
+    </form>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12">
-                    <table class="table table-striped">
-                      <thead class="thead-inverse">
-                        <tr class="row">
-                            <th class="col-sm-3">Name/Email/Web</th>
-                            <th class="col-sm-6">Post/Comment</th>
-                            <th class="col-sm-1">Spam/Ham</th>
-                            <th class="col-sm-1">Approve</th>
-                            <th class="col-sm-1">Delete</th>
-                        </tr>
-                      </thead>
-                      <tbody>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12">
+          <table class="table table-striped">
+            <thead class="thead-inverse">
+              <tr class="row">
+                <th class="col-sm-3">Name/Email/Web</th>
+                <th class="col-sm-6">Post/Comment</th>
+                <th class="col-sm-1">Spam/Ham</th>
+                <th class="col-sm-1">Approve</th>
+                <th class="col-sm-1">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
 
-                          {% for comment in comments %}
-                              <tr class="row">
-                                  <td class="col-sm-3">
-                                      <small>
-                                      {{ comment.name }}<br />
-                                      {{ comment.email }}<br />
-                                      {{ comment.created|date:"N d, Y" }}, {{ comment.created|date:"P"}}<br />
-                                      {% if comment.website %}
-                                          <a href="{{ comment.website }}" target="_blank"><small>{{ comment.website }}</small></a>
-                                      {% endif %}
-                                  </small>
-                                  </td>
-                                  <td class="col-sm-6">
-                                      {{ comment.body|truncatewords:10}}<br />
-                                          <small>
-                                              <a href="#" class="modalViewLink" data-toggle="modal" data-comment-body="{{ comment.body }}"
-                                                  data-target="#commentModal">Preview</a> |
-                                              <a href="{{ comment.post.get_absolute_url }}">OP</a> |
-                                              <a href="{% url 'admin:tangerine_comment_change' comment.id %}">Edit</a>
-                                          </small>
+              {% for comment in comments %}
+                <tr class="row">
+                  <td class="col-sm-3">
+                    <small>
+                      {{ comment.name }}<br/>
+                      {{ comment.email }}<br/>
+                      {{ comment.created|date:"N d, Y" }},
+                      {{ comment.created|date:"P"}}<br/>
+                      {% if comment.website %}
+                        <a href="{{ comment.website }}" target="_blank">
+                          <small>{{ comment.website }}</small>
+                        </a>
+                      {% endif %}
+                    </small>
+                  </td>
+                  <td class="col-sm-6">
+                    {{ comment.body|truncatewords:10}}<br/>
+                    <small>
+                      <a href="#" class="modalViewLink" data-toggle="modal" data-comment-body="{{ comment.body }}" data-target="#commentModal">Preview</a>
+                      |
+                      <a href="{{ comment.post.get_absolute_url }}">OP</a>
+                      |
+                      <a href="{% url 'admin:tangerine_comment_change' comment.id %}">Edit</a>
+                    </small>
 
-                                  </td>
-                                  <td class="col-sm-1">
-                                      <a
-                                        href="{% url 'tangerine:toggle_comment_spam' comment.id %}"
-                                        class="btn btn-sm btn-outline-{% if comment.spam %}primary{% else %}success{% endif %}">
-                                        {% if comment.spam %}Ham{% else %}Spam{% endif %}
-                                      </a>
-                                  </td>
-                                  <td class="col-sm-1">
-                                      <a
-                                        href="{% url 'tangerine:toggle_comment_approval' comment.id %}"
-                                        class="btn btn-sm btn-outline-{% if comment.approved %}primary{% else %}success{% endif %}">
-                                        {% if comment.approved %}Unapprove{% else %}Approve{% endif %}
-                                      </a>
-                                  </td>
-                                  <td class="col-sm-1">
-                                      <a href="{% url 'tangerine:delete_comment' comment.id %}" class="btn btn-sm btn-outline-secondary">Delete</a>
-                                  </td>
-                              </tr>
-                          {% endfor %}
+                  </td>
+                  <td class="col-sm-1">
+                    <a href="{% url 'tangerine:toggle_comment_spam' comment.id %}" class="btn btn-sm btn-outline-{% if comment.spam %}primary{% else %}success{% endif %}">
+                      {% if comment.spam %}Ham{% else %}Spam{% endif %}
+                    </a>
+                  </td>
+                  <td class="col-sm-1">
+                    <a href="{% url 'tangerine:toggle_comment_approval' comment.id %}" class="btn btn-sm btn-outline-{% if comment.approved %}primary{% else %}success{% endif %}">
+                      {% if comment.approved %}Unapprove{% else %}Approve{% endif %}
+                    </a>
+                  </td>
+                  <td class="col-sm-1">
+                    <a href="{% url 'tangerine:delete_comment' comment.id %}" class="btn btn-sm btn-outline-secondary">Delete</a>
+                  </td>
+                </tr>
+              {% endfor %}
 
-                      </tbody>
-                    </table>
+            </tbody>
+          </table>
 
-                    <p><a href="{% url 'admin:tangerine_comment_changelist' %}?approved__exact=0">Batch-delete unapproved comments in Django admin</a></p>
+          <p>
+            <a href="{% url 'admin:tangerine_comment_changelist' %}?approved__exact=0">Batch-delete unapproved comments in Django admin</a>
+          </p>
 
-                </div>
-            </div>
         </div>
+      </div>
+    </div>
 
-        {% if comments.paginator.num_pages > 1 %}
-            <nav aria-label="Comments page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+    {% if comments.paginator.num_pages > 1 %}
+      <nav aria-label="Comments page navigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item">
+            <a class="page-link" href="?page=1">&laquo;</a>
+          </li>
 
-                    {% if comments.has_previous %}
-                        <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">&larr;</a></li>
-                    {% endif %}
+          {% if comments.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ comments.previous_page_number }}">&larr;</a>
+            </li>
+          {% endif %}
 
-                    {#  show current/active #}
-                    <li class="page-item active"><a class="page-link" href="?page={{ comments.number }}">{{ comments.number }}</a></li>
+          {#  show current/active #}
+          <li class="page-item active">
+            <a class="page-link" href="?page={{ comments.number }}">{{ comments.number }}</a>
+          </li>
 
-                    {% if comments.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">&rarr;</a></li>
-                    {% endif %}
+          {% if comments.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ comments.next_page_number }}">&rarr;</a>
+            </li>
+          {% endif %}
 
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ comments.paginator.num_pages }}">&raquo;</a>
-                    </li>
-                </ul>
-            </nav>
-        {% endif %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ comments.paginator.num_pages }}">&raquo;</a>
+          </li>
+        </ul>
+      </nav>
+    {% endif %}
 
-        <div class="modal fade" id="commentModal">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Comment preview</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <p id="modalCommentBody"></p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-            </div>
+    <div class="modal fade" id="commentModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Comment preview</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p id="modalCommentBody"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
+      </div>
+    </div>
 
-    {% else %}
-        <p>You are using the external comment system "{{ config.comment_system }}". This interface is not available.</p>
-    {% endif %}
+  {% else %}
+    <p>You are using the external comment system "{{ config.comment_system }}". This interface is not available.</p>
+  {% endif %}
 
 {% endblock content %}
 
 {% block extra_js %}
-    {#  When "view" link clicked, send that comment's body into the modal viewer  #}
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $(".modalViewLink").click(function() {
-                var comment_text = $(this).data('commentBody');
-                $('p#modalCommentBody').text(comment_text);
-            });
-        });
-    </script>
+  {#  When "view" link clicked, send that comment's body into the modal viewer  #}
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".modalViewLink").click(function () {
+        var comment_text = $(this).data('commentBody');
+        $('p#modalCommentBody').text(comment_text);
+      });
+    });
+  </script>
 {% endblock extra_js %}

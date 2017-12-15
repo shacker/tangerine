@@ -2,51 +2,51 @@
 {% load tangerine_tags %}
 
 {% block navigation %}
-    {% get_settings as tangerine %}
+  {% get_settings as tangerine %}
 
-    <div class="m-b-1">
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+  <div class="m-b-1">
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-            {% if tangerine.site_title %}
-                <a class="navbar-brand" href="{% url 'tangerine:home' %}">{{ tangerine.site_title }}</a>
-            {% endif %}
+      {% if tangerine.site_title %}
+        <a class="navbar-brand" href="{% url 'tangerine:home' %}">{{ tangerine.site_title }}</a>
+      {% endif %}
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'tangerine:page_detail' 'about' %}">About</a>
-                    </li>
-                    {% if request.user.is_authenticated %}
-                        <li class="nav-item">
-                            {# URL provided by django-allauth/account/urls.py #}
-                            <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
-                        </li>
-                        <li class="nav-item">
-                            {# URL provided by django-allauth/account/urls.py #}
-                            <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            {# URL provided by django-allauth/account/urls.py #}
-                            <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
-                        </li>
-                        <li class="nav-item">
-                            {# URL provided by django-allauth/account/urls.py #}
-                            <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
-                        </li>
-                    {% endif %}
-                </ul>
-                {% if tangerine.tagline %}
-                    {{ tangerine.tagline }}
-                {% endif %}
-            </div>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'tangerine:page_detail' 'about' %}">About</a>
+          </li>
+          {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              {# URL provided by django-allauth/account/urls.py #}
+              <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
+            </li>
+            <li class="nav-item">
+              {# URL provided by django-allauth/account/urls.py #}
+              <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              {# URL provided by django-allauth/account/urls.py #}
+              <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+            </li>
+            <li class="nav-item">
+              {# URL provided by django-allauth/account/urls.py #}
+              <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
+            </li>
+          {% endif %}
+        </ul>
+        {% if tangerine.tagline %}
+          {{ tangerine.tagline }}
+        {% endif %}
+      </div>
 
-        </nav>
+    </nav>
 
-    </div>
+  </div>
 
 {% endblock navigation %}

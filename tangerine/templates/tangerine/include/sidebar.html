@@ -1,38 +1,44 @@
 {% load tangerine_tags %}
 
 {% block blogroll %}
-    {% get_related_links 'blogroll' as link_group %}
-    {% if link_group %}
-        <h3>Blogroll</h3>
-        <ul>
-            {% for link in link_group.links %}
-                <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+  {% get_related_links 'blogroll' as link_group %}
+  {% if link_group %}
+    <h3>Blogroll</h3>
+    <ul>
+      {% for link in link_group.links %}
+        <li>
+          <a href="{{ link.site_url }}">{{ link.site_title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock blogroll %}
 
 {% block categories %}
-    {% get_categories as cats %}
-    {% if cats %}
-        <h3>Categories</h3>
-        <ul>
-            {% for cat in cats.categories %}
-                <li><a href="{% url 'tangerine:category' cat.slug %}">{{ cat.title }}</a></li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+  {% get_categories as cats %}
+  {% if cats %}
+    <h3>Categories</h3>
+    <ul>
+      {% for cat in cats.categories %}
+        <li>
+          <a href="{% url 'tangerine:category' cat.slug %}">{{ cat.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock categories %}
 
 {% block recent_comments %}
-    {% get_recent_comments 10 as recent_comments %}
-    {% if recent_comments %}
-        <h3>Recent Comments</h3>
-        <ul class="recent_comments">
-            {% for comment in recent_comments.comments %}
-                <li><a href="{{ comment.post.get_absolute_url }}#comment-{{ comment.id }}">{{ comment.name}}</a>, {{ comment.created|date:"SHORT_DATE_FORMAT" }}<br />
-                    {{ comment.body|striptags|truncatechars:25}}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+  {% get_recent_comments 10 as recent_comments %}
+  {% if recent_comments %}
+    <h3>Recent Comments</h3>
+    <ul class="recent_comments">
+      {% for comment in recent_comments.comments %}
+        <li>
+          <a href="{{ comment.post.get_absolute_url }}#comment-{{ comment.id }}">{{ comment.name}}</a>,
+          {{ comment.created|date:"SHORT_DATE_FORMAT" }}<br/>
+          {{ comment.body|striptags|truncatechars:25}}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock recent_comments %}

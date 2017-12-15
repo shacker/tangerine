@@ -1,19 +1,22 @@
-
 <h3>Comments</h3>
 
-<p><b>There are {{ post.get_all_comments_num }} comments on this post</b></p>
+<p>
+  <b>There are
+    {{ post.get_all_comments_num }}
+    comments on this post</b>
+</p>
 
 {% for comment in post.top_level_comments %}
 
-    {% include "tangerine/include/comment_block.html" %}
+  {% include "tangerine/include/comment_block.html" %}
 
-    {% if comment.child_comments %}
-        {% for comment in comment.child_comments %}
-            <div style="margin-left: 40px;">
-                {% include "tangerine/include/comment_block.html" %}
-            </div>
-        {% endfor %}
-    {% endif %}
+  {% if comment.child_comments %}
+    {% for comment in comment.child_comments %}
+      <div style="margin-left: 40px;">
+        {% include "tangerine/include/comment_block.html" %}
+      </div>
+    {% endfor %}
+  {% endif %}
 
 {% endfor %}
 
@@ -23,32 +26,32 @@
 <h3>Add a Comment</h3>
 
 <form action="." method="post" id="new_comment_form">
-    {% csrf_token %}
+  {% csrf_token %}
 
-    {#  For authenticated users, name and email are pre-populated #}
-    <div class="fieldWrapper">
-        {{ form.name.errors }}
-        <label for="{{ form.name.id_for_label }}">Name:</label>
-        {{ form.name }}
-    </div>
-    <div class="fieldWrapper">
-        {{ form.email.errors }}
-        <label for="{{ form.email.id_for_label }}">Email:</label>
-        {{ form.email }}
-    </div>
+  {#  For authenticated users, name and email are pre-populated #}
+  <div class="fieldWrapper">
+    {{ form.name.errors }}
+    <label for="{{ form.name.id_for_label }}">Name:</label>
+    {{ form.name }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.email.errors }}
+    <label for="{{ form.email.id_for_label }}">Email:</label>
+    {{ form.email }}
+  </div>
 
-    <div class="fieldWrapper">
-        {{ form.website.errors }}
-        <label for="{{ form.website.id_for_label }}">Website:</label>
-        {{ form.website }}
-    </div>
+  <div class="fieldWrapper">
+    {{ form.website.errors }}
+    <label for="{{ form.website.id_for_label }}">Website:</label>
+    {{ form.website }}
+  </div>
 
-    <div class="fieldWrapper">
-        {{ form.body.errors }}
-        <label for="{{ form.body.id_for_label }}">Body:</label>
-        {{ form.body }}
-    </div>
+  <div class="fieldWrapper">
+    {{ form.body.errors }}
+    <label for="{{ form.body.id_for_label }}">Body:</label>
+    {{ form.body }}
+  </div>
 
-    <input type="hidden" name="parent_id" id="parent_id" value="" />
-    <input type="submit" value="Submit" />
+  <input type="hidden" name="parent_id" id="parent_id" value=""/>
+  <input type="submit" value="Submit"/>
 </form>

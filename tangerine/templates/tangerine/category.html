@@ -1,12 +1,13 @@
 {% extends "tangerine/base.html" %}
 {% load tangerine_tags %}
 
-{% block title %}{{ block.super }}{{ category.title }}{% endblock title %}
+{% block title %}{{ block.super }}{{ category.title }}
+{% endblock title %}
 
 {% block content %}
 
-    <h3>Category: {{ category }}</h3>
+  <h3>Category: {{ category }}</h3>
 
-    {% include "tangerine/include/post_loop.html" %}
+  {% include "tangerine/include/post_loop.html" %}
 
 {% endblock content %}
