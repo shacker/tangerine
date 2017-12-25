@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.timezone import get_current_timezone, make_naive
 
 from django_extensions.db.models import TimeStampedModel
 
@@ -147,10 +148,11 @@ class Post(TimeStampedModel):
         Category,
         blank=True,)
 
+    # Overrides automatic 'created' and 'modified' datetime fields (allows human control over publication date).
+    # Default pub_date is set in `Post.save()`.
     pub_date = models.DateTimeField(
-        blank=True,
-        null=True,
-        help_text="If present, overrides automatic 'created' datetime and will not be published until.",)
+        verbose_name="Publication Date/Time",
+        blank=True,)
 
     ptype = models.CharField(
         verbose_name='Post or Page',
@@ -168,9 +170,11 @@ class Post(TimeStampedModel):
     pub = PostManager()  # Post.pub.all() gets just published, non-trashed posts
 
     def get_absolute_url(self):
-        # Important to use get_absolute_url in templates rather than `url` tag to avoid 404s due to TZ conversion.
-        local_date = timezone.localtime(self.created)
-        return reverse('tangerine:post_detail', args=[local_date.year, local_date.month, local_date.day, self.slug])
+        # TZ awareness can throw off date resolution when near day boundaries, and generate 404s.
+        # `make_naive` so URL elements always match date elements in `self.pub_date`.
+        naive_date = make_naive(self.pub_date)
+        return reverse(
+            'tangerine:post_detail', args=[naive_date.year, naive_date.month, naive_date.day, self.slug])
 
     def top_level_comments(self):
         # To support threaded commenting, get only top-level comments initially.
@@ -180,6 +184,12 @@ class Post(TimeStampedModel):
     def get_all_comments_num(self):
         # Return number of all comments for this Post, regardless whether top-level or threaded.
         return self.comment_set.filter(approved=True).count()
+
+    def save(self, *args, **kwargs):
+        # Populate pub_date if needed; don't update if already exists.
+        if not self.created or not self.pub_date:
+            self.pub_date = timezone.now()
+        return super(Post, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title

@@ -1,5 +1,5 @@
 <p>
-  {{ post.created|date:"DATE_FORMAT"}}
+  {{ post.pub_date|date:"DATE_FORMAT"}}
   {% if post.author %}
     by
     {{ post.author.get_full_name }}

@@ -1,9 +1,9 @@
 import factory
-import pytz
 from faker import Faker
 from titlecase import titlecase
 
 from django.utils.text import slugify
+from django.utils.timezone import get_current_timezone
 
 from .models import Category, Post, RelatedLinkGroup, RelatedLink, Config, Comment
 from users.models import User
@@ -59,11 +59,14 @@ class PostFactory(factory.django.DjangoModelFactory):
     @factory.post_generation
     def set_created(self, build, extracted, **kwargs):
         fake = Faker()
-        self.created = fake.date_time_this_decade(tzinfo=pytz.UTC)
+        # django.utils.timezone import make_aware
+        thedate = fake.date_time_this_decade(tzinfo=get_current_timezone())
+        self.created = thedate
+        self.pub_date = thedate
 
 
 class CommentFactory(factory.django.DjangoModelFactory):
-    # MUST be called with a Post object
+    # MUST be called with a Post object as parent.
     class Meta:
         model = Comment
 

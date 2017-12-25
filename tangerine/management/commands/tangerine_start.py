@@ -8,7 +8,6 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.contrib.auth import get_user_model
 
-
 from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory, CommentFactory
 from tangerine.models import Category
 
@@ -24,6 +23,7 @@ def gen_su():
         get_user_model().objects.create(
             username=username, is_superuser=True, is_staff=True,
             first_name=fname, last_name=lname, email="{e}".format(u=username, e=email))
+        call_command('changepassword')
         print("Created user {}. Run `./manage.py changepassword` to set your password.".format(username))
 
 
@@ -48,7 +48,7 @@ class Command(BaseCommand):
         except ValidationError:
             print("Site config already exists, not creating another.")
 
-        confirm = input("Required config complete. Create fake starter content? (Recommended) [y/n]")
+        confirm = input("Required config complete. Create fake starter content? (Recommended) [Y/N] ")
         if confirm.lower() == "y":
 
             author = get_user_model().objects.order_by('?').first()

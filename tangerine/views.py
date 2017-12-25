@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
@@ -23,18 +25,19 @@ def home(request):
 
 def post_detail(request, year, month, day, slug):
     post = get_object_or_404(
-        Post, published=True, trashed=False, created__year=year, created__month=month, created__day=day, slug=slug)
+        Post, published=True, trashed=False, pub_date__year=year, pub_date__month=month, pub_date__day=day, slug=slug)
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
 
+        # Handle posted comment
         if form.is_valid():
             comment = form.save(commit=False)
             process_comment(request, comment, post)  # Bulk of comment processing happens here
             return HttpResponseRedirect(post.get_absolute_url())
         else:
-            # We should never be here, given browser-side field validation.
-            # Users of very old browsers might have issues if they skip a required field.
+            # We should never be here, given browser-side field validation ensuring required date # fields in correct
+            # format. Users of very old browsers might have issues if they skip a required field.
             # print(form.errors)
             pass
 
@@ -46,11 +49,11 @@ def post_detail(request, year, month, day, slug):
             form = CommentForm()
 
     try:
-        next_post = Post.get_next_by_created(post, ptype='post')
+        next_post = Post.get_next_by_pub_date(post, ptype='post')
     except Post.DoesNotExist:
         next_post = None
     try:
-        previous_post = Post.get_previous_by_created(post, ptype='post')
+        previous_post = Post.get_previous_by_pub_date(post, ptype='post')
     except Post.DoesNotExist:
         previous_post = None
 
@@ -69,8 +72,27 @@ def page_detail(request, slug):
 
 def category(request, cat_slug):
     cat = get_object_or_404(Category, slug=cat_slug)
-    posts = Post.pub.filter(categories__in=[cat, ])
+    posts = Post.pub.filter(categories__in=[cat, ]).order_by('-pub_date')
     return render(request, "tangerine/category.html", {'category':  cat, 'posts': posts})
+
+
+def date_archive(request, year, month=None, day=None):
+    """ Get posts by year | year and month | year and month and day."""
+
+    posts = Post.pub.filter(pub_date__year=year).order_by('-pub_date')
+    if month:
+        posts = posts.filter(pub_date__month=month)
+    if day:
+        posts = posts.filter(pub_date__day=day)
+
+    # For use in template display, compose a proper date object from passed in params.
+    # We always have year; If month or day are missing, sub in today's month/day.
+    pseudo_month = month if month else datetime.date.today().month
+    pseudo_day = day if day else datetime.date.today().day
+    req_date = datetime.date(year=year, month=pseudo_month, day=pseudo_day)
+
+    context = {'posts': posts, 'year': year, 'month': month, 'day': day, 'req_date': req_date}
+    return render(request, "tangerine/date_archive.html", context)
 
 
 # ===============  Private management interfaces  ===============
@@ -94,7 +116,7 @@ def manage_comments(request, comment_id=None):
     if comment_id:
         comments = comments.filter(id=comment_id)
 
-    comments = comments.order_by('-created')
+    comments = comments.order_by('-pub_date')
     form = CommentSearchForm(initial={'q': q})
 
     paginator = Paginator(comments, 25)  # Show num comments per page

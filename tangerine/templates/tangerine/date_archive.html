@@ -1,0 +1,21 @@
+{% extends "tangerine/base.html" %}
+{% load tangerine_tags %}
+
+{% block title %}{{ block.super }}{{ category.title }}
+{% endblock title %}
+
+{% block content %}
+
+  <h3>Viewing posts by date:
+    {% if year and month and day %}
+      {{ req_date|date:"F d, Y" }}
+    {% elif year and month %}
+      {{ req_date|date:"F, Y" }}
+    {% else %}
+      {{ req_date|date:"Y" }}
+    {% endif %}
+  </h3>
+
+  {% include "tangerine/include/post_loop.html" %}
+
+{% endblock content %}
