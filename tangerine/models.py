@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.timezone import get_current_timezone, make_naive
+from django.utils.timezone import get_current_timezone, make_naive, is_aware
 
 from django_extensions.db.models import TimeStampedModel
 
@@ -171,8 +171,8 @@ class Post(TimeStampedModel):
 
     def get_absolute_url(self):
         # TZ awareness can throw off date resolution when near day boundaries, and generate 404s.
-        # `make_naive` so URL elements always match date elements in `self.pub_date`.
-        naive_date = make_naive(self.pub_date)
+        # If USE_TZ=True in settings, `make_naive` so URL elements always match date elements in `self.pub_date`.
+        naive_date = make_naive(self.pub_date) if is_aware(self.pub_date) else self.pub_date
         return reverse(
             'tangerine:post_detail', args=[naive_date.year, naive_date.month, naive_date.day, self.slug])
 
