@@ -49,17 +49,13 @@ class PostFactory(factory.django.DjangoModelFactory):
     title = factory.LazyAttribute(lambda o: gen_headline())
     slug = factory.LazyAttribute(lambda o: slugify(o.title)[:48])
     content = factory.LazyAttribute(lambda o: gen_html_content())
+    author = factory.LazyAttribute(lambda o: User.objects.all().order_by('?').first())
     summary = factory.Faker('text')
 
     @factory.post_generation
-    def set_author(self, build, extracted, **kwargs):
-        a = User.objects.all().order_by('?').first()  # Select random author
-        self.author = a
-
-    @factory.post_generation
     def set_created(self, build, extracted, **kwargs):
+        # Not sure why this has to be done in post_generation, but otherwise it always comes out to today
         fake = Faker()
-        # django.utils.timezone import make_aware
         thedate = fake.date_time_this_decade(tzinfo=get_current_timezone())
         self.created = thedate
         self.pub_date = thedate
