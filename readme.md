@@ -23,6 +23,7 @@ Tangerine is a pluggable blogging system for Django, meant to be dropped into an
 - Blogroll (related link sets)
 - Google Analytics integration
 - Comment moderation (list and detail), with email notifications
+- Subscribe to comments (email notif when new comments added)
 - Integrated Akismet spam control
 - Mark comments spam/ham, or approved/unapproved
 - OEmbed support
