@@ -11,6 +11,7 @@ Tangerine is a pluggable blogging system for Django, meant to be dropped into an
 - Post lists/detail/permalink views
 - Page views for semi-static pages ("About", etc.)
 - Tags and categories with views
+- Date archives by year and month
 - Author profiles (no)
 - Syntax highlighting for code samples
 - "Trash" system
@@ -127,6 +128,8 @@ Native vs. Disqus, Google, etc.
 
 The provided template examples are meant to represent "reasonable defaults" and to show most possible templatetag usages. By all means, rearrange and season to taste (copy templates dir into your project's templates dir and tweak).
 
+### FIXME How to copy over and customize templates.
+
 ### Required in container site templates
 
 Your `base.html` template must include:
@@ -173,6 +176,34 @@ and display them with e.g.:
 
 (included in default templates).
 
+### Date Archives
+
+Tangerine provides the abilty to view posts by time slices: year, year/month, and year/month/day, e.g.:
+
+```
+/blog/2017
+/blog/2017/03
+/blog/2017/03/24
+``` 
+
+You can include a Date Archives section in the sidebar by including
+
+```
+{% block date_archive %}{% endblock date_archive %}
+```
+
+in your templates. The default date archive template shows all dates for which posts exist. You can modify the start and end dates, and can control whether only a list of years is displayed, or whether years are sub-divided into months in the Date Archives widget display.
+
+Set `dtype` to 'year' or 'month' and set the start and end times with strings in the format `yyyymmdd`, e.g.:
+
+```
+{% with dtype='month' start='20150101' end='20160101' %}
+```
+
+CSS is up to you.
+
+[screenshot?]
+
 
 ### RelatedLinkGroups
 
@@ -200,7 +231,7 @@ Tangerine supports multiple `RelatedLinkGroup`s, which are named collections of 
 
 To link to any internal Post or Page, do this in a template:
 
-`<a href="{% url 'post_detail' 'about' %}">About</a>`
+`<a href="{% url 'tangerine:post_detail' 'about' %}">About</a>`
 
 where `'about'` is replaced with the slug of the page or post .
 

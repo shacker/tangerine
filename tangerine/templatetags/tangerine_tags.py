@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from libgravatar import Gravatar
 
 from django import template
 
-from tangerine.models import Category, RelatedLinkGroup, Config, Comment
+from tangerine.models import Category, RelatedLinkGroup, Config, Comment, Post
 
 register = template.Library()
 
@@ -73,6 +75,30 @@ def get_related_links(slug):
                     slug)}
                 ],
         }
+
+
+@register.simple_tag
+def get_date_archives(dtype='year', start='19700101', end='29991231'):
+    '''
+    Args:
+        dtype: One of 'year' or 'month', determining how "deep" returned dates should go
+            (retrieve nested months?). Default: 'year'
+        start: String in format yyyymmdd. No dates will be returned for posts earlier than this date.
+        end: String in format yyyymmdd. No dates will be returned for posts later than this date.
+
+    Returns:
+        Queryset of qualifying datetime objects.
+
+    `start` and `end` default to dates in the distant past and future (i.e. we default to "all dates").
+
+    Returns a set of dates for which posts exist, to be parsed in the template with the `regroup` template tag.
+    We use `regroup` rather than fancy data structures here to provide max customizability at the template level.
+    '''
+
+    start = datetime.strptime(start, "%Y%m%d").date()
+    end = datetime.strptime(end, "%Y%m%d").date()
+    qs = Post.objects.dates('pub_date', dtype, 'DESC').exclude(pub_date__lt=start).exclude(pub_date__gt=end)
+    return qs
 
 
 @register.simple_tag

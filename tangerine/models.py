@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.timezone import get_current_timezone, make_naive, is_aware
+from django.utils.timezone import make_naive, is_aware
 
 from django_extensions.db.models import TimeStampedModel
 

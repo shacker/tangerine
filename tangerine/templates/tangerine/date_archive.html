@@ -1,7 +1,15 @@
 {% extends "tangerine/base.html" %}
 {% load tangerine_tags %}
 
-{% block title %}{{ block.super }}{{ category.title }}
+{% block title %}
+  {{ block.super }} Date archive:
+  {% if year and month and day %}
+    {{ req_date|date:"F d, Y" }}
+  {% elif year and month %}
+    {{ req_date|date:"F, Y" }}
+  {% else %}
+    {{ req_date|date:"Y" }}
+  {% endif %}
 {% endblock title %}
 
 {% block content %}

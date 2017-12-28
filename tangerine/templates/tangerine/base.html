@@ -12,17 +12,19 @@
 
 {% block tangerine_extra_head %}{% endblock tangerine_extra_head %}
 {% block tangerine_extra_css %}{% endblock tangerine_extra_css %}
-{% block tangerine_extra_js %}{% endblock tangerine_extra_js %}
 
 {% block content %}{% endblock content %}
 {% block blogroll %}{% endblock blogroll %}
 {% block categories %}{% endblock categories %}
+{% block date_archive %}{% endblock date_archive %}
 
 {% block sidebar %}
   {% include "tangerine/include/sidebar.html" %}
 {% endblock sidebar %}
 
 {% block footer %}
-  {# Includes Google Analytics, possibly other footer data #}
+  {# Includes Google Analytics and other footer data #}
   {% include "tangerine/include/footer.html" %}
 {% endblock footer %}
+
+{% block tangerine_extra_js %}{% endblock tangerine_extra_js %}

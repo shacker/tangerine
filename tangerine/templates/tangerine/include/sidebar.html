@@ -35,10 +35,52 @@
     <ul class="recent_comments">
       {% for comment in recent_comments.comments %}
         <li>
-          <a href="{{ comment.post.get_absolute_url }}#comment-{{ comment.id }}">{{ comment.name}}</a>,
+          <a href="{{ comment.post.get_absolute_url }}#comment-{{ comment.id }}">{{ comment.name }}</a>,
           {{ comment.created|date:"SHORT_DATE_FORMAT" }}<br/>
           {{ comment.body|striptags|truncatechars:25}}</li>
       {% endfor %}
     </ul>
   {% endif %}
 {% endblock recent_comments %}
+
+
+{% block date_archive %}
+  {% comment %}
+    Set dtype to 'year' or 'month' to change list depth.
+    Set `start='yyyymmdd'` and/or `end='yyyymmdd'` to exclude dates before start or after end date.
+  {% endcomment %}
+  {% with dtype='month' start='19000101' end='29160101' %}
+    {% get_date_archives dtype=dtype start=start end=end as date_archives %}
+
+    {% if date_archives %}
+      <h3>Date Archives</h3>
+      <ul class="date_archive">
+
+        {% if dtype == 'year' %}
+          {% for elem in date_archives %}
+            <li><a href="{% url 'tangerine:date_archive' year=elem.year %}">{{ elem.year }}</a></li>
+          {% endfor %}
+        {% endif %}
+
+        {% if dtype == 'month' %}
+          {% regroup date_archives by year as year_list %}
+          {% for year in year_list %}
+              <li><a href="{% url 'tangerine:date_archive' year=year.grouper %}">{{ year.grouper }}</a>
+                <ul>
+                  {% for month in year.list %}
+                    <li>
+                      <a href="{% url 'tangerine:date_archive' year=year.grouper month=month.month %}">
+                        {{ month|date:"F" }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </li>
+          {% endfor %}
+        {% endif %}
+
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+{% endblock date_archive %}
