@@ -1,0 +1,13 @@
+{% load tangerine_tags %}
+
+{% get_categories as cats %}
+{% if cats %}
+  <h3>Categories</h3>
+  <ul>
+    {% for cat in cats.categories %}
+      <li>
+        <a href="{% url 'tangerine:category' cat.slug %}">{{ cat.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
