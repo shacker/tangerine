@@ -116,7 +116,7 @@ class PostManager(models.Manager):
     """ Filter out all unpublished and trashed posts by calling Post.pub.all() from anywhere. """
 
     def get_queryset(self):
-        return super().get_queryset().filter(published=True, ptype='post', trashed=False).order_by('-created')
+        return super().get_queryset().filter(published=True, ptype='post', trashed=False).order_by('-pub_date')
 
 
 class Post(TimeStampedModel):
