@@ -187,7 +187,7 @@ class Post(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         # Populate pub_date if needed; don't update if already exists.
-        if not self.created or not self.pub_date:
+        if not self.pub_date:
             self.pub_date = timezone.now()
         return super(Post, self).save(*args, **kwargs)
 

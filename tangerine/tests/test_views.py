@@ -1,6 +1,8 @@
+import datetime
 import pytest
 
 from django.urls import reverse
+from django.utils.timezone import make_aware
 
 from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory
 from tangerine.models import Comment
@@ -32,6 +34,18 @@ def comment_data():
     }
 
 
+@pytest.fixture(params=[i for i in range(0, 24)])
+# Iterate once for every hour in the day
+def hours(request):
+    return request.param
+
+
+@pytest.fixture(params=[True, False])
+# Toggle TZ settings
+def tz_settings(request):
+    return request.param
+
+
 @pytest.mark.django_db
 def test_no_config(client):
     # *Don't* use config fixture to *avoid* setting up the Config object.
@@ -46,7 +60,7 @@ def test_no_config(client):
 def test_good_slug_good_view(config, post1, client):
     url = post1.get_absolute_url()
     response = client.get(url)
-    assert response.status_code == 200  # Not redirected
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
@@ -54,6 +68,30 @@ def test_bad_slug_404(config, client):
     url = reverse('tangerine:post_detail', kwargs={'year': 2002, 'month': 7, 'day': 23, 'slug': "whatever"})
     response = client.get(url)
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_all_hours_in_24(config, client, settings, hours, tz_settings):
+    """
+    Use parameterized fixture to test posts made in all 24 hours in a day, ensuring that URL still resolves
+    whether host project is TZ aware or not (test both with `USE_TZ = True` and `USE_TZ = False`).
+    We want to prove that we don't slip over the date boundary no matter what time of day we post,
+    thus changing the URL and generating 404s. We want to test not just that all date URLs resolve,
+    but that all 24 URLs are identical. So we compute a reference URL and an "hourly" URL and compare them.
+    Due to paramaterization, this test runs itself 48 times!
+    """
+
+    # First two statements use parameterized fixtures (tz_settings and hours)
+    settings.USE_TZ = tz_settings
+    ref_pub_date = datetime.datetime.strptime('{} {} {} {} {} {}'.format(2018, 2, 2, 3, 3, 3), '%Y %m %d %H %M %S')
+    pub_date = datetime.datetime.strptime('{} {} {} {} {} {}'.format(2018, 2, 2, hours, 3, 3), '%Y %m %d %H %M %S')
+    ref_post = PostFactory(slug="somepost", pub_date=make_aware(ref_pub_date))
+    hourly_post = PostFactory(slug="somepost", pub_date=make_aware(pub_date))
+    ref_url = ref_post.get_absolute_url()
+    url = hourly_post.get_absolute_url()
+    response = client.get(url)
+    assert ref_url == url
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db

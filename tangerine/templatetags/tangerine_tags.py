@@ -93,7 +93,7 @@ def get_date_archives(dtype='year', start='19700101', end='29991231'):
     `start` and `end` default to dates in the distant past and future (i.e. we default to "all dates").
 
     Returns a set of dates for which posts exist, to be parsed in the template with the `regroup` template tag.
-    We use `regroup` rather than fancy data structures here to provide max customizability at the template level.
+    (We use `regroup` rather than fancy data structures to provide max customizability at the template level).
     '''
 
     start = datetime.strptime(start, "%Y%m%d")
@@ -105,7 +105,7 @@ def get_date_archives(dtype='year', start='19700101', end='29991231'):
     naive_end = make_naive(end) if is_aware(end) else end
 
     # Ironically, need to cast the naive dates back to `aware` to prevent console warnings, since the
-    # ORM will expect aware dates.
+    # ORM expects aware dates.
     qs = Post.objects.dates('pub_date', dtype, 'DESC').exclude(
         pub_date__lt=make_aware(naive_start)).exclude(
         pub_date__gt=make_aware(naive_end))
