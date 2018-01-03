@@ -3,7 +3,7 @@ from datetime import datetime
 from libgravatar import Gravatar
 
 from django import template
-from django.utils.timezone import make_naive, is_aware
+from django.utils.timezone import make_naive, make_aware, is_aware
 
 from tangerine.models import Category, RelatedLinkGroup, Config, Comment, Post
 
@@ -99,11 +99,16 @@ def get_date_archives(dtype='year', start='19700101', end='29991231'):
     start = datetime.strptime(start, "%Y%m%d")
     end = datetime.strptime(end, "%Y%m%d")
 
-    # Make dates TZ-naive if containing site uses TZ awareness
+    # To prevent TZ awareness from changing dates when they slip over the midnight boundary,
+    # make dates TZ-naive if containing site uses TZ awareness (time=00:00:00).
     naive_start = make_naive(start) if is_aware(start) else start
     naive_end = make_naive(end) if is_aware(end) else end
 
-    qs = Post.objects.dates('pub_date', dtype, 'DESC').exclude(pub_date__lt=naive_start).exclude(pub_date__gt=naive_end)
+    # Ironically, need to cast the naive dates back to `aware` to prevent console warnings, since the
+    # ORM will expect aware dates.
+    qs = Post.objects.dates('pub_date', dtype, 'DESC').exclude(
+        pub_date__lt=make_aware(naive_start)).exclude(
+        pub_date__gt=make_aware(naive_end))
     return qs
 
 

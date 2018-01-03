@@ -11,7 +11,7 @@ class PostAdmin(admin.ModelAdmin):
         'slug',
         'published',
         'ptype',
-        'created',
+        'pub_date',
     )
 
     fields = (
