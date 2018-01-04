@@ -24,7 +24,7 @@ def gen_su():
             username=username, is_superuser=True, is_staff=True,
             first_name=fname, last_name=lname, email="{e}".format(u=username, e=email))
         call_command('changepassword')
-        print("Created user {}. Run `./manage.py changepassword` to set your password.".format(username))
+        print("Created user {}.".format(username))
 
 
 class Command(BaseCommand):
@@ -41,7 +41,9 @@ class Command(BaseCommand):
         try:
             config = ConfigFactory()
             site_title = input("Site title (e.g. My Blog): ")
+            site_title = "My blog" if not site_title else site_title  # Default val
             tagline = input("Tagline (e.g. Tilting at Windmills...): ")
+            tagline = "My tagline" if not tagline else tagline  # Default val
             config.site_title = site_title
             config.tagline = tagline
             config.save()
