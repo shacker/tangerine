@@ -85,6 +85,11 @@ def date_archive(request, year, month=None, day=None):
     if day:
         posts = posts.filter(pub_date__day=day)
 
+    num_posts = Config.objects.first().num_posts_per_list_view
+    paginator = Paginator(posts, num_posts)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+
     # For use in template display, compose a proper date object from passed in params.
     # We always have year; If month or day are missing, sub in today's month/day.
     pseudo_month = month if month else datetime.date.today().month
