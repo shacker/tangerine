@@ -181,7 +181,7 @@ class Post(TimeStampedModel):
         # Get their children in a comment method.
         return self.comment_set.filter(parent__isnull=True, approved=True).order_by('modified')
 
-    def get_all_comments_num(self):
+    def num_comments(self):
         # Return number of all comments for this Post, regardless whether top-level or threaded.
         return self.comment_set.filter(approved=True).count()
 

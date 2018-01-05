@@ -1,9 +1,9 @@
 <h3>Comments</h3>
 
 <p>
-  <b>There are
-    {{ post.get_all_comments_num }}
-    comments on this post</b>
+  {% with post.num_comments as num %}
+    <b>There {{ num|pluralize:"is,are" }} {{ num }} comment{{ num|pluralize }} on this post</b>
+  {% endwith %}
 </p>
 
 {% for comment in post.top_level_comments %}
