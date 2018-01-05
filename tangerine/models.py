@@ -124,7 +124,8 @@ class Post(TimeStampedModel):
 
     title = models.CharField(max_length=140)
 
-    slug = models.SlugField(unique=True)
+    # slug cannot be used more than once on the same pub_date
+    slug = models.SlugField(unique_for_date='pub_date')
 
     author = models.ForeignKey(
         User,
@@ -148,7 +149,7 @@ class Post(TimeStampedModel):
         Category,
         blank=True,)
 
-    # Overrides automatic 'created' and 'modified' datetime fields (allows human control over publication date).
+    # Used instead of 'created' or 'modified' datetime fields in queries (for editorial control over publication date).
     # Default pub_date is set in `Post.save()`.
     pub_date = models.DateTimeField(
         verbose_name="Publication Date/Time",
