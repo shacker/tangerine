@@ -68,7 +68,7 @@ class ConfigAdmin(admin.ModelAdmin):
             'fields': ('site_title', 'tagline', 'site_url', 'from_email')
         }),
         ('Posts', {
-            'fields': ('num_posts_per_list_view',),
+            'fields': ('num_posts_per_list_view', 'show_future'),
         }),
         ('Comments', {
             'fields': (

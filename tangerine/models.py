@@ -86,6 +86,11 @@ class Config(models.Model):
             Should be a real, reachable email."
     )
 
+    show_future = models.BooleanField(
+        default=False,
+        help_text="If enabled, posts dated in the future appear immediately. Default is False (drip-date behavior)."
+    )
+
     class Meta:
         verbose_name_plural = "Config"
 
@@ -113,10 +118,18 @@ class Category(models.Model):
 
 
 class PostManager(models.Manager):
-    """ Filter out all unpublished and trashed posts by calling Post.pub.all() from anywhere. """
+    """ Filter out all unpublished and trashed posts by calling Post.pub.all() from anywhere.
+    Filter out future posts if show_future disabled in Config."""
 
     def get_queryset(self):
-        return super().get_queryset().filter(published=True, ptype='post', trashed=False).order_by('-pub_date')
+
+        qs = super().get_queryset().filter(published=True, ptype='post', trashed=False).order_by('-pub_date')
+        config = Config.objects.first()
+
+        if not config.show_future:
+            qs = qs.exclude(pub_date__gt=timezone.now())
+
+        return qs
 
 
 class Post(TimeStampedModel):

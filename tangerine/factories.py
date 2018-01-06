@@ -44,7 +44,6 @@ class CategoryFactory(factory.django.DjangoModelFactory):
 class PostFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Post
-        django_get_or_create = ('slug', )
 
     title = factory.LazyAttribute(lambda o: gen_headline())
     slug = factory.LazyAttribute(lambda o: slugify(o.title)[:48])
