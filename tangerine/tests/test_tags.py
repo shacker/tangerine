@@ -134,7 +134,7 @@ def test_get_date_archives_month(settings, tz_settings):
                 year, month, 2, 3, 3, 3), '%Y %m %d %H %M %S')
             PostFactory(pub_date=make_aware(pub_date))
 
-    assert Post.objects.all().count() == 15  # # Three posts each in five years
+    assert Post.objects.all().count() == 15  # Three posts in each of five years
     # Request dates excluding the first and last in list
     dates = get_date_archives(dtype='month', start='20120101', end='20181231')
     assert len(dates) == 9  # Three posts each in three years
