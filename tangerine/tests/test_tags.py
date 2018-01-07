@@ -1,10 +1,19 @@
+import datetime
 import pytest
 
+from django.utils.timezone import make_aware
+
 from tangerine.templatetags.tangerine_tags import (
-    get_related_links, get_categories, get_settings, gravatar, get_recent_comments)
+    get_related_links, get_categories, get_settings, gravatar, get_recent_comments, get_date_archives)
 from tangerine.factories import (
     RelatedLinkGroupFactory, CategoryFactory, ConfigFactory, PostFactory, CommentFactory)
 from tangerine.models import Category, Post, Comment
+
+
+@pytest.fixture(params=[True, False])
+# Toggle TZ settings
+def tz_settings(request):
+    return request.param
 
 
 @pytest.mark.django_db
@@ -93,6 +102,43 @@ def test_get_recent_comments():
 
     # Check object type of first element in return list
     assert isinstance(recent['comments'][0], Comment)
+
+
+@pytest.mark.django_db
+def test_get_date_archives_year(settings, tz_settings):
+    '''get_date_archives() template tag returns a set of dates for which posts exist.
+    Takes `dtype='year'` to only return years, or `dtype='month'` to only return months.
+    Takes start and end dates as strings. Create posts in a list of years, check for length
+    of return, and instance type of one of the results. Use paramaterized settings toggle to test
+    that it works whether timezone awareness is on or off in containing site.'''
+
+    settings.USE_TZ = tz_settings  # Causes this test to run twice.
+    for year in [2007, 2008, 2010, 2012, 2015, 2018, 2020]:  # Creating posts in 7 different years
+        pub_date = datetime.datetime.strptime('{} {} {} {} {} {}'.format(year, 2, 2, 3, 3, 3), '%Y %m %d %H %M %S')
+        PostFactory(pub_date=make_aware(pub_date))
+
+    assert Post.objects.all().count() == 7  # # Three posts each in five years
+    # Request dates excluding the first and last in list
+    dates = get_date_archives(dtype='year', start='20080101', end='20181231')
+    assert len(dates) == 5
+    assert isinstance(dates[0], datetime.date)
+
+
+@pytest.mark.django_db
+def test_get_date_archives_month(settings, tz_settings):
+    '''See docstring for test_get_date_archives_year() above.'''
+    settings.USE_TZ = tz_settings  # Causes this test to run twice.
+    for year in [2010, 2012, 2015, 2018, 2020]:  # Creating groups of posts in 5 different years
+        for month in [3, 6, 9]:  # Creating posts for 3 different months in each year
+            pub_date = datetime.datetime.strptime('{} {} {} {} {} {}'.format(
+                year, month, 2, 3, 3, 3), '%Y %m %d %H %M %S')
+            PostFactory(pub_date=make_aware(pub_date))
+
+    assert Post.objects.all().count() == 15  # # Three posts each in five years
+    # Request dates excluding the first and last in list
+    dates = get_date_archives(dtype='month', start='20120101', end='20181231')
+    assert len(dates) == 9  # Three posts each in three years
+    assert isinstance(dates[0], datetime.date)
 
 
 def test_gravatar_tag():

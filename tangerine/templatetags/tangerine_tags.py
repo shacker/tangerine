@@ -104,8 +104,8 @@ def get_date_archives(dtype='year', start='19700101', end='29991231'):
     naive_start = make_naive(start) if is_aware(start) else start
     naive_end = make_naive(end) if is_aware(end) else end
 
-    # Ironically, need to cast the naive dates back to `aware` to prevent console warnings, since the
-    # ORM expects aware dates.
+    # Ironically, need to cast the naive dates back to `aware` to prevent console warnings,
+    # since the ORM expects aware dates.
     qs = Post.objects.dates('pub_date', dtype, 'DESC').exclude(
         pub_date__lt=make_aware(naive_start)).exclude(
         pub_date__gt=make_aware(naive_end))
