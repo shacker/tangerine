@@ -4,8 +4,8 @@ import pytest
 from django.urls import reverse
 from django.utils.timezone import make_aware
 
-from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory
-from tangerine.models import Comment
+from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory, CommentFactory
+from tangerine.models import Post, Comment
 
 
 @pytest.fixture
@@ -32,6 +32,13 @@ def comment_data():
         'website': ['http://example.com'],
         'body': ['some content']
     }
+
+
+@pytest.fixture
+def posts_with_comments():
+    PostFactory.create_batch(3)
+    for p in Post.objects.all():
+        CommentFactory(post=p)
 
 
 @pytest.fixture(params=[i for i in range(0, 24)])
@@ -133,9 +140,23 @@ def test_threaded_comment(config, comment_data, post1, admin_user, admin_client)
     new_comment_data['parent_id'] = parent_id
     new_comment_data['body'] = 'xyz'
 
-    # Post child comment, then get both back from the db. Intended child/parent relation is preserved.
+    # Post child comment, then get both back from the db. Expected child/parent relation is preserved.
     admin_client.post(url, data=new_comment_data)
     orig_comment = Comment.objects.get(id=parent_id)
     child_comment = orig_comment.child_comments().first()
     assert child_comment.parent.id == orig_comment.id
     assert child_comment.body == 'xyz'
+
+
+@pytest.mark.smoketest
+@pytest.mark.django_db
+def access_comment_management(config, posts_with_comments, admin_client, client):
+    url = reverse('tangerine:manage_comments')
+
+    # With admin auth
+    response = admin_client.get(url)
+    assert response.status_code == 200
+
+    # With no auth
+    response = client.get(url)
+    assert response.status_code == 302

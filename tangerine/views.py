@@ -121,7 +121,7 @@ def manage_comments(request, comment_id=None):
     if comment_id:
         comments = comments.filter(id=comment_id)
 
-    comments = comments.order_by('-pub_date')
+    comments = comments.order_by('-created')
     form = CommentSearchForm(initial={'q': q})
 
     paginator = Paginator(comments, 25)  # Show num comments per page
@@ -132,7 +132,7 @@ def manage_comments(request, comment_id=None):
     return render(request, "tangerine/management/comments.html", context)
 
 
-# ===============  Non-displaying process functions  ===============
+# ===============  Non-displaying operations functions  ===============
 
 
 @user_passes_test(lambda u: u.is_superuser)
