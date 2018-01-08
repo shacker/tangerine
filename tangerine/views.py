@@ -100,6 +100,29 @@ def date_archive(request, year, month=None, day=None):
     return render(request, "tangerine/date_archive.html", context)
 
 
+def search(request):
+    """Display results of search for Post or Page objects."""
+
+    if request.GET.get('q'):
+        q = request.GET.get('q')
+        qs = Post.objects.filter(
+            Q(title__icontains=q) |
+            Q(summary__icontains=q) |
+            Q(content__icontains=q)
+        )
+    else:
+        q = None
+        qs = Post.objects.none()
+
+    qs = qs.order_by('-pub_date')
+    paginator = Paginator(qs, 25)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+
+    context = {'posts': posts, 'q': q}
+    return render(request, "tangerine/search.html", context)
+
+
 # ===============  Private management interfaces  ===============
 
 @user_passes_test(lambda u: u.is_superuser)

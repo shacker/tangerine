@@ -39,6 +39,11 @@ urlpatterns = [
         name="page_detail"),
 
     path(
+        'search',
+        views.search,
+        name="search"),
+
+    path(
         '',
         views.home,
         name="home"),

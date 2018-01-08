@@ -39,6 +39,11 @@
               <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
             </li>
           {% endif %}
+          <li class="nav-item">
+            <form class="form" action="{% url 'tangerine:search' %}" method="get">
+                <input type="text" name="q" value="" placeholder="Search">
+            </form>
+          </li>
         </ul>
         {% if tangerine.tagline %}
           {{ tangerine.tagline }}
