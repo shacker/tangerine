@@ -73,6 +73,12 @@ def page_detail(request, slug):
 def category(request, cat_slug):
     cat = get_object_or_404(Category, slug=cat_slug)
     posts = Post.pub.filter(categories__in=[cat, ]).order_by('-pub_date')
+
+    num_posts = Config.objects.first().num_posts_per_list_view
+    paginator = Paginator(posts, num_posts)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+
     return render(request, "tangerine/category.html", {'category':  cat, 'posts': posts})
 
 
