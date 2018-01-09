@@ -3,13 +3,13 @@ import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
-from django.db.models import Q
 from django.http import HttpResponseRedirect
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 
 from tangerine.forms import CommentForm, CommentSearchForm
 from tangerine.models import Category, Post, Comment, Config
-from tangerine.utils import toggle_approval, toggle_spam, process_comment
+from tangerine.utils import toggle_approval, toggle_spam, process_comment, get_search_qs
 
 
 def home(request):
@@ -104,22 +104,14 @@ def search(request):
     """Display results of search for Post or Page objects."""
 
     if request.GET.get('q'):
-        q = request.GET.get('q')
-        qs = Post.objects.filter(
-            Q(title__icontains=q) |
-            Q(summary__icontains=q) |
-            Q(content__icontains=q)
-        )
-    else:
-        q = None
-        qs = Post.objects.none()
+        qs = get_search_qs(request.GET.get('q'))
 
     qs = qs.order_by('-pub_date')
     paginator = Paginator(qs, 25)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
 
-    context = {'posts': posts, 'q': q}
+    context = {'posts': posts, 'q': request.GET.get('q')}
     return render(request, "tangerine/search.html", context)
 
 

@@ -5,10 +5,10 @@ import bleach
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.template.loader import render_to_string
 
-
-from tangerine.models import ApprovedCommentor, Config, Comment
+from tangerine.models import ApprovedCommentor, Config, Comment, Post
 
 
 def sanitize_comment(comment):
@@ -196,3 +196,17 @@ def spam_check(comment):
         return spam_status
 
     return spam_status
+
+
+def get_search_qs(q):
+    # Testable ORM query for returning search terms
+    if q:
+        qs = Post.objects.filter(
+            Q(title__icontains=q) |
+            Q(summary__icontains=q) |
+            Q(content__icontains=q)
+        )
+    else:
+        q = None
+        qs = Post.objects.none()
+    return qs

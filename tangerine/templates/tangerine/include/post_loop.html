@@ -13,7 +13,7 @@
       {% if post.summary %}
         {{ post.summary|safe }}
       {% else %}
-        {{ post.content|truncatewords:20 }}
+        {{ post.content|truncatewords:20|safe }}
       {% endif %}
 
       <p class="num_comments_per_post">

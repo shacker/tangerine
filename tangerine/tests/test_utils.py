@@ -8,7 +8,7 @@ from tangerine.factories import PostFactory, CommentFactory, ConfigFactory
 from tangerine.models import ApprovedCommentor
 from tangerine.utils import (
     sanitize_comment, get_comment_approval, toggle_approval,
-    spam_check, akismet_spam_ham, send_comment_moderation_email
+    spam_check, akismet_spam_ham, send_comment_moderation_email, get_search_qs
     )
 
 
@@ -149,3 +149,27 @@ def test_send_comment_moderation_email(email_backend_setup, admin_user):
     send_comment_moderation_email(comment)
     sent_msg = mail.outbox[1]
     assert sent_msg.subject == "A new comment on {} has been automatically published".format(site_title)
+
+
+@pytest.mark.django_db
+def test_get_search_qs():
+    # Test reusable queryset generator for Post search terms
+    post1 = PostFactory(title="Send in the clowns")
+    post2 = PostFactory(content="China Grove back in the news")
+    post3 = PostFactory(summary="Clowns to the left of me, jokers to the right...")
+
+    results = get_search_qs("clowns")
+    assert len(results) == 2
+    assert post1 in results
+    assert post2 not in results
+    assert post3 in results
+
+    # Test case insensitivity
+    results = get_search_qs("Clowns")
+    assert len(results) == 2
+
+    results = get_search_qs("CLOWNS")
+    assert len(results) == 2
+
+    results = get_search_qs("left")
+    assert len(results) == 1
