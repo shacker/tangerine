@@ -77,7 +77,9 @@ Tangerine uses the new `path`-style routes in Django 2, not the older `url`-styl
 
 1. Optionally import existing content from WordPress export file (see below)
 
+### Management Interface
 
+Tangerine divides into two spaces: The "management" interface for writing posts and comment moderation, and the appearance of your site within the project you've added it to. The public interface is controlled by the theme you choose and the customizations you've made to it, while the appearance of the Tangering "management" interface is not intended to be customized (though advanced users are free to override of course).
 
 ## Configuration
 
@@ -153,78 +155,24 @@ Global tangerine settings set in the admin via Tangerine/Config (site title, tag
 
 ### Categories
 
-Define them in Admin, make sure your base template includes a block:
+Define them in Admin, associate posts with categories when writing. A single post can be displayed in any number of categories.
 
-`{% block categories %}{% endblock categories %}`
+To display a linked list of categories in your sidebar see the [Categories Template Tag documentation](#categories_tt).
 
-and display them with e.g.:
 
-```
-{% load tangerine_tags %}
-...
-{% block categories %}
-    {% get_categories as cats %}
-    {% if cats %}
-        <h3>Categories</h3>
-        <ul>
-            {% for cat in cats.categories %}
-                <li><a href="{% url 'tangerine:category' cat.slug %}">{{ cat.title }}</a></li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-{% endblock categories %}
-```
-
-(included in default templates).
-
+<a name="date_archives"></a>
 ### Date Archives
 
-Tangerine provides the abilty to view posts by time slices: year, year/month, and year/month/day, e.g.:
+You can view posts by time slices: year, year/month, and year/month/day, at URLs like:
 
 ```
-/blog/2017
-/blog/2017/03
-/blog/2017/03/24
+/blog/2017  # Shows all posts published in 2017
+/blog/2017/03  # Shows all posts published in March 2017
+/blog/2017/03/24  # Shows all posts published on March 24, 2017
 ``` 
 
-You can include a Date Archives section in the sidebar by including
+To display a hierarchical list of links to date archives in your sidebar, see the [date archives template tag](#date_archives_tt) documentation.
 
-```
-{% block date_archive %}{% endblock date_archive %}
-```
-
-in your templates. The default date archive template shows all dates for which posts exist. You can modify the start and end dates, and can control whether only a list of years is displayed, or whether years are sub-divided into months in the Date Archives widget display.
-
-Set `dtype` to 'year' or 'month' and set the start and end times with strings in the format `yyyymmdd`, e.g.:
-
-```
-{% with dtype='month' start='20150101' end='20160101' %}
-```
-
-CSS is up to you.
-
-[screenshot?]
-
-
-### RelatedLinkGroups
-
-Tangerine supports multiple `RelatedLinkGroup`s, which are named collections of related links (such as a blogroll). A default `blogroll` set is provided in the `tangerine_start` command and referenced in the sample templates. You can either edit that set in the Admin (Posts/Related Link Groups) or create new ones and reference them from templates:
-
-```
-{% load tangerine_tags %}
-...
-{% block blogroll %}
-    {% get_related_links 'blogroll' as link_group %}
-    {% if link_group %}
-        <h3>Blogroll</h3>
-        <ul>
-        {% for link in link_group.links %}
-            <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-{% endblock blogroll %}
-```
 
 ### Internal links
 
@@ -306,20 +254,17 @@ n.b.: Marking a comment as spam/ham also toggles its Approved/Unapproved status.
 Devs who want to run the spam_checks pytest *must* add to their `test.py` settings:
 AKISMET_KEY = 'abc123' and SITE_URL = 'https://your.registered.domain' (but with real values). Otherwise we can't run tests that call their API with YOUR credentials.
 
--------
+## Template Tags
 
-Tangerine divides into two spaces: The "management" interface for writing posts and comment moderation, and the appearance of your site within the project you've added it to. The public interface is controlled by the theme you choose and the customizations you've made to it, while the appearance of the Tangering "management" interface is not intended to be customized (though advanced users are free to override of course).
+Tangerine provides a native set of built-in template tags for the most common "sidebar" features used in blogs.
 
-------
-
-## Recent Comments
+### Recent Comments Template Tag
 
 Add to your base.html:
 
-```
-{% block recent_comments %}{% endblock recent_comments %}
 
-```
+`{% block recent_comments %}{% endblock recent_comments %}`
+
 
 Then call the `recent_comments` template tag from the template where you want recent comments to appear, with the number of comments you want to display:
 
@@ -332,8 +277,80 @@ Then call the `recent_comments` template tag from the template where you want re
 See `home.html` in the default theme for a usage example.
 
 
+### RelatedLinkGroups Template Tag (blogroll)
 
--------
+Tangerine supports multiple `RelatedLinkGroup`s, which are named collections of related links (such as a blogroll). A default `blogroll` set is provided in the `tangerine_start` command and referenced in the sample templates. You can either edit that set in the Admin (Posts/Related Link Groups) or create new ones and reference them from templates:
+
+```
+{% load tangerine_tags %}
+...
+{% block blogroll %}
+    {% get_related_links 'blogroll' as link_group %}
+    {% if link_group %}
+        <h3>Blogroll</h3>
+        <ul>
+        {% for link in link_group.links %}
+            <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock blogroll %}
+```
+
+<a name="date_archives_tt"></a>
+### Date Archives Template Tag
+
+To accompany Tangerine's support for [Date Archive](#date_archives) views, a template tag is provided to generate a list of links to date archive pages for which published posts actually exist. This template tag takes a start and end date, and can be configured to generate either a list of years or of months nested within years.
+
+To enable date archive links in your sidebar, include a link to the template fragment in the parent template:
+
+```
+{% block date_archive %}
+  {% include "tangerine/include/sidebar_date_archive.html" %}
+{% endblock date_archive %}
+```
+
+Then call `get_date_archives` with a `dtype`, `start` and `end` where start and end are strings in format `YYYYMMDD`. Omit start and end to cover all time.
+
+```
+  {% load tangerine_tags %}
+
+  {% with dtype='month' start='19000101' end='29160101' %}
+    {% get_date_archives dtype=dtype start=start end=end as date_archives %}
+  {% endwith %}
+```
+
+Then loop through `date_archives` in your template fragment.
+
+See `include/sidebar_date_archives.html` in the reference theme for a full working example.
+
+<a name="#categories_tt"></a>
+### Categories Template Tag
+
+Make sure your base template includes a block:
+
+`{% block categories %}{% endblock categories %}`
+
+and display them with e.g.:
+
+```
+{% load tangerine_tags %}
+...
+{% block categories %}
+    {% get_categories as cats %}
+    {% if cats %}
+        <h3>Categories</h3>
+        <ul>
+            {% for cat in cats.categories %}
+                <li><a href="{% url 'tangerine:category' cat.slug %}">{{ cat.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock categories %}
+```
+
+(included in default templates).
+
 
 ### Static files
 
