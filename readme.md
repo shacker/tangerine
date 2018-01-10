@@ -104,13 +104,7 @@ For full/best functionality, add these tags to the base template in your contain
 
 ```
 
-
-
-Include meta-description and author tags, syntax highlighter CSS, JS ^
-
-
-
-
+Include meta-description and author tags, syntax highlighter CSS, JS
 
 We intentionally don't provide a Theme system for Tangerine - you can style your site with any HTML/CSS templates you find in the wild, or create your own. Use the provided `templates` directory as a starting point [how-to here]. We assume your base template is called `base.html` and we extend that. Replace this in Tangerine templates if you use some other filename.
 
@@ -124,8 +118,45 @@ The Django Admin includes a list filter to let you quickly sort Posts vs. Pages.
 
 
 
-## Commenting
+## Comments and Spam
 Native vs. Disqus, Google, etc.
+
+
+### Gravatar
+
+Gravatar support in comment templates is present by default, and avatars are derived from the commenter's email, if they have a gravatar account:
+
+`<img src="{{ comment.email|gravatar:60 }}" alt="" />`
+
+The fallback icon is the class "Mystery Man" ("mm"). This can be changed to one of the [other defaults](https://en.gravatar.com/site/implement/images/) by changing the template tag itself (room for improvement there).
+
+### Sanitizing Comments
+
+Malicious HTML will be stripped from posted comments via `bleach`. The default set of allowed tags is:
+
+`['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul']`
+
+To override, add to your project settings e.g.:
+
+`BLEACH_ALLOWED_TAGS = ['hr', 'b', 'i']`
+
+### Comment Moderation
+
+View is at ...
+
+By default, the emails of approved comments are added to an ApprovedCommentors table, and future comments from those email addresses will be auto-approved. To disable this setting, turn it off in the Admin config.
+
+
+### Akismet Spam Checking
+
+Because WordPress runs 20% of the internet, and Akismet is bundled with every WordPress installation, millions of users are constantly submitting spam and ham feedback to the Akismet service. Akismet is *incredibly* effective at spam control. Fortunatley, Akismet isn't tied to WordPress - it's available to anyone, and excellent Python libs exist for communicating with its API.
+
+Tangerine includes native Akismet support. [Get a key](https://akismet.com/) (free or paid), add it to your Tangerine config, and enjoy virtually automatic spam control. In Tangerine's Comment Moderation interface, use the Spam/Ham buttons to help train Aksimet for the benefit of others.
+
+n.b.: Marking a comment as spam/ham also toggles its Approved/Unapproved status. But toggling the approval status does *not* affect the spam status of the comment (because you might have good reasons to unapprove a comment on your site other than it being spam, or you might want to approve a comment that Akismet thinks is spam for some reason).
+
+Devs who want to run the spam_checks pytest *must* add to their `test.py` settings:
+AKISMET_KEY = 'abc123' and SITE_URL = 'https://your.registered.domain' (but with real values). Otherwise we can't run tests that call their API with YOUR credentials.
 
 ## Templates
 
@@ -204,23 +235,10 @@ ln -s /Users/shacker/dev/tangerine .  # Do it with a symlink, not a pip install!
 pipenv run pytest 
 ```
 
-### Gravatar
+To run Tangerine's tests, add pytest to your virtualenv:
+`pip install pytest` or `pipenv install pytest`
+Then just run `pytest` from the projcect root.
 
-Gravatar support in comment templates is present by default, and avatars are derived from the commenter's email, if they have a gravatar account:
-
-`<img src="{{ comment.email|gravatar:60 }}" alt="" />`
-
-The fallback icon is the class "Mystery Man" ("mm"). This can be changed to one of the [other defaults](https://en.gravatar.com/site/implement/images/) by changing the template tag itself (room for improvement there).
-
-### Sanitizing Comments
-
-Malicious HTML will be stripped from posted comments via `bleach`. The default set of allowed tags is:
-
-`['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul']`
-
-To override, add to your project settings e.g.:
-
-`BLEACH_ALLOWED_TAGS = ['hr', 'b', 'i']`
 
 
 ### Extra JS
@@ -229,11 +247,7 @@ To override, add to your project settings e.g.:
 
 We assume you have jquery installed!
 
-### Comment Moderation
 
-View is at ...
-
-By default, the emails of approved comments are added to an ApprovedCommentors table, and future comments from those email addresses will be auto-approved. To disable this setting, turn it off in the Admin config.
 
 ## Adding Functionality
 
@@ -241,18 +255,7 @@ Tangerine does not (yet?) provide "plugin" capability like WordPress because we 
 
 Functionality that cannot be provided by template tags should be submitted as a pull request to Tangerine. 
 
------------
 
-### Akismet Spam Checking
-
-Because WordPress runs 20% of the internet, and Akismet is bundled with every WordPress installation, millions of users are constantly submitting spam and ham feedback to the Akismet service. Akismet is *incredibly* effective at spam control. Fortunatley, Akismet isn't tied to WordPress - it's available to anyone, and excellent Python libs exist for communicating with its API.
-
-Tangerine includes native Akismet support. [Get a key](https://akismet.com/) (free or paid), add it to your Tangerine config, and enjoy virtually automatic spam control. In Tangerine's Comment Moderation interface, use the Spam/Ham buttons to help train Aksimet for the benefit of others.
-
-n.b.: Marking a comment as spam/ham also toggles its Approved/Unapproved status. But toggling the approval status does *not* affect the spam status of the comment (because you might have good reasons to unapprove a comment on your site other than it being spam, or you might want to approve a comment that Akismet thinks is spam for some reason).
-
-Devs who want to run the spam_checks pytest *must* add to their `test.py` settings:
-AKISMET_KEY = 'abc123' and SITE_URL = 'https://your.registered.domain' (but with real values). Otherwise we can't run tests that call their API with YOUR credentials.
 
 ## Template Tags
 
@@ -364,8 +367,3 @@ STATICFILES_DIRS = [
 ```
 
 
-### Running Tests
-
-To run Tangerine's tests, add pytest to your virtualenv:
-`pip install pytest` or `pipenv install pytest`
-Then just run `pytest` from the projcect root.
