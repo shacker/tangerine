@@ -1,5 +1,7 @@
 # Tangerine
 
+<img src="tangerine/static/tangerine/img/tangerine_logo.png" alt="Tangerine logo" style="width: 200px;"/>
+
 ## Super-clean, pluggable Django blogging engine
 
 *Just the bits you need, nothing more.*
@@ -68,7 +70,7 @@ Tangerine uses the new `path`-style routes in Django 2, not the older `url`-styl
 1. Create starter content and a superuser for yourself (don't skip this!): Run `python manage.py tangerine_start` to perform installation tasks and set up dummy data and config.
 
 
-1. Start the development server and visit http://localhost:8000/admin/
+1. Start the development server and visit [http://localhost:8000/admin/](http://localhost:8000/admin/)
    to create a post. 
    
 1. While you're in the admin, go to Tangerine/Config to set your site title, optional Google Analytics ID, and other configuration options.
@@ -366,4 +368,6 @@ STATICFILES_DIRS = [
 ]
 ```
 
+
+### Custom URL Paths
 
