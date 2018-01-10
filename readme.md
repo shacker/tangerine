@@ -1,6 +1,6 @@
 # Tangerine
 
-<img src="tangerine/static/tangerine/img/tangerine_logo.png" alt="Tangerine logo" style="width: 200px;"/>
+<img src="tangerine/static/tangerine/img/tangerine_logo.png" alt="Tangerine logo" style="width: 150px;"/>
 
 ## Super-clean, pluggable Django blogging engine
 
