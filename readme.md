@@ -10,30 +10,35 @@ Tangerine is a pluggable blogging system for Django, meant to be dropped into an
 
 **Supports:**
 
-- Post lists/detail/permalink views
-- Page views for semi-static pages ("About", etc.)
-- Tags and categories with views
+- Standard blog Post pages
+    - OEmbed support	
+- Semi-static Pages (About, Contact, etc.)
+- Tags and categories
 - Date archives by year and month
-- Author profiles (no)
-- Syntax highlighting for code samples
-- "Trash" system
-- Pagination
-- WordPress importer
-- Native *threaded* commenting system with spam control
-- Support for Disqus and Facebook comments coming soon
-- Gravatar support in comments
+- Pagination (customize number of posts per results page)
 - Blogroll (related link sets)
-- Google Analytics integration
-- Comment moderation (list and detail), with email notifications
-- Subscribe to comments (email notif when new comments added)
-- Integrated Akismet spam control
-- Mark comments spam/ham, or approved/unapproved
-- OEmbed support
+- Date archive link sets
 - Search (posts and comments)
-- Rich text editor
-- Configurable via admin:
+- "Trash" system
+- WordPress importer
+- Google Analytics integration
+- Settings configurable via Django Admin:
     - Site title
     - Num posts per list view
+    - More...
+- Rich text editor
+	- Syntax highlighting for code samples
+- Commenting system
+    - Gravatar support in comments
+    - Support for Disqus and Facebook comments coming soon
+    - Native *threaded* commenting system with spam control
+    - Mark comments spam/ham, or approved/unapproved
+    - Comment moderation (list and detail), with email notifications
+    - Subscribe to comments (email notif when new comments added)
+    - Integrated Akismet spam control
+    - Recent Comments template tag
+
+
 
 NOT intended to be "just like WordPress," but rather "an ideal blog engine for Django devs with some lessons learned from WordPress."
 
@@ -371,3 +376,4 @@ STATICFILES_DIRS = [
 
 ### Custom URL Paths
 
+### Author Pages
