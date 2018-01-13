@@ -7,8 +7,6 @@ from django.utils.timezone import make_naive, is_aware
 
 from django_extensions.db.models import TimeStampedModel
 
-from users.models import User
-
 
 POST_TYPE_CHOICES = (
     ('post', 'Post'),
@@ -141,7 +139,7 @@ class Post(TimeStampedModel):
     slug = models.SlugField(unique_for_date='pub_date')
 
     author = models.ForeignKey(
-        User,
+        get_user_model(),  # Replaced by whatever User model is defined for this project
         on_delete=models.SET_NULL,
         null=True,
         blank=True)
@@ -163,7 +161,7 @@ class Post(TimeStampedModel):
         blank=True,)
 
     # Used instead of 'created' or 'modified' datetime fields in queries (for editorial control over publication date).
-    # Default pub_date is set in `Post.save()`.
+    # Initial pub_date is set in `Post.save()`.
     pub_date = models.DateTimeField(
         verbose_name="Publication Date/Time",
         blank=True,)
@@ -318,3 +316,32 @@ class RelatedLink(models.Model):
 
     def __str__(self):
         return self.site_title
+
+
+def get_author_avatar_upload_dir(instance, filename):
+    """Determine upload dir for author avatar image files.
+    """
+
+    return '/'.join(['aut', instance.author.username, filename])
+
+
+class AuthorPage(TimeStampedModel):
+    """ Field definitions for Author pages """
+
+    author = models.ForeignKey(
+        get_user_model(),  # Replaced by whatever User model is defined for this project
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True)
+
+    about = models.TextField(
+        blank=True,
+        help_text="Bio/About This Author")
+
+    avatar = models.ImageField(
+        upload_to=get_author_avatar_upload_dir,
+        help_text="Upload an avatar image to be displayed on your Author page (and possibly elsewhere).",
+    )
+
+    def __str__(self):
+        return self.author.username

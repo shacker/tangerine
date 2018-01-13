@@ -376,4 +376,11 @@ STATICFILES_DIRS = [
 
 ### Custom URL Paths
 
+Full list of URLs provided
+
+
 ### Author Pages
+
+
+We provide an author page (in the admin) but if your site already has one, you can use that instead by changing the link in `tangerine/include/byline.html`.
+

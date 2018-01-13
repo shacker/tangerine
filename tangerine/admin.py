@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import strip_tags
 
 
-from tangerine.models import Category, Post, RelatedLinkGroup, RelatedLink, Config, Comment
+from tangerine.models import Category, Post, RelatedLinkGroup, RelatedLink, Config, Comment, AuthorPage
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -83,6 +83,7 @@ class ConfigAdmin(admin.ModelAdmin):
 
 admin.site.register(Config, ConfigAdmin)
 admin.site.register(Category)
+admin.site.register(AuthorPage)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(RelatedLinkGroup, RelatedLinkGroupAdmin)
