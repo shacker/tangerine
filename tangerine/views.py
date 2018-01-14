@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 
 from tangerine.forms import CommentForm, CommentSearchForm
-from tangerine.models import Category, Post, Comment, Config, AuthorPage
+from tangerine.models import Category, Post, Comment, Config
 from tangerine.utils import toggle_approval, toggle_spam, process_comment, get_search_qs
 
 
@@ -111,8 +111,9 @@ def author(request, username):
     """Display bio, avatar, and previous posts for a given author"""
 
     author = get_object_or_404(get_user_model(), username=username)
+    author_posts = Post.objects.filter(author=author).order_by('-pub_date')
 
-    context = {'author': author.authorpage}
+    context = {'author': author.authorpage, 'author_posts': author_posts}
     return render(request, "tangerine/author.html", context)
 
 

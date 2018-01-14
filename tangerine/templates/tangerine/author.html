@@ -11,4 +11,17 @@
 
   <p>{{ author.about|safe }}</p>
 
+  <hr />
+
+  <h2>Posts by {{ author.user.get_full_name }}</h2>
+
+  {% if author_posts %}
+    <ul>
+    {% for post in author_posts %}
+        <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a> - {{ post.pub_date|date:"SHORT_DATE_FORMAT" }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+
+
 {% endblock content %}
