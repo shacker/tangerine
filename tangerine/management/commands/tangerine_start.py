@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.contrib.auth import get_user_model
 
-from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory, CommentFactory
+from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory, CommentFactory, AuthorPageFactory
 from tangerine.models import Category
 
 
@@ -54,6 +54,7 @@ class Command(BaseCommand):
         if confirm.lower() == "y":
 
             author = get_user_model().objects.order_by('?').first()
+            AuthorPageFactory.create(author=author)
             cats = ['Family', 'Coding', 'Environment', 'Culture', 'Politics', 'Bike', 'Photography', ]
             if not Category.objects.all().count():
                 for cat_title in cats:

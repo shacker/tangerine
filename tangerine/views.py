@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
@@ -8,7 +9,7 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 
 from tangerine.forms import CommentForm, CommentSearchForm
-from tangerine.models import Category, Post, Comment, Config
+from tangerine.models import Category, Post, Comment, Config, AuthorPage
 from tangerine.utils import toggle_approval, toggle_spam, process_comment, get_search_qs
 
 
@@ -104,6 +105,15 @@ def date_archive(request, year, month=None, day=None):
 
     context = {'posts': posts, 'year': year, 'month': month, 'day': day, 'req_date': req_date}
     return render(request, "tangerine/date_archive.html", context)
+
+
+def author(request, username):
+    """Display bio, avatar, and previous posts for a given author"""
+
+    author = get_object_or_404(get_user_model(), username=username)
+
+    context = {'author': author.authorpage}
+    return render(request, "tangerine/author.html", context)
 
 
 def search(request):

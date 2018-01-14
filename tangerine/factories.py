@@ -2,11 +2,11 @@ import factory
 from faker import Faker
 from titlecase import titlecase
 
+from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.timezone import get_current_timezone
 
-from .models import Category, Post, RelatedLinkGroup, RelatedLink, Config, Comment
-from users.models import User
+from .models import Category, Post, RelatedLinkGroup, RelatedLink, Config, Comment, AuthorPage
 
 
 def gen_headline():
@@ -48,7 +48,7 @@ class PostFactory(factory.django.DjangoModelFactory):
     title = factory.LazyAttribute(lambda o: gen_headline())
     slug = factory.LazyAttribute(lambda o: slugify(o.title)[:48])
     content = factory.LazyAttribute(lambda o: gen_html_content())
-    author = factory.LazyAttribute(lambda o: User.objects.all().order_by('?').first())
+    author = factory.LazyAttribute(lambda o: get_user_model().objects.all().order_by('?').first())
     summary = factory.Faker('text')
     pub_date = factory.Faker('date_time_this_decade', tzinfo=get_current_timezone())
 
@@ -96,3 +96,11 @@ class ConfigFactory(factory.django.DjangoModelFactory):
 
     site_title = factory.Faker('catch_phrase')
     tagline = factory.Faker('words', nb=5)
+
+
+class AuthorPageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AuthorPage
+
+    user = factory.LazyAttribute(lambda o: get_user_model().objects.all().order_by('?').first())
+    about = factory.Faker('text')

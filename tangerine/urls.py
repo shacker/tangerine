@@ -39,6 +39,11 @@ urlpatterns = [
         name="page_detail"),
 
     path(
+        'authors/<str:username>/',
+        views.author,
+        name="author"),
+
+    path(
         'search',
         views.search,
         name="search"),

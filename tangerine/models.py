@@ -322,13 +322,13 @@ def get_author_avatar_upload_dir(instance, filename):
     """Determine upload dir for author avatar image files.
     """
 
-    return '/'.join(['aut', instance.author.username, filename])
+    return '/'.join(['authors', instance.author.username, filename])
 
 
 class AuthorPage(TimeStampedModel):
     """ Field definitions for Author pages """
 
-    author = models.ForeignKey(
+    user = models.OneToOneField(
         get_user_model(),  # Replaced by whatever User model is defined for this project
         on_delete=models.CASCADE,
         null=True,
@@ -344,4 +344,4 @@ class AuthorPage(TimeStampedModel):
     )
 
     def __str__(self):
-        return self.author.username
+        return self.user.username

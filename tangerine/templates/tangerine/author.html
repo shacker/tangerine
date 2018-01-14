@@ -1,0 +1,14 @@
+{% extends "tangerine/base.html" %}
+{% load tangerine_tags %}
+
+{% block title %}{{ block.super }}Author: {{ author }}{% endblock title %}
+
+{% block content %}
+
+  <h3>About {{ author.user.get_full_name }}</h3>
+
+  <p><img src="{{ author.avatar.url }}" /></p>
+
+  <p>{{ author.about|safe }}</p>
+
+{% endblock content %}

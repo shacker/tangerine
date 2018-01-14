@@ -2,7 +2,7 @@
   {{ post.pub_date|date:"DATE_FORMAT"}}
   {% if post.author %}
     by
-    {{ post.author.get_full_name }}
+    <a href="{% url "tangerine:author" post.author.username %}">{{ post.author.get_full_name }}</a>
   {% endif %}
 
   {% if post.categories.count %}
