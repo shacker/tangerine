@@ -6,7 +6,7 @@ from django.shortcuts import reverse
 
 from tangerine.factories import PostFactory, CommentFactory, ConfigFactory
 from tangerine.models import ApprovedCommentor
-from tangerine.utils import (
+from tangerine.ops import (
     sanitize_comment, get_comment_approval, toggle_approval,
     spam_check, akismet_spam_ham, send_comment_moderation_email, get_search_qs
     )

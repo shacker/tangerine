@@ -10,7 +10,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from tangerine.forms import CommentForm, CommentSearchForm
 from tangerine.models import Category, Post, Comment, Config
-from tangerine.utils import toggle_approval, toggle_spam, process_comment, get_search_qs
+from tangerine.ops import toggle_approval, toggle_spam, process_comment, get_search_qs
 
 
 def home(request):
