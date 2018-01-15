@@ -22,6 +22,7 @@ Tangerine is a pluggable blogging system for Django, meant to be dropped into an
 - "Trash" system
 - WordPress importer
 - Google Analytics integration
+- Feature-complete set of "fake" data for getting started/dev work (via FactoryBoy)
 - Settings configurable via Django Admin:
     - Site title
     - Num posts per list view
@@ -55,12 +56,13 @@ Tangerine uses the new `path`-style routes in Django 2, not the older `url`-styl
 
 1. Create a running "container" site with working logins.
 
-1. Add `'tangerine',` to your `INSTALLED_APPS`:
+1. Add to your `INSTALLED_APPS`:
 
 	```
 	INSTALLED_APPS = [
 	    ...
 	    'tangerine',
+	    'taggit',
 	]
 	```
 

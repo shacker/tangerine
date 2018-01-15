@@ -164,7 +164,7 @@ def manage_comments(request, comment_id=None):
     return render(request, "tangerine/management/comments.html", context)
 
 
-# ===============  Non-displaying operations functions  ===============
+# ===============  Non-displaying view functions that redirect immediately without interaction  ===============
 
 
 @user_passes_test(lambda u: u.is_superuser)

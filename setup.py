@@ -37,6 +37,7 @@ setup(
         'bleach',
         'akismet',
         'django-ipware',
+        'django-taggit',
     ],
 
 )

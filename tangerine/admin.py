@@ -25,6 +25,7 @@ class PostAdmin(admin.ModelAdmin):
         'pub_date',
         'trashed',
         'ptype',
+        'tags',
     )
 
     list_filter = ['published', 'ptype', 'trashed', ]

@@ -7,6 +7,8 @@ from django.utils.timezone import make_naive, is_aware
 
 from django_extensions.db.models import TimeStampedModel
 
+from taggit.managers import TaggableManager
+
 
 POST_TYPE_CHOICES = (
     ('post', 'Post'),
@@ -177,6 +179,8 @@ class Post(TimeStampedModel):
         default=True,
         help_text="Disable to turn off comments for this Post/Page only.\
             Overriden if Global Comment Enable is off in Config.")
+
+    tags = TaggableManager()
 
     objects = models.Manager()  # The default manager, unfiltered by manager (admin use only)
     pub = PostManager()  # Post.pub.all() gets just published, non-trashed posts
