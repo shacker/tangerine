@@ -322,7 +322,7 @@ def get_author_avatar_upload_dir(instance, filename):
     """Determine upload dir for author avatar image files.
     """
 
-    return '/'.join(['authors', instance.author.username, filename])
+    return '/'.join(['authors', instance.user.username, filename])
 
 
 class AuthorPage(TimeStampedModel):
