@@ -147,7 +147,8 @@ class Post(TimeStampedModel):
         blank=True)
 
     summary = models.TextField(
-        blank=True,)
+        blank=True,
+        help_text="If present, shown on index views instead of truncated content field.")
 
     content = models.TextField(
         blank=True,)
