@@ -1,5 +1,7 @@
 import datetime
 
+from taggit.models import Tag
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
@@ -72,6 +74,7 @@ def page_detail(request, slug):
 
 
 def category(request, cat_slug):
+    # This view shows all posts in category `cat_slug`
     cat = get_object_or_404(Category, slug=cat_slug)
     posts = Post.pub.filter(categories__in=[cat, ]).order_by('-pub_date')
 
@@ -81,6 +84,19 @@ def category(request, cat_slug):
     posts = paginator.get_page(page)
 
     return render(request, "tangerine/category.html", {'category':  cat, 'posts': posts})
+
+
+def tag(request, tag_slug):
+    # This view shows all posts tagged with `tag_slug`
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = Post.pub.filter(tags__in=[tag, ]).order_by('-pub_date')
+
+    num_posts = Config.objects.first().num_posts_per_list_view
+    paginator = Paginator(posts, num_posts)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+    # FIXME: Can we re-use category.html here? Very similar.
+    return render(request, "tangerine/tag.html", {'tag':  tag, 'posts': posts})
 
 
 def date_archive(request, year, month=None, day=None):
@@ -110,10 +126,10 @@ def date_archive(request, year, month=None, day=None):
 def author(request, username):
     """Display bio, avatar, and previous posts for a given author"""
 
-    author = get_object_or_404(get_user_model(), username=username)
-    author_posts = Post.objects.filter(author=author).order_by('-pub_date')
+    user = get_object_or_404(get_user_model(), username=username)
+    author_posts = Post.objects.filter(author=user).order_by('-pub_date')
 
-    context = {'author': author.authorpage, 'author_posts': author_posts}
+    context = {'author': user.authorpage, 'author_posts': author_posts}
     return render(request, "tangerine/author.html", context)
 
 

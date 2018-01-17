@@ -34,6 +34,11 @@ urlpatterns = [
         name="category"),
 
     path(
+        'tag/<str:tag_slug>/',
+        views.tag,
+        name="tag"),
+
+    path(
         '<str:slug>/',
         views.page_detail,
         name="page_detail"),
