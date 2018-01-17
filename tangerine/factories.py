@@ -1,4 +1,5 @@
 import factory
+import random
 from faker import Faker
 from titlecase import titlecase
 
@@ -32,6 +33,20 @@ def gen_comment_body():
     return "\n\n".join(sentences)
 
 
+def gen_tags():
+    # Rather than create a bazillion random tags, make a pool of 15 possible tags,
+    # and choose n tags from this pool to be added to calling post.
+    # Returns 1-5 tags from this list:
+    TAGS = [
+        'Linux', 'Mac OS', 'Windows', 'Python', 'Perl', 'Rust', 'Go', 'JavaScript',
+        'Java', 'Swift', 'C++', 'PHP', 'CSS', 'SASS', 'SQL', ]
+    tag_set = []
+    num_tags = random.randint(1, 5)
+    for n in range(1, num_tags):
+        tag_set.append(random.choice(TAGS))
+    return tag_set
+
+
 class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Category
@@ -51,6 +66,12 @@ class PostFactory(factory.django.DjangoModelFactory):
     author = factory.LazyAttribute(lambda o: get_user_model().objects.all().order_by('?').first())
     summary = factory.Faker('text')
     pub_date = factory.Faker('date_time_this_decade', tzinfo=get_current_timezone())
+
+    @factory.post_generation
+    # Associate zero or more tags with this post
+    def add_tags(self, build, extracted, **kwargs):
+        for tag in gen_tags():
+            self.tags.add(tag)
 
 
 class CommentFactory(factory.django.DjangoModelFactory):
