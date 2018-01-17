@@ -7,7 +7,10 @@
 
   <h3>About {{ author.user.get_full_name }}</h3>
 
-  <p><img src="{{ author.avatar.url }}" /></p>
+  {% if author.avatar %}
+    <p><img src="{{ author.avatar.url }}" width="200" /></p>
+  {% endif %}
+
 
   <p>{{ author.about|safe }}</p>
 
