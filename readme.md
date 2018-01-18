@@ -18,6 +18,8 @@ Tangerine is a pluggable blogging system for Django, meant to be dropped into an
 - Pagination (customize number of posts per results page)
 - Blogroll (related link sets)
 - Date archive link sets
+- Tags and tag-specific views (`/tags/python` lists all Python-related posts)
+- RSS feed
 - Search (posts and comments)
 - "Trash" system
 - WordPress importer

@@ -1,5 +1,6 @@
 from django.urls import path
 
+from tangerine.feeds import LatestEntriesFeed
 from tangerine import views
 
 app_name = 'tangerine'
@@ -52,6 +53,11 @@ urlpatterns = [
         'search',
         views.search,
         name="search"),
+
+    path(
+        'feed/latest',
+        LatestEntriesFeed(),
+        name="feed_latest"),
 
     path(
         '',
