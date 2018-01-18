@@ -20,6 +20,7 @@ def test_post_factory(make_cats):
     assert len(post.content) > 5
     assert len(post.summary) > 5
     assert post.slug == 'space-and-drums'
+    assert post.tags.count() > 0
     assert isinstance(post.created, datetime)
 
 
