@@ -2,6 +2,7 @@ import pytest
 from datetime import datetime
 
 from tangerine.factories import (
+    gen_tags,
     CategoryFactory, PostFactory, RelatedLinkGroupFactory,
     RelatedLinkFactory, CommentFactory)
 from tangerine.models import Post, Category, RelatedLinkGroup, RelatedLink, Comment
@@ -20,6 +21,17 @@ def test_post_factory(make_cats):
     assert len(post.summary) > 5
     assert post.slug == 'space-and-drums'
     assert isinstance(post.created, datetime)
+
+
+@pytest.mark.parametrize('execution_number', range(10))
+def test_gen_tags(execution_number):
+    # Helper function should generate list of 1-5 random tags from hard-coded collection.
+    # Since randomness involved, paramaterized to run many times.
+    tags = gen_tags()
+    assert isinstance(tags, list)
+    assert len(tags) > 0
+    assert len(tags) < 6
+    assert "xyz" not in tags
 
 
 @pytest.mark.django_db

@@ -150,6 +150,22 @@ def test_threaded_comment(config, comment_data, post1, admin_user, admin_client)
 
 @pytest.mark.smoketest
 @pytest.mark.django_db
+def test_tag_view(config, client):
+    p = PostFactory()
+    p.tags.add("python")
+
+    # Access with a good tag, then with a bad tag
+    url = reverse('tangerine:tag', kwargs={'tag_slug': 'python'})
+    response = client.get(url)
+    assert response.status_code == 200
+
+    url = reverse('tangerine:tag', kwargs={'tag_slug': 'frisbee'})
+    response = client.get(url)
+    assert response.status_code == 404
+
+
+@pytest.mark.smoketest
+@pytest.mark.django_db
 def access_comment_management(config, posts_with_comments, admin_client, client):
     url = reverse('tangerine:manage_comments')
 

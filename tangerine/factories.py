@@ -36,15 +36,12 @@ def gen_comment_body():
 def gen_tags():
     # Rather than create a bazillion random tags, make a pool of 15 possible tags,
     # and choose n tags from this pool to be added to calling post.
-    # Returns 1-5 tags from this list:
+    # Returns 1-5 random tags from this list:
     TAGS = [
-        'Linux', 'Mac OS', 'Windows', 'Python', 'Perl', 'Rust', 'Go', 'JavaScript',
-        'Java', 'Swift', 'C++', 'PHP', 'CSS', 'SASS', 'SQL', ]
-    tag_set = []
-    num_tags = random.randint(1, 5)
-    for n in range(1, num_tags):
-        tag_set.append(random.choice(TAGS))
-    return tag_set
+        'Linux', 'Mac OS', 'Windows', 'Python', 'Perl', 'Rust', 'Go',
+        'JavaScript', 'Java', 'Swift', 'C++', 'PHP', 'CSS', 'SASS', 'SQL', ]
+
+    return random.sample(TAGS, random.randint(1, 5))
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
