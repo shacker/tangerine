@@ -24,6 +24,7 @@ def get_settings():
     ...
     {# then any of these *inside* the block tag that needs them: #}
     {{ tangerine.site_title }}
+    {{ tangerine.site_url }}
     {{ tangerine.tagline }}
     {{ tangerine.num_posts_per_list_view }}
     {{ tangerine.google_analytics_id }}
@@ -35,6 +36,7 @@ def get_settings():
         config = Config.objects.all().first()
         return {
             'site_title': config.site_title,
+            'site_url': config.site_url,
             'tagline': config.tagline,
             'num_posts_per_list_view': config.num_posts_per_list_view,
             'enable_comments_global': config.enable_comments_global,

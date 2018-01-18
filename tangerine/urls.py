@@ -55,9 +55,9 @@ urlpatterns = [
         name="search"),
 
     path(
-        'feed/latest',
+        'feed',
         LatestEntriesFeed(),
-        name="feed_latest"),
+        name="feed"),
 
     path(
         '',

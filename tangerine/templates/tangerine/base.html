@@ -10,7 +10,11 @@
   -
 {% endblock title %}
 
-{% block tangerine_extra_head %}{% endblock tangerine_extra_head %}
+{% block tangerine_extra_head %}
+  {% get_settings as tangerine %}
+  <link rel="alternate" type="application/rss+xml" title="{{ tangerine.site_title}}" href="{{ tangerine.site_url }}/feed/" />
+{% endblock tangerine_extra_head %}
+
 {% block tangerine_extra_css %}{% endblock tangerine_extra_css %}
 
 {% block content %}{% endblock content %}
