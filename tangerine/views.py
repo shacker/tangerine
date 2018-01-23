@@ -15,20 +15,21 @@ from tangerine.models import Category, Post, Comment, Config
 from tangerine.ops import toggle_approval, toggle_spam, process_comment, get_search_qs
 
 
-def home(request):
-    posts = Post.pub.all()
+def home(request, blog_slug):
+    posts = Post.pub.filter(blog__slug=blog_slug)
 
     num_posts = Config.objects.first().num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
 
-    return render(request, "tangerine/home.html", {'posts': posts})
+    return render(request, "tangerine/home.html", {'posts': posts, 'blog_slug': blog_slug})
 
 
-def post_detail(request, year, month, day, slug):
+def post_detail(request, blog_slug, year, month, day, slug):
     post = get_object_or_404(
-        Post, published=True, trashed=False, pub_date__year=year, pub_date__month=month, pub_date__day=day, slug=slug)
+        Post, blog__slug=blog_slug, published=True, trashed=False,
+        pub_date__year=year, pub_date__month=month, pub_date__day=day, slug=slug)
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -64,16 +65,17 @@ def post_detail(request, year, month, day, slug):
         'post': post,
         'form': form,
         'next_post': next_post,
-        'previous_post': previous_post
+        'previous_post': previous_post,
+        'blog_slug': blog_slug
     })
 
 
-def page_detail(request, slug):
+def page_detail(request, blog_slug, slug):
     post = get_object_or_404(Post, published=True, trashed=False, slug=slug)
-    return render(request, "tangerine/post_detail.html", {'post': post})
+    return render(request, "tangerine/post_detail.html", {'post': post, 'blog_slug': blog_slug})
 
 
-def category(request, cat_slug):
+def category(request, blog_slug, cat_slug):
     # This view shows all posts in category `cat_slug`
     cat = get_object_or_404(Category, slug=cat_slug)
     posts = Post.pub.filter(categories__in=[cat, ]).order_by('-pub_date')
@@ -83,10 +85,10 @@ def category(request, cat_slug):
     page = request.GET.get('page')
     posts = paginator.get_page(page)
 
-    return render(request, "tangerine/category.html", {'category':  cat, 'posts': posts})
+    return render(request, "tangerine/category.html", {'category':  cat, 'posts': posts, 'blog_slug': blog_slug})
 
 
-def tag(request, tag_slug):
+def tag(request, blog_slug, tag_slug):
     # This view shows all posts tagged with `tag_slug`
     tag = get_object_or_404(Tag, slug=tag_slug)
     posts = Post.pub.filter(tags__in=[tag, ]).order_by('-pub_date')
@@ -96,10 +98,10 @@ def tag(request, tag_slug):
     page = request.GET.get('page')
     posts = paginator.get_page(page)
     # FIXME: Can we re-use category.html here? Very similar.
-    return render(request, "tangerine/tag.html", {'tag':  tag, 'posts': posts})
+    return render(request, "tangerine/tag.html", {'tag':  tag, 'posts': posts, 'blog_slug': blog_slug})
 
 
-def date_archive(request, year, month=None, day=None):
+def date_archive(request, blog_slug, year, month=None, day=None):
     """ Get posts by year | year and month | year and month and day."""
 
     posts = Post.pub.filter(pub_date__year=year).order_by('-pub_date')
@@ -119,21 +121,21 @@ def date_archive(request, year, month=None, day=None):
     pseudo_day = day if day else datetime.date.today().day
     req_date = datetime.date(year=year, month=pseudo_month, day=pseudo_day)
 
-    context = {'posts': posts, 'year': year, 'month': month, 'day': day, 'req_date': req_date}
+    context = {'posts': posts, 'year': year, 'month': month, 'day': day, 'req_date': req_date, 'blog_slug': blog_slug}
     return render(request, "tangerine/date_archive.html", context)
 
 
-def author(request, username):
+def author(request, blog_slug, username):
     """Display bio, avatar, and previous posts for a given author"""
 
     user = get_object_or_404(get_user_model(), username=username)
     author_posts = Post.objects.filter(author=user).order_by('-pub_date')
 
-    context = {'author': user.authorpage, 'author_posts': author_posts}
+    context = {'author': user.authorpage, 'author_posts': author_posts, 'blog_slug': blog_slug}
     return render(request, "tangerine/author.html", context)
 
 
-def search(request):
+def search(request, blog_slug):
     """Display results of search for Post or Page objects."""
 
     if request.GET.get('q'):
@@ -144,7 +146,7 @@ def search(request):
     page = request.GET.get('page')
     posts = paginator.get_page(page)
 
-    context = {'posts': posts, 'q': request.GET.get('q')}
+    context = {'posts': posts, 'q': request.GET.get('q'), 'blog_slug': blog_slug}
     return render(request, "tangerine/search.html", context)
 
 

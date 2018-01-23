@@ -1,6 +1,6 @@
 {% load tangerine_tags %}
 
-{% get_recent_comments 10 as recent_comments %}
+{% get_recent_comments blog_slug 10 as recent_comments %}
 {% if recent_comments %}
   <h3>Recent Comments</h3>
   <ul class="recent_comments">

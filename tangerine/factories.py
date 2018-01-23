@@ -100,8 +100,6 @@ class RelatedLinkGroupFactory(factory.django.DjangoModelFactory):
         model = RelatedLinkGroup
         django_get_or_create = ('slug', )
 
-    slug = factory.Faker('words', nb=1)
-
     @factory.post_generation
     # Create related links
     def related_links(self, build, extracted, **kwargs):
@@ -112,7 +110,8 @@ class ConfigFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Config
 
-    site_title = factory.Faker('catch_phrase')
+    title = factory.Faker('catch_phrase')
+    slug = factory.Faker('word')
     tagline = factory.Faker('words', nb=5)
 
 

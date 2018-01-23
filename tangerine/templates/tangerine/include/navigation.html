@@ -2,7 +2,7 @@
 {% load tangerine_tags %}
 
 {% block navigation %}
-  {% get_settings as tangerine %}
+  {% get_settings blog_slug as tangerine %}
 
   <div class="m-b-1">
     <nav class="navbar navbar-expand-md navbar-light bg-light">
@@ -11,14 +11,14 @@
       </button>
 
       {% if tangerine.site_title %}
-        <a class="navbar-brand" href="{% url 'tangerine:home' %}">{{ tangerine.site_title }}</a>
+        <a class="navbar-brand" href="{% url 'tangerine:home' blog_slug %}">{{ tangerine.site_title }}</a>
       {% endif %}
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
 
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'tangerine:page_detail' 'about' %}">About</a>
+            <a class="nav-link" href="{% url 'tangerine:page_detail' slug='about' blog_slug=blog_slug %}">About</a>
           </li>
           {% if request.user.is_authenticated %}
             <li class="nav-item">
@@ -40,7 +40,7 @@
             </li>
           {% endif %}
           <li class="nav-item">
-            <form class="form" action="{% url 'tangerine:search' %}" method="get">
+            <form class="form" action="{% url 'tangerine:search' blog_slug %}" method="get">
                 <input type="text" name="q" value="" placeholder="Search">
             </form>
           </li>

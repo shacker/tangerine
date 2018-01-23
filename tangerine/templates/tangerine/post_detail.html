@@ -14,9 +14,11 @@
 {% endblock tangerine_extra_head %}
 
 {% block content %}
-  {% get_settings as tangerine %}
+  {% get_settings blog_slug as tangerine %}
 
-  <h2>{{ post.title }}</h2>
+  {% include "tangerine/include/blog_title.html" %}
+
+  <h3>{{ post.title }}</h3>
 
   {% if post.ptype == 'post' %}
     {% include "tangerine/include/byline.html" %}

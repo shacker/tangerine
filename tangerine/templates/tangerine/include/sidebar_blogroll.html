@@ -1,6 +1,6 @@
 {% load tangerine_tags %}
 
-{% get_related_links 'blogroll' as link_group %}
+{% get_related_links blog_slug=blog_slug as link_group %}
 {% if link_group %}
   <h3>Blogroll</h3>
   <ul>

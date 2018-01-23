@@ -7,8 +7,8 @@ A new comment has been posted and automatically published:
 
 Body: {{ comment.body }}
 
-Moderate: {{ config.site_url }}{% url 'tangerine:manage_comment' comment.id %}
-Original post: {{ config.site_url }}{{ comment.post.get_absolute_url }}
+Moderate: {{ config.get_site_url }}{% url 'tangerine:manage_comment' comment.id %}
+Original post: {{ config.get_site_url }}{{ comment.post.get_absolute_url }}
 
 {% if comment.spam %}
 At least one of your spam-control services suspects this comment of being spam.

@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -24,14 +23,14 @@ COMMENT_SYSTEM_CHOICES = (
 class Config(models.Model):
     """Blog-wide meta/config for a Tangerine installation. Only one instance of this model is allowed."""
 
-    site_title = models.CharField(
+    title = models.CharField(
         max_length=140,
         default="Arbitrary Site Title",
         help_text="To be displayed in page header and as part of HTML title tag")
 
-    site_url = models.URLField(
-        blank=True,
-        help_text="Only required for Akismet spam checking")
+    slug = models.SlugField(
+        default="blog",
+        help_text="Must match a blog slug defined in top level urls.py (without slashes). See docs.")
 
     tagline = models.CharField(
         max_length=140,
@@ -94,12 +93,6 @@ class Config(models.Model):
     class Meta:
         verbose_name_plural = "Config"
 
-    def save(self, *args, **kwargs):
-        # Allow only one instance of the Config model
-        if Config.objects.exists() and not self.pk:
-            raise ValidationError('There can be only one Config instance')
-        return super(Config, self).save(*args, **kwargs)
-
     def __str__(self):
         return self.site_title
 
@@ -109,6 +102,14 @@ class Category(models.Model):
 
     title = models.CharField(max_length=140)
     slug = models.SlugField(unique=True)
+
+    blog = models.ForeignKey(
+        Config,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text="Each category must be associated with a blog / named news site."
+    )
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -139,6 +140,14 @@ class Post(TimeStampedModel):
 
     # slug cannot be used more than once on the same pub_date
     slug = models.SlugField(unique_for_date='pub_date')
+
+    blog = models.ForeignKey(
+        Config,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text="Each post must be associated with a blog / named news site."
+    )
 
     author = models.ForeignKey(
         get_user_model(),  # Replaced by whatever User model is defined for this project
@@ -191,7 +200,8 @@ class Post(TimeStampedModel):
         # If USE_TZ=True in settings, `make_naive` so URL elements always match date elements in `self.pub_date`.
         naive_date = make_naive(self.pub_date) if is_aware(self.pub_date) else self.pub_date
         return reverse(
-            'tangerine:post_detail', args=[naive_date.year, naive_date.month, naive_date.day, self.slug])
+            'tangerine:post_detail',
+            args=[self.blog.slug, naive_date.year, naive_date.month, naive_date.day, self.slug])
 
     def top_level_comments(self):
         # To support threaded commenting, get only top-level comments initially.
@@ -299,11 +309,16 @@ class RelatedLinkGroup(models.Model):
     """ A set of related links (like a Blogroll), orderable in the Admin.
     Tangerine supports multiple RelatedLinkGroups, addressable by slug."""
 
-    # No need for a name - unique slug will do
-    slug = models.SlugField(unique=True)
+    blog = models.ForeignKey(
+        Config,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text="Each RelatedLinkGroup must be associated with a blog / named news site."
+    )
 
     def __str__(self):
-        return self.slug
+        return self.blog.slug
 
 
 class RelatedLink(models.Model):

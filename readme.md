@@ -388,3 +388,38 @@ Full list of URLs provided
 
 We provide an author page (in the admin) but if your site already has one, you can use that instead by changing the link in `tangerine/include/byline.html`.
 
+---------
+
+we do not provide a "themes" system because this app is meant to be dropped into an existing site. Theme your site, and let tangerine come along for the ride!
+
+However, you will need the following CSS:
+
+xxxxxxx
+
+----------
+
+Working with multiple blogs
+
+Tangerine lets you create as many "blogs" (or news projects, or whatever you want to publish) within a single Django project, each with the same URLs sub-structor for categories, tags, date archives, etc. To accomplish this, your top-level `urls.py` should include something like:
+
+```
+path('<blog_slug>/', include('tangerine.urls', namespace='tangerine')),
+```
+
+Notice that the pating information comes before the include. When Django encounters this pattern, the blog_slug will be passed automatically to every view referenced in the included urls module. Each view then passes the `blog_slug` down into the templates it renders, which then in turn becomes available to the template tags being called. You'll also notice that all sub-objects -- Post, RelatedLinkGroups, Categories, etc. -- all have ForeignKey relationships to a parent Blog instance.
+
+In essence, `blog_slug` becomes a semi-global variable available throughout the context and hierarchy of each blog instance.
+
+Most template tags must be called with two slugs: The passed slug of the blog in which they should render, and the slug of the object being requested. For example, when calling the `get_related_links` tags, use:
+
+```
+{% get_related_links blog_slug=blog_slug related_links_slug=related_links_slug as link_group %}
+```
+
+And if you want to work with just one blog space? 
+
+-------
+
+For now, we support just one RelatedLinkGroup per blog
+
+All plugins must filter for blog_slug, so they know which blog to gather data for.

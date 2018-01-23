@@ -4,6 +4,9 @@
 {% block title %}{{ block.super }}{{ category.title }}{% endblock title %}
 
 {% block content %}
+  {% get_settings blog_slug as tangerine %}
+
+  {% include "tangerine/include/blog_title.html" %}
 
   <h3>Posts tagged with "{{ tag }}"</h3>
 

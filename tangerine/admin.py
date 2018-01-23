@@ -9,6 +9,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = (
         'title',
         'slug',
+        'blog',
         'published',
         'ptype',
         'pub_date',
@@ -17,6 +18,7 @@ class PostAdmin(admin.ModelAdmin):
     fields = (
         'title',
         'slug',
+        'blog',
         'content',
         'summary',
         'author',
@@ -41,11 +43,16 @@ class RelatedLinkInline(admin.TabularInline):
 
 class RelatedLinkGroupAdmin(admin.ModelAdmin):
     inlines = [RelatedLinkInline, ]
+    list_display = ['blog']
 
 
 def comment_body_intro(obj):
     # Truncate comment body for display in the admin
     return strip_tags(obj.body[:20])
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['title', 'blog']
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -66,7 +73,7 @@ class CommentAdmin(admin.ModelAdmin):
 class ConfigAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': ('site_title', 'tagline', 'site_url', 'from_email')
+            'fields': ('title', 'slug', 'tagline', 'from_email')
         }),
         ('Posts', {
             'fields': ('num_posts_per_list_view', 'show_future'),
@@ -83,7 +90,7 @@ class ConfigAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Config, ConfigAdmin)
-admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(AuthorPage)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Post, PostAdmin)

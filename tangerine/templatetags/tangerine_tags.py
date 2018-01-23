@@ -11,20 +11,21 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_settings():
+def get_settings(blog_slug):
     '''
-    There is one and only one Config record in the Admin, which contains the Site Title, Tagline,
+    There is one Blog record in the Admin for each configured blog, which contains the Site Title, Tagline,
     Google Analytics ID and number of posts per page. Get this once in the base template to provide
     settings options in a dictionary to all tangerine pages.
 
     To use in a template block:
 
     {% load tangerine_tags %}
-    {% get_settings as tangerine %}
+    {# blog_slug should be available automatically - passed in from URLs to each view #}
+    {% get_settings as tangerine blog_slug %}
     ...
     {# then any of these *inside* the block tag that needs them: #}
-    {{ tangerine.site_title }}
-    {{ tangerine.site_url }}
+    {{ tangerine.title }}
+    {{ tangerine.slug }}
     {{ tangerine.tagline }}
     {{ tangerine.num_posts_per_list_view }}
     {{ tangerine.google_analytics_id }}
@@ -33,10 +34,10 @@ def get_settings():
     '''
 
     try:
-        config = Config.objects.all().first()
+        config = Config.objects.get(slug=blog_slug)
         return {
-            'site_title': config.site_title,
-            'site_url': config.site_url,
+            'title': config.title,
+            'slug': config.slug,
             'tagline': config.tagline,
             'num_posts_per_list_view': config.num_posts_per_list_view,
             'enable_comments_global': config.enable_comments_global,
@@ -48,10 +49,9 @@ def get_settings():
 
 
 @register.simple_tag
-def get_related_links(slug):
+def get_related_links(blog_slug):
     '''
-    You can create as many Related Link Groups as you like (e.g. "Blogroll"), and order the
-    links they contain in the admin by dragging and dropping.
+    Each blog or news site gets a RelatedLinkGroup ("blogroll") which can be displayed in the sidebar.
 
     This template tag returns the set of *ordered* links in the named group as a list:
 
@@ -60,28 +60,27 @@ def get_related_links(slug):
     To use in a template:
 
     {% load tangerine_tags %}
-    {% get_related_links 'blogroll' as link_group %}
+    {% get_related_links blog_slug=blog_slug as link_group %}
     {% for link in link_group.links %}
         <li><a href="{{ link.site_url }}">{{ link.site_title }}</a></li>
     {% endfor %}
     '''
 
-    try:
-        group = RelatedLinkGroup.objects.get(slug=slug)
+    group = RelatedLinkGroup.objects.filter(blog__slug=blog_slug).first()
+    if group:
         return {
             'links': group.relatedlink_set.all(),
         }
-    except RelatedLinkGroup.DoesNotExist:
+    else:
         return {
             'links': [
-                {'site_title': 'Template tag asked for RelatedLinkGroup "{}" which does not exist in admin.'.format(
-                    slug)}
-                ],
+                {'site_title': 'No RelatedLinkGroup found for this blog.'}
+            ],
         }
 
 
 @register.simple_tag
-def get_date_archives(dtype='year', start='19700101', end='29991231'):
+def get_date_archives(blog_slug, dtype='year', start='19700101', end='29991231'):
     '''
     Args:
         dtype: One of 'year' or 'month', determining how "deep" returned dates should go
@@ -108,14 +107,15 @@ def get_date_archives(dtype='year', start='19700101', end='29991231'):
 
     # Ironically, need to cast the naive dates back to `aware` to prevent console warnings,
     # since the ORM expects aware dates.
-    qs = Post.objects.dates('pub_date', dtype, 'DESC').exclude(
+    qs = Post.objects.dates('pub_date', dtype, 'DESC').filter(
+        blog__slug=blog_slug).exclude(
         pub_date__lt=make_aware(naive_start)).exclude(
         pub_date__gt=make_aware(naive_end))
     return qs
 
 
 @register.simple_tag
-def get_categories():
+def get_categories(blog_slug):
     '''Returns the set of all categories *with published posts* as an ordered list of Category objects.
 
     {'categories': categories}
@@ -124,13 +124,13 @@ def get_categories():
 
     {% load tangerine_tags %}
     ...
-    {% get_categories as cats %}
+    {% get_categories as cats blog_slug %}
     {% for cat in cats.categories %}
         <li><a href="{% url 'category' cat.slug %}">{{ cat.name }}</a></li>
     {% endfor %}
     '''
     cats = []
-    for c in Category.objects.all():
+    for c in Category.objects.filter(blog__slug=blog_slug):
         if c.post_set.filter(trashed=False, published=True).count() > 0:
             cats.append(c)
 
@@ -140,7 +140,7 @@ def get_categories():
 
 
 @register.simple_tag
-def get_recent_comments(num_comments=10):
+def get_recent_comments(blog_slug, num_comments=10):
     '''Returns n most-recent published comments as a list.
 
     To use in a template:
@@ -148,7 +148,7 @@ def get_recent_comments(num_comments=10):
     {% load tangerine_tags %}
     ...
     {# Replace 10 with desired number of comments #}
-    {% get_recent_comments 10 as recent_comments %}
+    {% get_recent_comments blog_slug 10 as recent_comments %}
     {% if recent_comments %}
         <h3>Recent Comments</h3>
         <ul class="recent_comments">
@@ -163,7 +163,7 @@ def get_recent_comments(num_comments=10):
 
     # Return approved comments only
     return {
-        'comments': Comment.pub.order_by('-created')[:num_comments],
+        'comments': Comment.pub.filter(post__blog__slug=blog_slug).order_by('-created')[:num_comments],
     }
 
 
