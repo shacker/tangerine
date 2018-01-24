@@ -167,6 +167,25 @@ def get_recent_comments(blog_slug, num_comments=10):
     }
 
 
+@register.simple_tag
+def get_all_blogs():
+    '''Returns all configured Blogs in the project as a queryset.
+
+    To use in a template:
+
+    {% load tangerine_tags %}
+    ...
+    {% get_all_blogs as blogs %}
+    <h3>Blogs in This Project</h3>
+    <ul class="blogs">
+        {% for blog in blogs %}
+            <li><a href="{% url 'tangerine:home' blog.slug %}">{{ blog.title }}</a></li>
+        {% endfor %}
+    </ul>
+    '''
+    return Blog.objects.all()
+
+
 @register.filter
 def gravatar(email, size=40):
     '''Get commenter's avatar from Gravatar service via API (depends on libgravatar)'''
