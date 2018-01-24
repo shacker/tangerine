@@ -91,7 +91,7 @@ def category(request, blog_slug, cat_slug):
 def tag(request, blog_slug, tag_slug):
     # This view shows all posts tagged with `tag_slug`
     tag = get_object_or_404(Tag, slug=tag_slug)
-    posts = Post.pub.filter(tags__in=[tag, ]).order_by('-pub_date')
+    posts = Post.pub.filter(blog__slug=blog_slug, tags__in=[tag, ]).order_by('-pub_date')
 
     num_posts = Blog.objects.get(slug=blog_slug).num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
