@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import strip_tags
 
 
-from tangerine.models import Category, Post, RelatedLinkGroup, RelatedLink, Config, Comment, AuthorPage
+from tangerine.models import Category, Post, RelatedLinkGroup, RelatedLink, Blog, Comment, AuthorPage
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -70,7 +70,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['approved', ]
 
 
-class ConfigAdmin(admin.ModelAdmin):
+class BlogAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('title', 'slug', 'tagline', 'from_email')
@@ -89,7 +89,7 @@ class ConfigAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(Config, ConfigAdmin)
+admin.site.register(Blog, BlogAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(AuthorPage)
 admin.site.register(Comment, CommentAdmin)

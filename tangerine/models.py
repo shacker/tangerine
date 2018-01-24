@@ -20,7 +20,7 @@ COMMENT_SYSTEM_CHOICES = (
 )
 
 
-class Config(models.Model):
+class Blog(models.Model):
     """Blog-wide meta/config for a Tangerine installation. Only one instance of this model is allowed."""
 
     title = models.CharField(
@@ -91,7 +91,7 @@ class Config(models.Model):
     )
 
     class Meta:
-        verbose_name_plural = "Config"
+        verbose_name_plural = "Blogs"
 
     def __str__(self):
         return self.site_title
@@ -104,7 +104,7 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
 
     blog = models.ForeignKey(
-        Config,
+        Blog,
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
@@ -120,12 +120,12 @@ class Category(models.Model):
 
 class PostManager(models.Manager):
     """ Filter out all unpublished and trashed posts by calling Post.pub.all() from anywhere.
-    Filter out future posts if show_future disabled in Config."""
+    Filter out future posts if show_future disabled in Blog config."""
 
     def get_queryset(self):
 
         qs = super().get_queryset().filter(published=True, ptype='post', trashed=False).order_by('-pub_date')
-        config = Config.objects.first()
+        config = Blog.objects.first()
 
         if not config.show_future:
             qs = qs.exclude(pub_date__gt=timezone.now())
@@ -142,7 +142,7 @@ class Post(TimeStampedModel):
     slug = models.SlugField(unique_for_date='pub_date')
 
     blog = models.ForeignKey(
-        Config,
+        Blog,
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
@@ -188,7 +188,7 @@ class Post(TimeStampedModel):
     enable_comments = models.BooleanField(
         default=True,
         help_text="Disable to turn off comments for this Post/Page only.\
-            Overriden if Global Comment Enable is off in Config.")
+            Overriden if Global Comment Enable is off in Blog config.")
 
     tags = TaggableManager()
 
@@ -310,7 +310,7 @@ class RelatedLinkGroup(models.Model):
     Tangerine supports multiple RelatedLinkGroups, addressable by slug."""
 
     blog = models.ForeignKey(
-        Config,
+        Blog,
         on_delete=models.SET_NULL,
         blank=True,
         null=True,

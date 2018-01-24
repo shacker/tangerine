@@ -11,14 +11,14 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 
 from tangerine.forms import CommentForm, CommentSearchForm
-from tangerine.models import Category, Post, Comment, Config
+from tangerine.models import Category, Post, Comment, Blog
 from tangerine.ops import toggle_approval, toggle_spam, process_comment, get_search_qs
 
 
 def home(request, blog_slug):
     posts = Post.pub.filter(blog__slug=blog_slug)
 
-    num_posts = Config.objects.first().num_posts_per_list_view
+    num_posts = Blog.objects.get(slug=blog_slug).num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -80,7 +80,7 @@ def category(request, blog_slug, cat_slug):
     cat = get_object_or_404(Category, slug=cat_slug)
     posts = Post.pub.filter(categories__in=[cat, ]).order_by('-pub_date')
 
-    num_posts = Config.objects.first().num_posts_per_list_view
+    num_posts = Blog.objects.get(slug=blog_slug).num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -93,7 +93,7 @@ def tag(request, blog_slug, tag_slug):
     tag = get_object_or_404(Tag, slug=tag_slug)
     posts = Post.pub.filter(tags__in=[tag, ]).order_by('-pub_date')
 
-    num_posts = Config.objects.first().num_posts_per_list_view
+    num_posts = Blog.objects.get(slug=blog_slug).num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -110,7 +110,7 @@ def date_archive(request, blog_slug, year, month=None, day=None):
     if day:
         posts = posts.filter(pub_date__day=day)
 
-    num_posts = Config.objects.first().num_posts_per_list_view
+    num_posts = Blog.objects.get(slug=blog_slug).num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -155,7 +155,6 @@ def search(request, blog_slug):
 @user_passes_test(lambda u: u.is_superuser)
 def manage_comments(request, comment_id=None):
     """Comment management interface. Same view is used for single comment moderation (if comment_id exists), or list."""
-    config = Config.objects.first()
 
     if request.GET.get('q'):
         q = request.GET.get('q')
@@ -178,7 +177,7 @@ def manage_comments(request, comment_id=None):
     page = request.GET.get('page')
     comments = paginator.get_page(page)
 
-    context = {'comments': comments, 'form': form, 'q': q, 'config': config}
+    context = {'comments': comments, 'form': form, 'q': q, }
     return render(request, "tangerine/management/comments.html", context)
 
 

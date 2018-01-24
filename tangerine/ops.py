@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.template.loader import render_to_string
 
-from tangerine.models import ApprovedCommentor, Config, Comment, Post
+from tangerine.models import ApprovedCommentor, Blog, Comment, Post
 
 
 def sanitize_comment(comment):
@@ -33,7 +33,7 @@ def get_comment_approval(email, authenticated):
     `auto_approve` doesn't mean blanket approval, but "IF email is in ApprovedCommentor table".
     Authenticated commenters are always allowed to comment without moderation."""
 
-    config = Config.objects.first()
+    config = Blog.objects.first()
     auto_approve = config.auto_approve_previous_commentors
 
     if (
@@ -52,10 +52,10 @@ def toggle_approval(comment):
 
     If input comment was unapproved, approve it (and vice versa).
 
-    If auto_approve is enabled in config and comment is approved, also add user to ApprovedCommentors,
+    If auto_approve is enabled in Blog config and comment is approved, also add user to ApprovedCommentors,
     (or remove if unapproving)."""
 
-    config = Config.objects.first()
+    config = Blog.objects.first()
     auto_approve = config.auto_approve_previous_commentors
 
     if auto_approve:
@@ -77,7 +77,7 @@ def send_comment_moderation_email(comment):
 
     Takes a comment object, returns nothing"""
 
-    config = Config.objects.first()
+    config = Blog.objects.first()
 
     if comment.spam or not comment.approved:
         # send moderation email
@@ -142,7 +142,7 @@ def process_comment(request, comment, post):
 def akismet_spam_ham(comment):
     """Submit comment to Akismet spam/ham API, using current spam status"""
 
-    config = Config.objects.first()
+    config = Blog.objects.first()
     if config.akismet_key:
 
         akismet_api = akismet.Akismet(key=config.akismet_key, blog_url=config.site_url)
@@ -183,7 +183,7 @@ def toggle_spam(comment):
 
 def spam_check(comment):
     # Pass comment object into configured spam control engines and return True or False
-    config = Config.objects.first()
+    config = Blog.objects.first()
     spam_status = False
 
     if config.akismet_key:

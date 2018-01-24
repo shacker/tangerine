@@ -5,7 +5,7 @@ from libgravatar import Gravatar
 from django import template
 from django.utils.timezone import make_naive, make_aware, is_aware
 
-from tangerine.models import Category, RelatedLinkGroup, Config, Comment, Post
+from tangerine.models import Category, RelatedLinkGroup, Blog, Comment, Post
 
 register = template.Library()
 
@@ -34,7 +34,7 @@ def get_settings(blog_slug):
     '''
 
     try:
-        config = Config.objects.get(slug=blog_slug)
+        config = Blog.objects.get(slug=blog_slug)
         return {
             'title': config.title,
             'slug': config.slug,
