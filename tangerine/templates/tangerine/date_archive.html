@@ -1,6 +1,7 @@
 {% extends "tangerine/base.html" %}
 {% load tangerine_tags %}
 
+
 {% block title %}
   {{ block.super }} Date archive:
   {% if year and month and day %}
@@ -13,6 +14,8 @@
 {% endblock title %}
 
 {% block content %}
+  {% get_settings blog_slug as tangerine %}
+  {% include "tangerine/include/blog_title.html" %}
 
   <h3>Viewing posts by date:
     {% if year and month and day %}
