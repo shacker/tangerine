@@ -76,13 +76,13 @@ Tangerine uses the new `path`-style routes in Django 2, not the older `url`-styl
 
 1. Run `python manage.py migrate` to create the tangerine models.
 
-1. Create starter content and a superuser for yourself (don't skip this!): Run `python manage.py tangerine_start` to perform installation tasks and set up dummy data and config.
+1. Create starter content and a superuser for yourself (don't skip this!): Run `python manage.py tangerine_start` to perform installation tasks and set up dummy data and BlogConfigs.
 
 
 1. Start the development server and visit [http://localhost:8000/admin/](http://localhost:8000/admin/)
    to create a post. 
    
-1. While you're in the admin, go to Tangerine/Config to set your site title, optional Google Analytics ID, and other configuration options.
+1. While you're in the admin, go to Tangerine/Config to set your site title, optional Google Analytics ID, and other configuration options. If your site will have multiple blog instances, you'll need one Blog config record for each blog.
 
 1. Delete the starter content via Admin or from Django shell.
 
@@ -95,6 +95,8 @@ Tangerine divides into two spaces: The "management" interface for writing posts 
 ## Configuration
 
 Tangerine configuration settings are made in the Django Admin, not in your project settings. If you ran the `tangerine_start` script, default settings will have been created for you, but you'll still want to visit Admin|Tangerine|Config to tweak them. All of the Config settings should be fairly self-explanatory (see the help_text on each field).
+
+If you will be running multiple tangerine instances in your site, you'll need one Blog record in the Admin for each blog or news site.
 
 Tangerine will crash if you have not created a Config record!
 
