@@ -2,13 +2,16 @@ import datetime
 
 from taggit.models import Tag
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
+
 
 from tangerine.forms import CommentForm, CommentSearchForm
 from tangerine.models import Category, Post, Comment, Blog
@@ -148,6 +151,21 @@ def search(request, blog_slug):
 
     context = {'posts': posts, 'q': request.GET.get('q'), 'blog_slug': blog_slug}
     return render(request, "tangerine/search.html", context)
+
+
+def feed(request, blog_slug):
+    """Generate RSS 2 feed for the selected blog.
+    Using standard view and template rather than Django RSS Feed class due to difficulty of passing in blog_slug
+    for uniqueness of multiple feeds. Note `content_type` of return."""
+
+    blog = Blog.objects.get(slug=blog_slug)
+    lang = settings.LANGUAGE_CODE
+    posts = Post.pub.filter(blog=blog).order_by('-pub_date')[:blog.num_posts_per_list_view]
+    site = get_current_site(request)
+
+    context = {'blog': blog, 'lang': lang, 'site': site, 'posts': posts, }
+
+    return render(request, "tangerine/rss.xml", context, content_type="application/xhtml+xml")
 
 
 # ===============  Private management interfaces  ===============

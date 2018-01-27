@@ -54,10 +54,10 @@ urlpatterns = [
         views.search,
         name="search"),
 
-    # path(
-    #     'feed',
-    #     LatestEntriesFeed(),
-    #     name="feed"),
+    path(
+        'feed',
+        views.feed,
+        name="feed",),
 
     path(
         '',

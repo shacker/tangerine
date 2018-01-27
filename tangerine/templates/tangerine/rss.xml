@@ -1,0 +1,26 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ blog.title }}</title>
+    <link>https://{{ site }}</link>
+    <description>Recent content from {{ blog.title }}</description>
+    <generator>Django 2.0</generator>
+    <language>{{ lang }}</language>
+    <copyright>Copyright {% now "Y" %}, {{ blog.title }}</copyright>
+    <lastBuildDate>{{ posts.first.pub_date|date:"r" }}</lastBuildDate>
+    {% for post in posts %}
+      <item>
+        <title>{{ post.title }}</title>
+        <link>https://{{ site }}{{ post.get_absolute_url }}</link>
+        <pubDate>"Mon, 02 Jan 2006 15:04:05 -0700"</pubDate>
+        <author>{{ post.author.get_full_name }}</author>
+        <description>
+          {% if post.summary %}
+            {{ post.summary|safe }}
+          {% else %}
+            {{ post.content|truncatewords:20|safe }}
+        {% endif %}
+        </description>
+      </item>
+    {% endfor %}
+  </channel>
+</rss>

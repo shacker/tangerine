@@ -13,6 +13,7 @@ Tangerine is a pluggable blogging system for Django, meant to be dropped into an
 - Standard blog Post pages
     - OEmbed support	
 - Semi-static Pages (About, Contact, etc.)
+- Multiple blogs in a single installation
 - Tags and categories
 - Date archives by year and month
 - Pagination (customize number of posts per results page)
