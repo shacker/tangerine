@@ -12,7 +12,7 @@
 
 {% block tangerine_extra_head %}
   {% get_settings blog_slug as tangerine %}
-  <link rel="alternate" type="application/rss+xml" title="{{ tangerine.site_title }}" href="{{ tangerine.get_blog_url }}/feed/" />
+  <link rel="alternate" type="application/rss+xml" title="{{ tangerine.site_title }}" href="{% url 'tangerine:feed' tangerine.slug %}" />
 {% endblock tangerine_extra_head %}
 
 {% block tangerine_extra_css %}{% endblock tangerine_extra_css %}

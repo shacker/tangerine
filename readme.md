@@ -426,3 +426,9 @@ And if you want to work with just one blog space?
 For now, we support just one RelatedLinkGroup per blog
 
 All plugins must filter for blog_slug, so they know which blog to gather data for.
+
+-------
+
+RSS feeds are automatically generated and provided for each blog. An RSS link is not provided, but an RSS discovery URL is present in the HTML header. If you want to provide a visible link, search for 'rss' in `tangerine/base.html` for an example of link construction.
+
+
