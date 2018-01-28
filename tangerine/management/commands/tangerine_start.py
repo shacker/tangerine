@@ -1,15 +1,13 @@
 import pwd
 import os
 import random
-import sys
 
-from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.contrib.auth import get_user_model
 
-from tangerine.factories import CategoryFactory, PostFactory, ConfigFactory, CommentFactory, AuthorPageFactory
-from tangerine.models import Category, AuthorPage
+from tangerine.factories import CategoryFactory, PostFactory, BlogFactory, CommentFactory, AuthorPageFactory
+from tangerine.models import Blog, AuthorPage
 
 
 def gen_su():
@@ -35,42 +33,37 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        def create_cats_posts_comments(blog, cats):
+            # Given a Blog object and a list of category titles, generate Categories full of Posts with Comments.
+            for cat_title in cats:
+                cat = CategoryFactory.create(blog=blog, title=cat_title)
+                for _ in range(5):
+                    p = PostFactory(blog=blog, author=author)
+                    p.categories.add(cat)
+                    CommentFactory.create_batch(random.randint(0, 10), post=p)
+                print("Fake posts and comments in blog \"{}\" created (category \"{}\")".format(blog.title, cat_title))
+
         if not get_user_model().objects.all():
             gen_su()  # Create a superuser and make them author of all posts
 
-        try:
-            config = ConfigFactory()
-            site_title = input("Site title (e.g. My Blog): ")
-            site_title = "My blog" if not site_title else site_title  # Default val
-            tagline = input("Tagline (e.g. Tilting at Windmills...): ")
-            tagline = "My tagline" if not tagline else tagline  # Default val
-            config.site_title = site_title
-            config.tagline = tagline
-            config.save()
-        except ValidationError:
-            print("Site config already exists, not creating another.")
+        # For simplicity, all posts will have the same author.
+        author = get_user_model().objects.order_by('?').first()
+        if not AuthorPage.objects.filter(user=author).exists():
+            AuthorPageFactory.create(user=author)
 
-        confirm = input("Required config complete. Create fake starter content? (Recommended) [Y/N] ")
-        if confirm.lower() == "y":
+        # Create two fake Blogs for dummy content
+        BlogFactory.create_batch(2)
 
-            author = get_user_model().objects.order_by('?').first()
-            if not AuthorPage.objects.filter(user=author).exists():
-                AuthorPageFactory.create(user=author)
-            cats = ['Family', 'Coding', 'Environment', 'Culture', 'Politics', 'Bike', 'Photography', ]
-            if not Category.objects.all().count():
-                for cat_title in cats:
-                    cat = CategoryFactory.create(title=cat_title)
-                    for _ in range(5):
-                        p = PostFactory(author=author)
-                        p.categories.add(cat)
-                        CommentFactory.create_batch(random.randint(0, 10), post=p)
-                    print("Five fake posts in category {} created.".format(cat_title))
+        blog = Blog.objects.first()
+        cats = ['Family', 'Coding', 'Environment', 'Culture', 'Politics', 'Bike', 'Photography', ]
+        create_cats_posts_comments(blog, cats)
 
-            # Set up starter About page and RelatedLinks to work with default template
-            call_command('loaddata', 'about')
-            call_command('loaddata', 'related_links')
+        blog = Blog.objects.last()
+        cats = ['Audio', 'Engineering', 'Bioethics', 'Bears', 'Fishing', 'Electric Vehicles', ]
+        create_cats_posts_comments(blog, cats)
 
-            print("Starter set of RelatedLinks created as \"blogroll\".")
+        # Set up starter About page and RelatedLinks to work with default template
+        call_command('loaddata', 'about')
+        call_command('loaddata', 'related_links')
 
-        else:
-            sys.exit()
+        print("Starter sets of RelatedLinks created for each blog.")

@@ -1,10 +1,17 @@
 [
 {
-  "model": "tangerine.relatedlinkgroup",
-  "pk": 1,
-  "fields": {
-    "slug": "blogroll"
-  }
+    "model": "tangerine.relatedlinkgroup",
+    "pk": 1,
+    "fields": {
+        "blog": 1
+    }
+},
+{
+    "model": "tangerine.relatedlinkgroup",
+    "pk": 2,
+    "fields": {
+        "blog": 2
+    }
 },
 {
   "model": "tangerine.relatedlink",
@@ -33,6 +40,36 @@
     "group": 1,
     "site_title": "Birdhouse",
     "site_url": "http://blog.birdhouse.org",
+    "link_order": 2
+  }
+},
+{
+  "model": "tangerine.relatedlink",
+  "pk": 4,
+  "fields": {
+    "group": 2,
+    "site_title": "Blue leader",
+    "site_url": "http://blue.com",
+    "link_order": 1
+  }
+},
+{
+  "model": "tangerine.relatedlink",
+  "pk": 5,
+  "fields": {
+    "group": 2,
+    "site_title": "Yellow leader",
+    "site_url": "http://yellow.com",
+    "link_order": 3
+  }
+},
+{
+  "model": "tangerine.relatedlink",
+  "pk": 6,
+  "fields": {
+    "group": 2,
+    "site_title": "Red leader",
+    "site_url": "http://red.com",
     "link_order": 2
   }
 }

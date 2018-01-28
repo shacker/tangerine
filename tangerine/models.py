@@ -99,7 +99,7 @@ class Blog(models.Model):
         return "https://{}/{}".format(Site.objects.get_current(), self.slug)
 
     def __str__(self):
-        return self.site_title
+        return self.title
 
 
 class Category(models.Model):
@@ -146,9 +146,10 @@ class Post(TimeStampedModel):
     # slug cannot be used more than once on the same pub_date
     slug = models.SlugField(unique_for_date='pub_date')
 
+    # Relation from Post to Blog must be optional because Pages are a form of Post, but don't belong to a Blog.
     blog = models.ForeignKey(
         Blog,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         blank=True,
         null=True,
         help_text="Each post must be associated with a blog / named news site."

@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.timezone import get_current_timezone
 
-from .models import Category, Post, RelatedLinkGroup, RelatedLink, Config, Comment, AuthorPage
+from .models import Category, Post, RelatedLinkGroup, RelatedLink, Blog, Comment, AuthorPage
 
 
 def gen_headline():
@@ -106,13 +106,13 @@ class RelatedLinkGroupFactory(factory.django.DjangoModelFactory):
         RelatedLinkFactory.create_batch(5, group=self)
 
 
-class ConfigFactory(factory.django.DjangoModelFactory):
+class BlogFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Config
+        model = Blog
 
-    title = factory.Faker('catch_phrase')
-    slug = factory.Faker('word')
-    tagline = factory.Faker('words', nb=5)
+    title = factory.Faker('company')
+    slug = factory.LazyAttribute(lambda o: slugify(o.title)[:30])
+    tagline = factory.Faker('bs')
 
 
 class AuthorPageFactory(factory.django.DjangoModelFactory):
