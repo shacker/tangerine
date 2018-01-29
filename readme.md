@@ -439,3 +439,18 @@ All views filter per-blog - none are global for all blogs (if you request a cate
 If you want to see results for all posts in that category for ALL blogs, you must create your own view to do that. 
 
 Likewise, the example search engine only searches through the current blog. If you want global search on your site, you'll need to implement that on your site in your own way. (n.b.: `ops.get_search_qs` does search all blogs, but it's filtered to the current blog in `views.search`, so `ops.get_search_qs` could be helpful for your global search. 
+
+------
+
+When deploying multiple blogs on the same project, all blogs will share the same URL structure, e.g. for the same category on two blogs "foo" and "bar":
+
+http://example.com/foo/cat/bike
+http://example.com/bar/cat/bike
+
+or for date archives on two blogs:
+
+http://example.com/foo/2017/11
+http://example.com/bar/2017/11
+
+It is not possible to have multiple blogs on the same project use different URL structures.
+
