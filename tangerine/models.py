@@ -125,7 +125,11 @@ class Category(models.Model):
 
 class PostManager(models.Manager):
     """ Filter out all unpublished and trashed posts by calling Post.pub.all() from anywhere.
-    Filter out future posts if show_future disabled in Blog config."""
+    Filter out future posts if show_future disabled in Blog config.
+
+    Intentionally does not filter by blog, so calls can either be:
+    `Post.pub.all()` or `Post.pub.filter(blog=blog)`.
+    """
 
     def get_queryset(self):
 
