@@ -432,3 +432,10 @@ All plugins must filter for blog_slug, so they know which blog to gather data fo
 RSS feeds are automatically generated and provided for each blog. An RSS link is not provided, but an RSS discovery URL is present in the HTML header. If you want to provide a visible link, search for 'rss' in `tangerine/base.html` for an example of link construction.
 
 
+-------
+
+All views filter per-blog - none are global for all blogs (if you request a category view, and the same category exists in three blogs, you only get results for the current one).
+
+If you want to see results for all posts in that category for ALL blogs, you must create your own view to do that. 
+
+Likewise, the example search engine only searches through the current blog. If you want global search on your site, you'll need to implement that on your site in your own way. (n.b.: `ops.get_search_qs` does search all blogs, but it's filtered to the current blog in `views.search`, so `ops.get_search_qs` could be helpful for your global search. 

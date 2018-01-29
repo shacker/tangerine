@@ -19,9 +19,10 @@ from tangerine.ops import toggle_approval, toggle_spam, process_comment, get_sea
 
 
 def home(request, blog_slug):
-    posts = Post.pub.filter(blog__slug=blog_slug)
+    blog = get_object_or_404(Blog, slug=blog_slug)
+    posts = Post.pub.filter(blog=blog)
+    num_posts = blog.num_posts_per_list_view
 
-    num_posts = Blog.objects.get(slug=blog_slug).num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -79,11 +80,12 @@ def page_detail(request, blog_slug, slug):
 
 
 def category(request, blog_slug, cat_slug):
-    # This view shows all posts in category `cat_slug`
-    cat = get_object_or_404(Category, slug=cat_slug)
-    posts = Post.pub.filter(categories__in=[cat, ]).order_by('-pub_date')
+    # This view shows all posts in category `cat_slug` for the current blog
+    blog = get_object_or_404(Blog, slug=blog_slug)
+    cat = get_object_or_404(Category, slug=cat_slug, blog=blog)
+    posts = Post.pub.filter(blog=blog, categories__in=[cat, ]).order_by('-pub_date')
 
-    num_posts = Blog.objects.get(slug=blog_slug).num_posts_per_list_view
+    num_posts = blog.num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -93,10 +95,11 @@ def category(request, blog_slug, cat_slug):
 
 def tag(request, blog_slug, tag_slug):
     # This view shows all posts tagged with `tag_slug`
+    blog = get_object_or_404(Blog, slug=blog_slug)
     tag = get_object_or_404(Tag, slug=tag_slug)
-    posts = Post.pub.filter(blog__slug=blog_slug, tags__in=[tag, ]).order_by('-pub_date')
+    posts = Post.pub.filter(blog=blog, tags__in=[tag, ]).order_by('-pub_date')
 
-    num_posts = Blog.objects.get(slug=blog_slug).num_posts_per_list_view
+    num_posts = blog.num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -107,13 +110,14 @@ def tag(request, blog_slug, tag_slug):
 def date_archive(request, blog_slug, year, month=None, day=None):
     """ Get posts by year | year and month | year and month and day."""
 
-    posts = Post.pub.filter(pub_date__year=year).order_by('-pub_date')
+    blog = get_object_or_404(Blog, slug=blog_slug)
+    posts = Post.pub.filter(blog=blog, pub_date__year=year).order_by('-pub_date')
     if month:
         posts = posts.filter(pub_date__month=month)
     if day:
         posts = posts.filter(pub_date__day=day)
 
-    num_posts = Blog.objects.get(slug=blog_slug).num_posts_per_list_view
+    num_posts = blog.num_posts_per_list_view
     paginator = Paginator(posts, num_posts)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -139,12 +143,15 @@ def author(request, blog_slug, username):
 
 
 def search(request, blog_slug):
-    """Display results of search for Post or Page objects."""
+    """Display results of search for Post or Page objects.
+    FIXME: Currently searching all blogs. Should this be able to search just one blog at a time?"""
 
     if request.GET.get('q'):
         qs = get_search_qs(request.GET.get('q'))
 
-    qs = qs.order_by('-pub_date')
+    blog = get_object_or_404(Blog, slug=blog_slug)
+    qs = qs.filter(blog=blog).order_by('-pub_date')
+
     paginator = Paginator(qs, 25)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -158,7 +165,7 @@ def feed(request, blog_slug):
     Using standard view and template rather than Django RSS Feed class due to difficulty of passing in blog_slug
     for uniqueness of multiple feeds. Note `content_type` of return."""
 
-    blog = Blog.objects.get(slug=blog_slug)
+    blog = get_object_or_404(Blog, slug=blog_slug)
     lang = settings.LANGUAGE_CODE
     posts = Post.pub.filter(blog=blog).order_by('-pub_date')[:blog.num_posts_per_list_view]
     site = get_current_site(request)

@@ -199,7 +199,9 @@ def spam_check(comment):
 
 
 def get_search_qs(q):
-    # Testable ORM query for returning search terms
+    """Takes q as a search string, returns ORM results for Posts matching search terms.
+    Searches all installed blogs - if you want to filter per blog, do it with .filter() in the call, not here."""
+
     if q:
         qs = Post.objects.filter(
             Q(title__icontains=q) |
