@@ -8,6 +8,8 @@
 
 Tangerine is a pluggable blogging system for Django, meant to be dropped into an *existing Django project*. Of course, nothing prevents you from running Tangerine as a standalone blog - you'll just need to create a basic/starter Django project first (if you need a starter site, check out the companion [Tangelo](https://github.com/shacker/tangelo) project, which supports the author's own Tangerine blog).
 
+Unlike other blogging systems for Django, Tangerine does not require you adopt someone else's complete content content management system, or to fundamentally alter basic Django practices and assumptions - Tangerine is a true "[reusable app](https://docs.djangoproject.com/en/2.0/intro/reusable-apps/)."
+
 **Supports:**
 
 - Standard blog Post pages
