@@ -6,9 +6,11 @@
 
 *Just the bits you need, nothing more.*
 
-Tangerine is a pluggable blogging system for Django, meant to be dropped into an *existing Django project*. Of course, nothing prevents you from running Tangerine as a standalone blog - you'll just need to create a basic/starter Django project first (if you need a starter site, check out the companion [Tangelo](https://github.com/shacker/tangelo) project, which supports the author's own Tangerine blog).
+Tangerine is a *pluggable* blogging system for Django, meant to be dropped into an *existing Django project*. Of course, nothing prevents you from running Tangerine as a standalone blog - you'll just need to create a basic/starter Django project first (if you need a starter site, check out the companion [Tangelo](https://github.com/shacker/tangelo) project, which supports the author's own Tangerine blog).
 
 Unlike other blogging systems for Django, Tangerine does not require you adopt someone else's complete content content management system, or to fundamentally alter basic Django practices and assumptions - Tangerine is a true "[reusable app](https://docs.djangoproject.com/en/2.0/intro/reusable-apps/)."
+
+Tangerine is **not** intended to be "just like WordPress," but rather "an ideal blog engine for experienced Django devs, with some lessons learned from WordPress."
 
 **Supports:**
 
@@ -19,10 +21,10 @@ Unlike other blogging systems for Django, Tangerine does not require you adopt s
 - Tags and categories
 - Date archives by year and month
 - Pagination (customize number of posts per results page)
-- Blogroll (related link sets)
+- Blogrolls (related link groups)
 - Date archive link sets
-- Tags and tag-specific views (`/tags/python` lists all Python-related posts)
-- RSS feed
+- Tags and tag-specific views (`/foo/tags/python` lists all Python-related posts)
+- RSS feeds (one per blog)
 - Search (posts and comments)
 - "Trash" system
 - WordPress importer
@@ -45,17 +47,12 @@ Unlike other blogging systems for Django, Tangerine does not require you adopt s
     - Recent Comments template tag
 
 
-
-NOT intended to be "just like WordPress," but rather "an ideal blog engine for Django devs with some lessons learned from WordPress."
-
 **Assumes:**
 
 - Python 3.5+
 - Django 2.0+
 
 Tangerine uses the new `path`-style routes in Django 2, not the older `url`-style routes, so Django 2+ really is a requirement.
-
-
 
 ## Quick start
 
@@ -75,19 +72,18 @@ Tangerine uses the new `path`-style routes in Django 2, not the older `url`-styl
 
 1. Include tangerine's URLconf in your project `urls.py`:
 
-	`url(r'^blog/', include('tangerine.urls')),`
+    `path('<blog_slug>/', include('tangerine.urls', namespace='tangerine')),`
 
 1. Run `python manage.py migrate` to create the tangerine models.
 
-1. Create starter content and a superuser for yourself (don't skip this!): Run `python manage.py tangerine_start` to perform installation tasks and set up dummy data and BlogConfigs.
-
+1. Create starter content and a superuser for yourself (don't skip this!): Run `python manage.py tangerine_start` to perform installation tasks and set up dummy data in example blogs (this step generates sample data with FactoryBoy).
 
 1. Start the development server and visit [http://localhost:8000/admin/](http://localhost:8000/admin/)
    to create a post. 
    
 1. While you're in the admin, go to Tangerine/Config to set your site title, optional Google Analytics ID, and other configuration options. If your site will have multiple blog instances, you'll need one Blog config record for each blog.
 
-1. Delete the starter content via Admin or from Django shell.
+1. When you've got the hang of the system, delete or edit the starter content via Admin or from Django shell.
 
 1. Optionally import existing content from WordPress export file (see below)
 
@@ -97,11 +93,11 @@ Tangerine divides into two spaces: The "management" interface for writing posts 
 
 ## Configuration
 
-Tangerine configuration settings are made in the Django Admin, not in your project settings. If you ran the `tangerine_start` script, default settings will have been created for you, but you'll still want to visit Admin|Tangerine|Config to tweak them. All of the Config settings should be fairly self-explanatory (see the help_text on each field).
+Tangerine configuration settings are made in the Django Admin, not in your project settings. If you ran the `tangerine_start` script, default settings for dummy blogs will have been created for you, but you'll still want to visit Admin|Tangerine|Config to tweak them. All of the Config settings should be fairly self-explanatory (see the `help_text` on each field).
 
 If you will be running multiple tangerine instances in your site, you'll need one Blog record in the Admin for each blog or news site.
 
-Tangerine will crash if you have not created a Config record!
+Tangerine will do nothing if you do not have at least one Blog record!
 
 
 ## Requirements for Container Site
