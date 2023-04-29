@@ -1,0 +1,20 @@
+black
+bleach
+boto3
+dj-database-url
+django
+django-debug-toolbar
+django-extensions
+django-redis
+flake8
+goodconf
+Pillow
+pip-tools
+pre-commit
+psycopg2-binary
+pytest
+pytz
+requests
+ruamel.yaml  # Used by goodconf
+
+

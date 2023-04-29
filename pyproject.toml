@@ -1,0 +1,24 @@
+[project]
+name = "blog"
+version = "0.1.1"
+authors = [
+  { name="Scot Hacker", email="shacker@birdhouse.org" },
+]
+description = "A homemade Django blog"
+readme = "README.md"
+requires-python = ">=3.10"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+
+[project.urls]
+"Homepage" = "https://github.com/shacker/tangerine"
+
+
+[build-system]
+requires = ["hatchling",]
+build-backend = "hatchling.build"

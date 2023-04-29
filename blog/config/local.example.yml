@@ -1,0 +1,13 @@
+---
+ALLOWED_HOSTS:
+- 127.0.0.1
+- localhost
+DEBUG: true
+LOCAL_DEV: true
+ENVIRONMENT: 'placeholder'
+LOG_LEVEL: DEBUG
+DATABASE_URL: postgres://localhost:5432/ap_template
+SECRET_KEY: uJ8dIF2VP767yhnK&ddasCoASTGlB9cOf8gxt7L2k7RIXLs9IJhF$skOnbV4WJUSFSWJFDvEhVD267H
+TEST_EMAIL_TO: "you@energy-solution.com"
+SENTRY_DSN: 1234changeme
+REDIS_ENABLED: false

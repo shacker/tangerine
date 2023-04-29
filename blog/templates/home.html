@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Project home{% endblock title %}
+
+{% block content %}
+  <h1>AppPack plumbing test</h1>
+
+  <p>
+    This page should prove that your database, Redis cache, S3 storage, email and health checks are wired up and working.
+  </p>
+
+  <ul>
+      <li>"Hello" below came from the view.</li>
+      <li>"I am a record" came from the database.</li>
+      <li>"I am cached data" came from cache (Redis or Database)</li>
+      <li>The image file was stored on S3 in the view and then retrieved by URL in the template</li>
+      <li>Click the Send Mail link and check your inbox for email (depending on IS_PRODUCTION settings).</li>
+      <li>Also click the Alive and Health check links above to verify they are returning OK/200.</li>
+  </ul>
+
+  <div class="mt-4">
+    <p>{{ greeting }}</p>
+    <p>{{ record.title }}</p>
+    <p>{{ cached_data }} ({{cache_type}})</p>
+    <p><img src="{{ record.attachment.url }}" width="200" /></p>
+    <p><a href="{% url "send_user_mail" %}" class="btn btn-primary">Send test email (if configured)</a></p>
+  </div>
+
+{% endblock content %}

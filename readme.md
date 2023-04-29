@@ -15,7 +15,7 @@ Tangerine is **not** intended to be "just like WordPress," but rather "an ideal 
 **Supports:**
 
 - Standard blog Post pages
-    - OEmbed support	
+    - OEmbed support
 - Semi-static Pages (About, Contact, etc.)
 - Multiple blogs in a single installation
 - Tags and categories
@@ -45,6 +45,18 @@ Tangerine is **not** intended to be "just like WordPress," but rather "an ideal 
     - Subscribe to comments (email notif when new comments added)
     - Integrated Akismet spam control
     - Recent Comments template tag
+
+## Deps
+
+```
+# For all:
+pip-compile --generate-hashes --output-file=- > requirements.txt
+
+# For one:
+pip-compile -P someapp --generate-hashes --output-file=- > requirements.txt
+
+
+```
 
 
 **Assumes:**
@@ -79,8 +91,8 @@ Tangerine uses the new `path`-style routes in Django 2, not the older `url`-styl
 1. Create starter content and a superuser for yourself (don't skip this!): Run `python manage.py tangerine_start` to perform installation tasks and set up dummy data in example blogs (this step generates sample data with FactoryBoy).
 
 1. Start the development server and visit [http://localhost:8000/admin/](http://localhost:8000/admin/)
-   to create a post. 
-   
+   to create a post.
+
 1. While you're in the admin, go to Tangerine/Config to set your site title, optional Google Analytics ID, and other configuration options. If your site will have multiple blog instances, you'll need one Blog config record for each blog.
 
 1. When you've got the hang of the system, delete or edit the starter content via Admin or from Django shell.
@@ -102,7 +114,7 @@ Tangerine will do nothing if you do not have at least one Blog record!
 
 ## Requirements for Container Site
 
-Tangerine is a *pluggable* app, not a full web application. We assume you already have a working Django site into which you are installing Tangerine. 
+Tangerine is a *pluggable* app, not a full web application. We assume you already have a working Django site into which you are installing Tangerine.
 
 For full/best functionality, add these tags to the base template in your container site:
 
@@ -212,7 +224,7 @@ You can view posts by time slices: year, year/month, and year/month/day, at URLs
 /blog/2017  # Shows all posts published in 2017
 /blog/2017/03  # Shows all posts published in March 2017
 /blog/2017/03/24  # Shows all posts published on March 24, 2017
-``` 
+```
 
 To display a hierarchical list of links to date archives in your sidebar, see the [date archives template tag](#date_archives_tt) documentation.
 
@@ -244,7 +256,7 @@ Tangerine includes a very complete test suite, which will always pass before new
 ```
 export DJANGO_SETTINGS_MODULE=config.test
 ln -s /Users/shacker/dev/tangerine .  # Do it with a symlink, not a pip install!
-pipenv run pytest 
+pipenv run pytest
 ```
 
 To run Tangerine's tests, add pytest to your virtualenv:
@@ -265,7 +277,7 @@ We assume you have jquery installed!
 
 Tangerine does not (yet?) provide "plugin" capability like WordPress because we feel that most new functionality can be provided as a template tag created in your own app. Please see the template tags provided by Tangerine as examples, then create your customizations in your own app or project and load them into your template customizations. If you think others would benefit from the same functionality, make a pull request!
 
-Functionality that cannot be provided by template tags should be submitted as a pull request to Tangerine. 
+Functionality that cannot be provided by template tags should be submitted as a pull request to Tangerine.
 
 
 
@@ -417,7 +429,7 @@ Most template tags must be called with two slugs: The passed slug of the blog in
 {% get_related_links blog_slug=blog_slug related_links_slug=related_links_slug as link_group %}
 ```
 
-And if you want to work with just one blog space? 
+And if you want to work with just one blog space?
 
 -------
 
@@ -434,9 +446,9 @@ RSS feeds are automatically generated and provided for each blog. An RSS link is
 
 All views filter per-blog - none are global for all blogs (if you request a category view, and the same category exists in three blogs, you only get results for the current one).
 
-If you want to see results for all posts in that category for ALL blogs, you must create your own view to do that. 
+If you want to see results for all posts in that category for ALL blogs, you must create your own view to do that.
 
-Likewise, the example search engine only searches through the current blog. If you want global search on your site, you'll need to implement that on your site in your own way. (n.b.: `ops.get_search_qs` does search all blogs, but it's filtered to the current blog in `views.search`, so `ops.get_search_qs` could be helpful for your global search. 
+Likewise, the example search engine only searches through the current blog. If you want global search on your site, you'll need to implement that on your site in your own way. (n.b.: `ops.get_search_qs` does search all blogs, but it's filtered to the current blog in `views.search`, so `ops.get_search_qs` could be helpful for your global search.
 
 ------
 
